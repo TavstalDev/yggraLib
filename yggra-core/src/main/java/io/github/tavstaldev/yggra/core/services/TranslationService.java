@@ -1,4 +1,4 @@
-package io.github.tavstaldev.yggra.core.translation;
+package io.github.tavstaldev.yggra.core.services;
 
 import io.github.tavstaldev.yggra.core.YggraPlugin;
 import io.github.tavstaldev.yggra.core.logger.YggraLogger;

@@ -1,8 +1,7 @@
-package io.github.tavstaldev.yggra.core.chat;
+package io.github.tavstaldev.yggra.core.services;
 
 import io.github.tavstaldev.yggra.core.YggraPlugin;
 import io.github.tavstaldev.yggra.core.logger.YggraLogger;
-import io.github.tavstaldev.yggra.core.translation.TranslationService;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextDecoration;
