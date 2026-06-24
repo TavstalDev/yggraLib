@@ -1,6 +1,6 @@
 plugins {
     java
-    id("com.gradleup.shadow") version "8.3.0"
+    id("com.gradleup.shadow") version "9.3.1"
 }
 
 allprojects {
@@ -47,12 +47,17 @@ tasks.shadowJar {
         attributes["paperweight-mappings-namespace"] = "spigot" // Add custom manifest attributes
     }
 
+    dependencies {
+        // Only merge bStats into the final jar, no other dependencies
+        exclude { it.moduleGroup != "org.bstats" }
+    }
     exclude("com/google/**")
     exclude("org/jspecify/**")
 
     // Relocate packages to avoid conflicts
-    relocate("com.github.benmanes.caffeine", "io.github.tavstaldev.yggra.shadow.caffeine")
-    relocate("com.samjakob.spigui", "io.github.tavstaldev.yggra.shadow.spigui")
+    relocate("com.github.benmanes.caffeine", project.group.toString() + ".shadow.caffeine")
+    relocate("com.samjakob.spigui", project.group.toString() + ".shadow.spigui")
+    relocate("org.bstats", project.group.toString() + ".shadow.bstats")
 }
 
 // Ensure the Shadow JAR task runs during the build process
