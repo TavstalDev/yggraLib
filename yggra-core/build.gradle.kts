@@ -5,6 +5,7 @@ val caffeineVersion = project.property("caffeineVersion") as String
 val redisVersion = project.property("redisVersion") as String
 val spiGuiVersion = project.property("spiGuiVersion") as String
 val bstatsVersion = project.property("bstatsVersion") as String
+val fastboardVersion = project.property("fastboardVersion") as String
 
 dependencies {
 
@@ -16,6 +17,8 @@ dependencies {
     implementation("com.zaxxer:HikariCP:${hikariVersion}")
     implementation("com.github.ben-manes.caffeine:caffeine:${caffeineVersion}")
     implementation("redis.clients:jedis:${redisVersion}")
-    implementation("com.github.sirblobman:spi-gui:${spiGuiVersion}")
+    implementation("com.samjakob:SpiGUI:${spiGuiVersion}")
     implementation("org.bstats:bstats-bukkit:${bstatsVersion}")
+    implementation("fr.mrmicky:fastboard:${fastboardVersion}")
+
 }
