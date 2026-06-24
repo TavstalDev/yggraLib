@@ -1,6 +1,8 @@
 package io.github.tavstaldev.yggra.core;
 
+import io.github.tavstaldev.yggra.core.services.BossBarService;
 import io.github.tavstaldev.yggra.core.cache.ICache;
+import io.github.tavstaldev.yggra.core.services.ChatService;
 import io.github.tavstaldev.yggra.core.configuration.YggraConfiguration;
 import io.github.tavstaldev.yggra.core.database.IDatabase;
 import io.github.tavstaldev.yggra.core.gui.GuiDupeDetector;
@@ -8,7 +10,8 @@ import io.github.tavstaldev.yggra.core.logger.YggraLogger;
 import io.github.tavstaldev.yggra.core.scheduler.FoliaScheduler;
 import io.github.tavstaldev.yggra.core.scheduler.IScheduler;
 import io.github.tavstaldev.yggra.core.scheduler.PaperScheduler;
-import io.github.tavstaldev.yggra.core.translation.TranslationService;
+import io.github.tavstaldev.yggra.core.services.TitleService;
+import io.github.tavstaldev.yggra.core.services.TranslationService;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
@@ -35,6 +38,18 @@ public class YggraPlugin extends JavaPlugin {
     public IScheduler scheduler() {
         return _scheduler;
     }
+    protected ChatService _chat;
+    public ChatService chat() {
+        return _chat;
+    }
+    protected BossBarService _bossBar;
+    public BossBarService bossBar() {
+        return _bossBar;
+    }
+    protected TitleService _title;
+    public TitleService title() {
+        return _title;
+    }
     private final HttpClient _httpClient;
     public HttpClient httpClient() {
         return _httpClient;
@@ -59,6 +74,9 @@ public class YggraPlugin extends JavaPlugin {
                 .version(HttpClient.Version.HTTP_2)
                 .connectTimeout(Duration.ofSeconds(120))
                 .build();
+        _chat = new ChatService(this);
+        _bossBar = new BossBarService(_chat);
+        _title = new TitleService(this, _chat);
         if (pluginId != null) {
             Metrics metrics = new Metrics(this, pluginId);
         }
