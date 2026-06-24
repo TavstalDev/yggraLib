@@ -1,0 +1,83 @@
+package io.github.tavstaldev.yggra.core.cache;
+
+import com.github.benmanes.caffeine.cache.Cache;
+import com.github.benmanes.caffeine.cache.Caffeine;
+import com.github.benmanes.caffeine.cache.Expiry;
+import io.github.tavstaldev.yggra.core.logger.YggraLogger;
+import org.jspecify.annotations.NonNull;
+
+import java.util.concurrent.TimeUnit;
+
+/**
+ * In-memory cache implementation backed by Caffeine.
+ * Entries expire after their configured TTL, with a maximum of 10,000 entries.
+ */
+public class MemoryCache implements ICache {
+    private record ExpiringValue(Object data, long durationNanos) {}
+    private final YggraLogger logger;
+    private final Cache<String, ExpiringValue> cache;
+
+    /**
+     * Creates a MemoryCache with the given logger.
+     *
+     * @param logger The logger instance.
+     */
+    public MemoryCache(YggraLogger logger) {
+        this.logger = logger;
+        this.cache = Caffeine.newBuilder()
+                .maximumSize(10_000)
+                .expireAfter(new Expiry<String, ExpiringValue>() {
+                    @Override
+                    public long expireAfterCreate(@NonNull String key, @NonNull ExpiringValue value, long currentTime) {
+                        return value.durationNanos();
+                    }
+
+                    @Override
+                    public long expireAfterUpdate(@NonNull String key, @NonNull ExpiringValue value, long currentTime, long currentDuration) {
+                        return value.durationNanos();
+                    }
+
+                    @Override
+                    public long expireAfterRead(@NonNull String key, @NonNull ExpiringValue value, long currentTime, long currentDuration) {
+                        return currentDuration;
+                    }
+                })
+                .build();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> T get(String key, Class<T> clazz) {
+        var result = cache.getIfPresent(key);
+        if (result == null) {
+            return null;
+        }
+
+        try {
+            return clazz.cast(result.data);
+        }
+        catch (ClassCastException e) {
+            logger.error("Failed to cast cached value for key: " + key, e);
+            return null;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public <T> void put(String key, T value, long ttlSeconds) {
+        long durationNanos = TimeUnit.SECONDS.toNanos(ttlSeconds);
+        cache.put(key, new ExpiringValue(value, durationNanos));
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void evict(String key) {
+        cache.invalidate(key);
+    }
+}
