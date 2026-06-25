@@ -26,55 +26,75 @@ public class TitleService {
     }
 
     /**
-     * Sends a title and subtitle to the specified player using localized strings.
-     * The title and subtitle are fetched using the provided localization key and arguments.
-     * If both the title and subtitle are empty, no title is sent.
+     * Sends a localized title to a player with custom timing.
      *
-     * @param player    The player to whom the title will be sent.
-     * @param key       The localization key used to fetch the title and subtitle.
-     * @param arguments A map of arguments to be used in the localization process. Can be null.
+     * @param player    the target player
+     * @param key       the translation key (".title" and ".subtitle" suffixes are appended)
+     * @param arguments arguments for translation placeholders
+     * @param times     the title timing (fade-in, stay, fade-out)
      */
-    public void send(Player player, String key, Map<String, Object> arguments) {
+    public void send(Player player, String key, Map<String, Object> arguments, Title.Times times) {
         if (arguments == null) {
             arguments = Map.of();
         }
 
         var translator = plugin.translator();
-        String mainTitle = translator.localize(player, key + ".Title", arguments);
-        String subTitle = translator.localize(player, key + ".Subtitle", arguments);
+        String mainTitle = translator.localize(player, key + ".title", arguments);
+        String subTitle = translator.localize(player, key + ".subtitle", arguments);
         if (mainTitle.isEmpty() && subTitle.isEmpty()) {
             return;
         }
 
-        Title.Times times = Title.Times.times(
-                Duration.ofMillis(500),   // Fade In: 0.5 seconds
-                Duration.ofSeconds(2),    // Stay: 2 seconds
-                Duration.ofSeconds(1)     // Fade Out: 1 second
-        );
         Title title = Title.title(chat.translateColors(mainTitle, true), chat.translateColors(subTitle, true), times);
         player.showTitle(title);
     }
 
     /**
-     * Sends a title and subtitle to the specified player.
-     * The title and subtitle are displayed with predefined fade-in, stay, and fade-out durations.
-     * If both the title and subtitle are empty, no title is sent.
+     * Sends a localized title with default timing (0.5s fade-in, 2s stay, 1s fade-out).
      *
-     * @param player   The player to whom the title will be sent.
-     * @param title    The main title text to display. Can be empty.
-     * @param subTitle The subtitle text to display. Can be empty.
+     * @param player    the target player
+     * @param key       the translation key (".Title" and ".Subtitle" suffixes are appended)
+     * @param arguments arguments for translation placeholders
      */
-    public void send(Player player, String title, String subTitle) {
-        if (title.isEmpty() && subTitle.isEmpty()) {
-            return;
-        }
-
+    public void send(Player player, String key, Map<String, Object> arguments) {
         Title.Times times = Title.Times.times(
                 Duration.ofMillis(500),   // Fade In: 0.5 seconds
                 Duration.ofSeconds(2),    // Stay: 2 seconds
                 Duration.ofSeconds(1)     // Fade Out: 1 second
         );
+        send(player, key, arguments, times);
+    }
+
+    /**
+     * Sends a raw title with custom timing.
+     *
+     * @param player   the target player
+     * @param title    the main title text (may contain color codes)
+     * @param subTitle the subtitle text (may contain color codes)
+     * @param times    the title timing (fade-in, stay, fade-out)
+     */
+    public void send(Player player, String title, String subTitle, Title.Times times) {
+        if (title.isEmpty() && subTitle.isEmpty()) {
+            return;
+        }
+
         Title screenTitle = Title.title(chat.translateColors(title, true), chat.translateColors(subTitle, true), times);
         player.showTitle(screenTitle);
+    }
+
+    /**
+     * Sends a raw title with default timing (0.5s fade-in, 2s stay, 1s fade-out).
+     *
+     * @param player   the target player
+     * @param title    the main title text (may contain color codes)
+     * @param subTitle the subtitle text (may contain color codes)
+     */
+    public void send(Player player, String title, String subTitle) {
+        Title.Times times = Title.Times.times(
+                Duration.ofMillis(500),   // Fade In: 0.5 seconds
+                Duration.ofSeconds(2),    // Stay: 2 seconds
+                Duration.ofSeconds(1)     // Fade Out: 1 second
+        );
+        send(player, title, subTitle, times);
     }
 }

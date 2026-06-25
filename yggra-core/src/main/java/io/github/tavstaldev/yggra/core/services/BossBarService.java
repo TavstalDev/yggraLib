@@ -22,26 +22,6 @@ public class BossBarService {
     }
 
     /**
-     * Ensures that a BossBar with the given ID exists. If it doesn't, creates a new one.
-     *
-     * @param id The unique identifier for the BossBar.
-     * @return The BossBar associated with the given ID.
-     */
-    private BossBar ensureExists(String id) {
-        if (!bossBars.containsKey(id)) {
-            BossBar bossBar = BossBar.bossBar(
-                    Component.text(""),
-                    1.0f,
-                    BossBar.Color.BLUE,
-                    BossBar.Overlay.PROGRESS
-            );
-            bossBars.put(id, bossBar);
-            return bossBar;
-        }
-        return bossBars.get(id);
-    }
-
-    /**
      * Displays the BossBar with the given ID to a specific player.
      *
      * @param id The unique identifier for the BossBar.
@@ -136,5 +116,25 @@ public class BossBarService {
     public void updateTitle(String id, String title) {
         BossBar bossBar = ensureExists(id);
         bossBar.name(chat.translateColors(title, true));
+    }
+
+    /**
+     * Ensures that a BossBar with the given ID exists. If it doesn't, creates a new one.
+     *
+     * @param id The unique identifier for the BossBar.
+     * @return The BossBar associated with the given ID.
+     */
+    private BossBar ensureExists(String id) {
+        if (!bossBars.containsKey(id)) {
+            BossBar bossBar = BossBar.bossBar(
+                    Component.text(""),
+                    1.0f,
+                    BossBar.Color.BLUE,
+                    BossBar.Overlay.PROGRESS
+            );
+            bossBars.put(id, bossBar);
+            return bossBar;
+        }
+        return bossBars.get(id);
     }
 }
