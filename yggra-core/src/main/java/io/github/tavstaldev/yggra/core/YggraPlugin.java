@@ -1,8 +1,8 @@
 package io.github.tavstaldev.yggra.core;
 
-import io.github.tavstaldev.yggra.core.services.BossBarService;
+import io.github.tavstaldev.yggra.core.gui.GuiManager;
+import io.github.tavstaldev.yggra.core.services.*;
 import io.github.tavstaldev.yggra.core.cache.ICache;
-import io.github.tavstaldev.yggra.core.services.ChatService;
 import io.github.tavstaldev.yggra.core.configuration.YggraConfiguration;
 import io.github.tavstaldev.yggra.core.database.IDatabase;
 import io.github.tavstaldev.yggra.core.gui.GuiDupeDetector;
@@ -10,8 +10,6 @@ import io.github.tavstaldev.yggra.core.logger.YggraLogger;
 import io.github.tavstaldev.yggra.core.scheduler.FoliaScheduler;
 import io.github.tavstaldev.yggra.core.scheduler.IScheduler;
 import io.github.tavstaldev.yggra.core.scheduler.PaperScheduler;
-import io.github.tavstaldev.yggra.core.services.TitleService;
-import io.github.tavstaldev.yggra.core.services.TranslationService;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
@@ -50,6 +48,10 @@ public class YggraPlugin extends JavaPlugin {
     public TitleService title() {
         return _title;
     }
+    protected ScoreboardService _scoreboard;
+    public ScoreboardService scoreboard() {return _scoreboard;}
+    protected SoundService _sound;
+    public SoundService sound() {return _sound;}
     private final HttpClient _httpClient;
     public HttpClient httpClient() {
         return _httpClient;
@@ -62,10 +64,9 @@ public class YggraPlugin extends JavaPlugin {
     public @Nullable IDatabase database() {
         return _database;
     }
-
-    private @Nullable MenuManager _menuManager;
-    public @Nullable MenuManager menuManager() {
-        return _menuManager;
+    private @Nullable GuiManager _gui;
+    public @Nullable GuiManager gui() {
+        return _gui;
     }
 
     public YggraPlugin(@Nullable Integer pluginId) {
@@ -77,6 +78,8 @@ public class YggraPlugin extends JavaPlugin {
         _chat = new ChatService(this);
         _bossBar = new BossBarService(_chat);
         _title = new TitleService(this, _chat);
+        _scoreboard = new ScoreboardService();
+        _sound = new SoundService();
         if (pluginId != null) {
             Metrics metrics = new Metrics(this, pluginId);
         }
@@ -88,7 +91,7 @@ public class YggraPlugin extends JavaPlugin {
 
     @Override
     public final void onEnable() {
-        if (menuManager() != null) {
+        if (_gui != null) {
             GuiDupeDetector.register(this);
         }
         if (isFolia()) {
@@ -105,7 +108,7 @@ public class YggraPlugin extends JavaPlugin {
 
     @Override
     public final void onDisable() {
-        if (menuManager() != null) {
+        if (_gui != null) {
             GuiDupeDetector.unregister(this);
         }
         onPluginDisable();
