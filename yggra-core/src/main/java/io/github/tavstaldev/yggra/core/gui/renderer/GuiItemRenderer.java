@@ -20,7 +20,7 @@ import java.util.UUID;
 
 public final class GuiItemRenderer {
 
-    public ItemStack render(GuiButton button,
+    public static ItemStack render(GuiButton button,
                             Player player,
                             ChatService chat,
                             TranslationService translator) {
@@ -58,15 +58,9 @@ public final class GuiItemRenderer {
         meta.getPersistentDataContainer().set(GuiDupeDetector.getDupeProtectedKey(), PersistentDataType.BOOLEAN, true);
 
         var headTexture = button.getHeadTexture();
-        if (headTexture != null && meta instanceof SkullMeta skullMeta) {
-            PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
-            profile.setProperty(new ProfileProperty("textures", headTexture));
-            skullMeta.setPlayerProfile(profile);
-            itemStack.setItemMeta(skullMeta);
-        }
-        else {
-            itemStack.setItemMeta(meta);
-        }
+        if (headTexture != null)
+            GuiHeadRenderer.apply(meta, headTexture);
+        itemStack.setItemMeta(meta);
         return itemStack;
     }
 }

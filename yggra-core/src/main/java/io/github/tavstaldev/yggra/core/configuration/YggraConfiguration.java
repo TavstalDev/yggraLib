@@ -127,7 +127,7 @@ public abstract class YggraConfiguration extends YamlConfiguration {
             @SuppressWarnings("unchecked") T local = (T) this.get(path);
             if (local == null) {
                 this.set(path, value);
-                return (T) value;
+                return value;
             }
             return local;
         } catch (Exception ignored) {
