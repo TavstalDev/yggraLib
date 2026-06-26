@@ -1,6 +1,7 @@
 package io.github.tavstaldev.yggra.core.commands;
 
 import io.github.tavstaldev.yggra.core.YggraPlugin;
+import io.github.tavstaldev.yggra.items.api.utils.AdventureUtils;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.command.CommandExecutor;
@@ -140,16 +141,16 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
 
         Map<String, Component> bottomParams = new HashMap<>();
         if (page > 1)
-            bottomParams.put("previous_btn", chat.translateColors(previousBtn, true)
+            bottomParams.put("previous_btn", AdventureUtils.translateColors(previousBtn, true)
                     .clickEvent(ClickEvent.runCommand(String.format("/%s help %s", command, page - 1))));
         else
-            bottomParams.put("previous_btn", chat.translateColors(previousBtn, true));
+            bottomParams.put("previous_btn", AdventureUtils.translateColors(previousBtn, true));
 
         if (!reachedEnd && maxPage >= page + 1)
-            bottomParams.put("next_btn", chat.translateColors(nextBtn, true)
+            bottomParams.put("next_btn", AdventureUtils.translateColors(nextBtn, true)
                     .clickEvent(ClickEvent.runCommand(String.format("/%s help %s", command, page + 1))));
         else
-            bottomParams.put("next_btn", chat.translateColors(nextBtn, true));
+            bottomParams.put("next_btn", AdventureUtils.translateColors(nextBtn, true));
 
         Component bottomComp = chat.buildWithButtons(bottomMsg, bottomParams);
         sender.sendMessage(bottomComp);

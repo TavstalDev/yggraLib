@@ -1,6 +1,7 @@
 package io.github.tavstaldev.yggra.core.services;
 
 import io.github.tavstaldev.yggra.core.YggraPlugin;
+import io.github.tavstaldev.yggra.items.api.utils.AdventureUtils;
 import net.kyori.adventure.title.Title;
 import org.bukkit.entity.Player;
 
@@ -45,7 +46,8 @@ public class TitleService {
             return;
         }
 
-        Title title = Title.title(chat.translateColors(mainTitle, true), chat.translateColors(subTitle, true), times);
+        Title title = Title.title(AdventureUtils.translateColors(mainTitle, true),
+        AdventureUtils.translateColors(subTitle, true), times);
         player.showTitle(title);
     }
 
@@ -78,7 +80,8 @@ public class TitleService {
             return;
         }
 
-        Title screenTitle = Title.title(chat.translateColors(title, true), chat.translateColors(subTitle, true), times);
+        Title screenTitle = Title.title(AdventureUtils.translateColors(title, true),
+                AdventureUtils.translateColors(subTitle, true), times);
         player.showTitle(screenTitle);
     }
 

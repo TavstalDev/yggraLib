@@ -11,6 +11,10 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 
 import java.util.*;
 
+/**
+ * Abstract base class for all GUI menus. Handles menu creation, button resolution,
+ * dynamic slot parsing, and configuration persistence.
+ */
 public abstract class GuiBase extends YggraConfiguration {
     protected final YggraPlugin plugin;
     protected final YggraLogger logger;
@@ -22,6 +26,18 @@ public abstract class GuiBase extends YggraConfiguration {
     protected HashMap<String, List<Integer>> dynamicSlots;
     protected HashSet<GuiButton> buttons;
 
+    /**
+     * Constructs a new GUI menu from configuration or defaults.
+     *
+     * @param id                  The unique identifier for this menu.
+     * @param plugin              The plugin instance.
+     * @param fileName            The configuration file name (under menus/).
+     * @param title               The default menu title.
+     * @param isTitleTranslated   Whether the title should be localized.
+     * @param size                The number of rows (1-6).
+     * @param defaultDynamicSlots Default dynamic slot definitions.
+     * @param defaultButtons      Default button definitions.
+     */
     public GuiBase(String id, YggraPlugin plugin, String fileName, String title, boolean isTitleTranslated, int size, HashMap<String, List<String>> defaultDynamicSlots,
                    HashSet<GuiButton> defaultButtons) {
         super(plugin, "menus/" + fileName, null);
@@ -44,6 +60,58 @@ public abstract class GuiBase extends YggraConfiguration {
         // Prevent overwriting of defaults, as they are already set in the constructor
     }
 
+    /**
+     * Creates and returns the SGMenu for the given player, applying localized title and button layouts.
+     *
+     * @param player The player to create the menu for.
+     * @return The constructed SGMenu instance.
+     */
+    public SGMenu create(Player player) {
+        GuiManager menuManager = plugin.gui();
+        if (menuManager == null)
+            throw new RuntimeException("Menu manager was not initialized.");
+        SGMenu menu = menuManager.getSpiGUI().create(isTitleTranslated ? translator.localize(player, menuTitle) : menuTitle, menuSize);
+
+        for (GuiButton button : buttons) {
+            button.apply(player, translator, menu, this);
+        }
+        return menu;
+    }
+
+    /**
+     * Refreshes the given menu for the specified player.
+     *
+     * @param player The player viewing the menu.
+     * @param menu   The menu to refresh.
+     */
+    public abstract void refresh(Player player, SGMenu menu);
+
+    /**
+     * Executes a button action for the given player.
+     *
+     * @param player The player who triggered the action.
+     * @param action The action identifier.
+     * @param event  The inventory click event.
+     */
+    public abstract void executeCommand(Player player, String action, InventoryClickEvent event);
+
+    /**
+     * Called when a player opens this menu. Override to implement custom behavior.
+     *
+     * @param player The player who opened the menu.
+     */
+    public void onOpen(Player player) {
+        // optional
+    }
+
+    /**
+     * Called when a player closes this menu. Override to implement custom behavior.
+     *
+     * @param player The player who closed the menu.
+     */
+    public void onClose(Player player) {
+        // optional
+    }
     private HashMap<String, List<Integer>> resolveDynamicSlots(HashMap<String, List<String>> defaultDynamicSlots) {
         HashMap<String, List<Integer>> dynamicSlots = new HashMap<>();
 
@@ -62,7 +130,13 @@ public abstract class GuiBase extends YggraConfiguration {
         return dynamicSlots;
     }
 
-    protected HashSet<GuiButton> resolveButtons(HashSet<GuiButton> defaultButtons) {
+    /**
+     * Resolves buttons from the configuration, falling back to defaults if no config entry exists.
+     *
+     * @param defaultButtons The default set of buttons.
+     * @return The resolved set of GuiButtons.
+     */
+    private HashSet<GuiButton> resolveButtons(HashSet<GuiButton> defaultButtons) {
         HashSet<GuiButton> buttons = new LinkedHashSet<>();
 
         List<Map<?, ?>> buttonMap = this.getMapList("buttons");
@@ -81,19 +155,5 @@ public abstract class GuiBase extends YggraConfiguration {
             }
         }
         return buttons;
-    }
-
-    public abstract SGMenu create(Player player);
-
-    public abstract void refresh(Player player, SGMenu menu);
-
-    public abstract void executeCommand(Player player, String action, InventoryClickEvent event);
-
-    public void onOpen(Player player) {
-        // optional
-    }
-
-    public void onClose(Player player) {
-        // optional
     }
 }

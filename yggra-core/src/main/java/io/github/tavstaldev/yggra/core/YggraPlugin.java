@@ -10,6 +10,12 @@ import io.github.tavstaldev.yggra.core.logger.YggraLogger;
 import io.github.tavstaldev.yggra.core.scheduler.FoliaScheduler;
 import io.github.tavstaldev.yggra.core.scheduler.IScheduler;
 import io.github.tavstaldev.yggra.core.scheduler.PaperScheduler;
+import io.github.tavstaldev.yggra.core.utils.VersionUtils;
+import io.github.tavstaldev.yggra.items.api.ItemSerializerBase;
+import io.github.tavstaldev.yggra.items.impl_1_20_4.ItemSerializer_1_20_4;
+import io.github.tavstaldev.yggra.items.impl_1_21.ItemSerializer_1_21;
+import io.github.tavstaldev.yggra.items.impl_1_21_4.ItemSerializer_1_21_4;
+import io.github.tavstaldev.yggra.items.impl_1_21_5.ItemSerializer_1_21_5;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
@@ -52,6 +58,10 @@ public class YggraPlugin extends JavaPlugin {
     public ScoreboardService scoreboard() {return _scoreboard;}
     protected SoundService _sound;
     public SoundService sound() {return _sound;}
+    protected ItemSerializerBase _itemSerializer;
+    public ItemSerializerBase itemSerializer() {
+        return  _itemSerializer;
+    }
     private final HttpClient _httpClient;
     public HttpClient httpClient() {
         return _httpClient;
@@ -76,10 +86,23 @@ public class YggraPlugin extends JavaPlugin {
                 .connectTimeout(Duration.ofSeconds(120))
                 .build();
         _chat = new ChatService(this);
-        _bossBar = new BossBarService(_chat);
+        _bossBar = new BossBarService();
         _title = new TitleService(this, _chat);
         _scoreboard = new ScoreboardService();
         _sound = new SoundService();
+        if (VersionUtils.isAtLeast(1, 21, 5))
+        {
+            _itemSerializer = new ItemSerializer_1_21_5(getLogger());
+        }
+        else if (VersionUtils.isAtLeast(1, 21, 4)) {
+            _itemSerializer = new ItemSerializer_1_21_4(getLogger());
+        }
+        else if (VersionUtils.isAtLeast(1, 21)) {
+            _itemSerializer = new ItemSerializer_1_21(getLogger());
+        }
+        else {
+            _itemSerializer = new ItemSerializer_1_20_4(getLogger());
+        }
         if (pluginId != null) {
             Metrics metrics = new Metrics(this, pluginId);
         }

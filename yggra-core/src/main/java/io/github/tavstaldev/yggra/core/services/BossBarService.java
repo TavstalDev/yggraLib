@@ -1,5 +1,6 @@
 package io.github.tavstaldev.yggra.core.services;
 
+import io.github.tavstaldev.yggra.items.api.utils.AdventureUtils;
 import net.kyori.adventure.bossbar.BossBar;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -12,14 +13,8 @@ import java.util.List;
  * Bars are lazily created on first use and tracked by an ID string.
  */
 public class BossBarService {
-    /** Used to translate color codes in titles. */
-    private final ChatService chat;
     /** Tracks all active boss bars by ID. */
     private final HashMap<String, BossBar> bossBars = new HashMap<>();
-
-    public BossBarService(ChatService chat) {
-        this.chat = chat;
-    }
 
     /**
      * Displays the BossBar with the given ID to a specific player.
@@ -115,7 +110,7 @@ public class BossBarService {
      */
     public void updateTitle(String id, String title) {
         BossBar bossBar = ensureExists(id);
-        bossBar.name(chat.translateColors(title, true));
+        bossBar.name(AdventureUtils.translateColors(title, true));
     }
 
     /**

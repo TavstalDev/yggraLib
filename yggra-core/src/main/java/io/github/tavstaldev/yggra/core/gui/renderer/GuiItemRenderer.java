@@ -1,28 +1,34 @@
 package io.github.tavstaldev.yggra.core.gui.renderer;
 
-import com.destroystokyo.paper.profile.PlayerProfile;
-import com.destroystokyo.paper.profile.ProfileProperty;
 import io.github.tavstaldev.yggra.core.gui.GuiButton;
 import io.github.tavstaldev.yggra.core.gui.GuiDupeDetector;
-import io.github.tavstaldev.yggra.core.services.ChatService;
 import io.github.tavstaldev.yggra.core.services.TranslationService;
+import io.github.tavstaldev.yggra.items.api.utils.AdventureUtils;
 import net.kyori.adventure.text.Component;
-import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
-import org.bukkit.inventory.meta.SkullMeta;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
+/**
+ * A utility class that renders GUI buttons into ItemStack representations.
+ */
 public final class GuiItemRenderer {
 
+    /**
+     * Renders a GuiButton into an ItemStack, applying display name, lore, dupe protection,
+     * and optional head textures.
+     *
+     * @param button     The button to render.
+     * @param player     The player viewing the GUI.
+     * @param translator The translation service for localization.
+     * @return The rendered ItemStack.
+     */
     public static ItemStack render(GuiButton button,
                             Player player,
-                            ChatService chat,
                             TranslationService translator) {
 
         ItemStack itemStack = new ItemStack(button.getMaterial(), button.getAmount());
@@ -30,9 +36,9 @@ public final class GuiItemRenderer {
         String buttonTitle = button.getTitle();
         if (buttonTitle != null) {
             if (button.shouldTranslateTitle()) {
-                meta.displayName(chat.translateColors(translator.localize(player, buttonTitle), true));
+                meta.displayName(AdventureUtils.translateColors(translator.localize(player, buttonTitle), true));
             } else {
-                meta.displayName(chat.translateColors(buttonTitle, true));
+                meta.displayName(AdventureUtils.translateColors(buttonTitle, true));
             }
         }
 
@@ -43,13 +49,13 @@ public final class GuiItemRenderer {
                 String loreKey = buttonLore.getFirst();
                 List<String> loreLines = translator.localizeList(player, loreKey);
                 for (String line : loreLines) {
-                    lore.add(chat.translateColors(line, true));
+                    lore.add(AdventureUtils.translateColors(line, true));
                 }
             } else {
                 for (String line : buttonLore) {
                     if (line == null)
                         continue;
-                    lore.add(chat.translateColors(line, true));
+                    lore.add(AdventureUtils.translateColors(line, true));
                 }
             }
         }
