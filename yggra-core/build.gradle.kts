@@ -24,6 +24,11 @@ dependencies {
     implementation("org.bstats:bstats-bukkit:${bstatsVersion}")
     implementation("fr.mrmicky:fastboard:${fastboardVersion}")
 
+    implementation(project(":yggra-items-api"))
+    implementation(project(":yggra-items-impl_1.20.4"))
+    implementation(project(":yggra-items-impl_1.21"))
+    implementation(project(":yggra-items-impl_1.21.4"))
+    implementation(project(":yggra-items-impl_1.21.5"))
 }
 
 // Disable the default JAR task
