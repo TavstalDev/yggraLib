@@ -70,10 +70,10 @@ public class YggraLogger {
 
     /**
      * Refreshes the debug enabled flag from the plugin configuration.
-     * Reads the "debug" key from config.yml, defaulting to false.
+     * Reads the "general.debug-mode" key from config.yml, defaulting to false.
      */
     public void refreshDebugEnabled() {
-        _debugEnabled = _plugin.getConfig().getBoolean("debug", false);
+        _debugEnabled = _plugin.getConfig().getBoolean("general.debug-mode", false);
     }
 
     /**

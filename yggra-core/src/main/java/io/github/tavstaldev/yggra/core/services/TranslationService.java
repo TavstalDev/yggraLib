@@ -41,7 +41,7 @@ public class TranslationService {
         this._plugin = plugin;
         this._logger = plugin.logger().withModule(TranslationService.class);
         var config = plugin.getConfig();
-        this._preferredLocale = config.getString("general.locale", "en");
+        this._preferredLocale = config.getString("general.locale", "eng");
         this._shouldUsePlayerLocale = config.getBoolean("general.use-player-locale", true);
         _logger.debug("Preferred locale set to: " + this._preferredLocale);
 
@@ -62,7 +62,7 @@ public class TranslationService {
      */
     public boolean refresh() {
         var config = _plugin.getConfig();
-        this._preferredLocale = config.getString("general.locale", "en");
+        this._preferredLocale = config.getString("general.locale", "eng");
         this._shouldUsePlayerLocale = config.getBoolean("general.use-player-locale", true);
         return load();
     }

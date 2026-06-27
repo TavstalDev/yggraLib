@@ -142,7 +142,7 @@ public class YggraPlugin<TConfig extends YggraConfiguration> extends JavaPlugin 
     }
 
     public String replacePlaceholders(String message) {
-        return message.replace("%prefix%", Objects.requireNonNull(_config.getString("prefix")));
+        return message.replace("%prefix%", Objects.requireNonNull(_config.getString("general.prefix")));
     }
 
     private static boolean isFolia() {
