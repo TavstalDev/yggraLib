@@ -7,7 +7,7 @@ import io.github.tavstaldev.yggra.core.database.annotations.Column;
 import io.github.tavstaldev.yggra.core.database.annotations.Table;
 import io.github.tavstaldev.yggra.core.database.enums.EColumnKind;
 import io.github.tavstaldev.yggra.core.logger.YggraLogger;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
@@ -21,6 +21,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
     private final ICache cache;
     private final YggraLogger logger;
     private final String tableName;
+    private final long cacheDuration;
     private final Field idField;
     private final Class<T> entityClass;
     private final Map<String, Field> columnToFieldMap = new LinkedHashMap<>();
@@ -34,10 +35,11 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
     private final String existsByIdSqlStatement;
 
     @SuppressWarnings("unchecked")
-    public SqLiteRepository(YggraPlugin plugin) {
+    public SqLiteRepository(YggraPlugin<?> plugin, long cacheDuration, @Nullable String tablePrefix) {
         this.pluginName = plugin.getName();
         this.cache = plugin.cache();
         this.logger = plugin.logger().withModule(SqLiteRepository.class);
+        this.cacheDuration = cacheDuration;
 
         ParameterizedType superClass = (ParameterizedType) getClass().getGenericSuperclass();
         this.entityClass = (Class<T>) superClass.getActualTypeArguments()[0];
@@ -47,7 +49,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
         }
 
         Table tableAnnotation = entityClass.getAnnotation(Table.class);
-        tableName = tableAnnotation.value();
+        tableName = (tablePrefix != null ? tablePrefix : "") + tableAnnotation.value();
 
         Field tempIdField = null;
         String tempIdColumn = null;
@@ -181,7 +183,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
                     return false;
                 }
 
-                cache.put("db:" + tableName + ":" + idField.get(entity), entity, 300);
+                cache.put("db:" + tableName + ":" + idField.get(entity), entity, cacheDuration);
                 cache.evict("db:" + tableName + ":all");
                 return true;
             }
@@ -217,7 +219,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
                            Object value = resultSet.getObject(columnName);
                            DatabaseHelper.setValueSafely(entity, field, value);
                        }
-                         cache.put(cacheKey, entity, 300);
+                         cache.put(cacheKey, entity, cacheDuration);
                        return entity;
                    }
                }
@@ -259,7 +261,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
                     }
                     entities.add(entity);
                 }
-                cache.put(cacheKey, entities.toArray((T[])Array.newInstance(entityClass, entities.size())), 300);
+                cache.put(cacheKey, entities.toArray((T[])Array.newInstance(entityClass, entities.size())), cacheDuration);
                 return entities;
             }
         }
@@ -382,7 +384,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
         }
     }
 
-    protected List<T> query(String sql, Object... args) {
+    public List<T> query(String sql, Object... args) {
         List<T> results = new ArrayList<>();
 
         try (Connection connection = createConnection()) {
