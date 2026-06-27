@@ -20,9 +20,9 @@ dependencies {
     compileOnly("com.github.ben-manes.caffeine:caffeine:${caffeineVersion}")
     compileOnly("redis.clients:jedis:${redisVersion}")
 
-    implementation("com.samjakob:SpiGUI:${spiGuiVersion}")
-    implementation("org.bstats:bstats-bukkit:${bstatsVersion}")
-    implementation("fr.mrmicky:fastboard:${fastboardVersion}")
+    compileOnly("com.samjakob:SpiGUI:${spiGuiVersion}")
+    compileOnly("org.bstats:bstats-bukkit:${bstatsVersion}")
+    compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
 
     implementation(project(":yggra-items-api"))
     implementation(project(":yggra-items-impl_1.20.4"))
@@ -46,11 +46,6 @@ tasks.shadowJar {
     exclude("com/google/**")
     exclude("org/jspecify/**")
     exclude("org/slf4j/**")
-
-    // Relocate packages to avoid conflicts
-    relocate("com.samjakob.spigui", "${project.group}.shadow.spigui")
-    relocate("org.bstats", "${project.group}.shadow.bstats")
-    relocate("fr.mrmicky.fastboard", "${project.group}.shadow.fastboard")
 }
 
 // Ensure the Shadow JAR task runs during the build process
