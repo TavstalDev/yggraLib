@@ -20,7 +20,7 @@ import java.util.Map;
  */
 public abstract class CommandBase implements CommandExecutor, TabCompleter {
     /** The plugin instance. */
-    private final YggraPlugin plugin;
+    private final YggraPlugin<?> plugin;
     /** The command name (must be defined in plugin.yml). */
     private final String command;
     /** Required permission node; null or blank allows all. */
@@ -37,7 +37,7 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
      * @param subCommands List of subcommands.
      * @throws IllegalAccessException If the command is not defined in plugin.yml.
      */
-    public CommandBase(YggraPlugin plugin, String command, String permission, List<SubCommand> subCommands) throws IllegalAccessException {
+    public CommandBase(YggraPlugin<?> plugin, String command, String permission, List<SubCommand> subCommands) throws IllegalAccessException {
         this.plugin = plugin;
         this.command = command;
         this.permission = permission;
@@ -59,7 +59,7 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
      * @param permission  Required permission, or null/blank for none.
      * @throws IllegalAccessException If the command is not defined in plugin.yml.
      */
-    public CommandBase(YggraPlugin plugin, String command, String permission) throws IllegalAccessException {
+    public CommandBase(YggraPlugin<?> plugin, String command, String permission) throws IllegalAccessException {
         this(plugin, command, permission, new ArrayList<>());
     }
 

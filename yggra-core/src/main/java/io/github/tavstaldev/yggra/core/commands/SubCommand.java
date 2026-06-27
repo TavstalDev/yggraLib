@@ -52,7 +52,7 @@ public abstract class SubCommand implements CommandExecutor, TabCompleter {
      * @param commandSender  The recipient.
      * @param baseCommand    The parent command name.
      */
-    public void sendHelp(YggraPlugin plugin, CommandSender commandSender, String baseCommand) {
+    public void sendHelp(YggraPlugin<?> plugin, CommandSender commandSender, String baseCommand) {
         if (arguments == null)
             return;
 

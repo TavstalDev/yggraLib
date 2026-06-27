@@ -26,7 +26,7 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class TranslationService {
     private final Yaml _yaml;
-    private final YggraPlugin _plugin;
+    private final YggraPlugin<?> _plugin;
     private final YggraLogger _logger;
     private String _preferredLocale;
     private boolean _shouldUsePlayerLocale;
@@ -37,7 +37,7 @@ public class TranslationService {
      *
      * @param plugin The plugin instance used to access config and resources.
      */
-    public TranslationService(YggraPlugin plugin) {
+    public TranslationService(YggraPlugin<?> plugin) {
         this._plugin = plugin;
         this._logger = plugin.logger().withModule(TranslationService.class);
         var config = plugin.getConfig();

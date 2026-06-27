@@ -35,7 +35,7 @@ public class GuiDupeDetector implements Listener {
     private static final Set<String> registeredPlugins = new HashSet<>(); // String is the name of the plugin
     private static final Object lock = new Object();
     private static GuiDupeDetector instance;
-    private static @Nullable YggraPlugin primaryPlugin;
+    private static @Nullable YggraPlugin<?> primaryPlugin;
 
     /**
      * Registers a plugin with the GuiDupeDetector.
@@ -44,7 +44,7 @@ public class GuiDupeDetector implements Listener {
      * @param plugin The plugin to register.
      * @return True if registration is successful, false otherwise.
      */
-    public static boolean register(YggraPlugin plugin) {
+    public static boolean register(YggraPlugin<?> plugin) {
         synchronized (lock) {
             if (primaryPlugin != null && primaryPlugin.isEnabled()) {
                 if (registeredPlugins.contains(plugin.getName())) {
@@ -77,7 +77,7 @@ public class GuiDupeDetector implements Listener {
      * @return True if unregistration is successful, false otherwise.
      */
     @SuppressWarnings({"UnstableApiUsage", "UnusedReturnValue"})
-    public static boolean unregister(YggraPlugin plugin) {
+    public static boolean unregister(YggraPlugin<?> plugin) {
         synchronized (lock) {
             if (!registeredPlugins.contains(plugin.getPluginMeta().getName())) {
                 return false;
@@ -95,7 +95,7 @@ public class GuiDupeDetector implements Listener {
                     if (!registeredPlugins.contains(registeredPlugin.getPluginMeta().getName()))
                         continue;
 
-                    if (!(registeredPlugin instanceof YggraPlugin yggraPlugin))
+                    if (!(registeredPlugin instanceof YggraPlugin<?> yggraPlugin))
                         continue;
 
                     primaryPlugin = null;

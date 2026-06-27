@@ -13,7 +13,7 @@ import java.util.Map;
  */
 public class TitleService {
     /** The plugin instance, used for translation lookups. */
-    private final YggraPlugin plugin;
+    private final YggraPlugin<?> plugin;
     /** Used to translate color codes in title/subtitle text. */
     private final ChatService chat;
 
@@ -21,7 +21,7 @@ public class TitleService {
      * @param plugin The plugin instance, used for translation lookups.
      * @param chat   Used to translate color codes in title/subtitle text.
      */
-    public TitleService(YggraPlugin plugin, ChatService chat) {
+    public TitleService(YggraPlugin<?> plugin, ChatService chat) {
         this.plugin = plugin;
         this.chat = chat;
     }

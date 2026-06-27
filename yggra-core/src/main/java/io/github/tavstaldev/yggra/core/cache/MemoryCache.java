@@ -4,7 +4,7 @@ import com.github.benmanes.caffeine.cache.Cache;
 import com.github.benmanes.caffeine.cache.Caffeine;
 import com.github.benmanes.caffeine.cache.Expiry;
 import io.github.tavstaldev.yggra.core.logger.YggraLogger;
-import org.jspecify.annotations.NonNull;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.concurrent.TimeUnit;
 
@@ -28,17 +28,17 @@ public class MemoryCache implements ICache {
                 .maximumSize(10_000)
                 .expireAfter(new Expiry<String, ExpiringValue>() {
                     @Override
-                    public long expireAfterCreate(@NonNull String key, @NonNull ExpiringValue value, long currentTime) {
+                    public long expireAfterCreate(@NotNull String key, @NotNull ExpiringValue value, long currentTime) {
                         return value.durationNanos();
                     }
 
                     @Override
-                    public long expireAfterUpdate(@NonNull String key, @NonNull ExpiringValue value, long currentTime, long currentDuration) {
+                    public long expireAfterUpdate(@NotNull String key, @NotNull ExpiringValue value, long currentTime, long currentDuration) {
                         return value.durationNanos();
                     }
 
                     @Override
-                    public long expireAfterRead(@NonNull String key, @NonNull ExpiringValue value, long currentTime, long currentDuration) {
+                    public long expireAfterRead(@NotNull String key, @NotNull ExpiringValue value, long currentTime, long currentDuration) {
                         return currentDuration;
                     }
                 })

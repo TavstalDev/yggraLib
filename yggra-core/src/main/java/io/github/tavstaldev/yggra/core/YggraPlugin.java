@@ -24,14 +24,14 @@ import java.net.http.HttpClient;
 import java.time.Duration;
 import java.util.Objects;
 
-public class YggraPlugin extends JavaPlugin {
+public class YggraPlugin<TConfig extends YggraConfiguration> extends JavaPlugin {
 
     protected final YggraLogger _logger;
     public YggraLogger logger() {
         return _logger;
     }
-    protected YggraConfiguration _config;
-    public YggraConfiguration config() {
+    protected TConfig _config;
+    public TConfig config() {
         return _config;
     }
     protected TranslationService _translator;
@@ -74,7 +74,7 @@ public class YggraPlugin extends JavaPlugin {
     public @Nullable IDatabase database() {
         return _database;
     }
-    private @Nullable GuiManager _gui;
+    protected @Nullable GuiManager _gui;
     public @Nullable GuiManager gui() {
         return _gui;
     }

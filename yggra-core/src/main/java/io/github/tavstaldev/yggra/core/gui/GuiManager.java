@@ -17,7 +17,7 @@ import java.util.UUID;
  * Manages GUI menu registration, caching, opening, closing, and refresh for players.
  */
 public class GuiManager {
-    private final YggraPlugin plugin;
+    private final YggraPlugin<?> plugin;
     private final YggraLogger logger;
     private final ICache cache;
     @SuppressWarnings("FieldCanBeLocal")
@@ -36,7 +36,7 @@ public class GuiManager {
      *
      * @param plugin The plugin instance.
      */
-    public GuiManager(YggraPlugin plugin) {
+    public GuiManager(YggraPlugin<?> plugin) {
         this.plugin = plugin;
         this.cache = plugin.cache();
         this.logger = plugin.logger().withModule(this.getClass());

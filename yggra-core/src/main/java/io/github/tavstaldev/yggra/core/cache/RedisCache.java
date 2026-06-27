@@ -1,7 +1,7 @@
 package io.github.tavstaldev.yggra.core.cache;
 
 import com.google.gson.Gson;
-import org.jspecify.annotations.Nullable;
+import org.jetbrains.annotations.Nullable;
 import redis.clients.jedis.DefaultJedisClientConfig;
 import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.RedisClient;

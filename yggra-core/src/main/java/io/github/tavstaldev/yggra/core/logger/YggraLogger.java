@@ -20,7 +20,7 @@ public class YggraLogger {
     public static final String ANSI_PURPLE = "\u001B[35m";
     public static final String ANSI_CYAN = "\u001B[36m";
     public static final String ANSI_WHITE = "\u001B[37m";
-    private final YggraPlugin _plugin;
+    private final YggraPlugin<?> _plugin;
     private final Logger _logger;
     private final String _module;
     private boolean _debugEnabled;
@@ -30,7 +30,7 @@ public class YggraLogger {
      *
      * @param plugin The plugin instance used to read configuration.
      */
-    public YggraLogger(YggraPlugin plugin) {
+    public YggraLogger(YggraPlugin<?> plugin) {
         _plugin = plugin;
         _module = null;
         _logger = Logger.getLogger(plugin.getName());
@@ -42,7 +42,7 @@ public class YggraLogger {
      * @param plugin The plugin instance used to read configuration.
      * @param module The module name to include in log messages.
      */
-    public YggraLogger(YggraPlugin plugin, String module) {
+    public YggraLogger(YggraPlugin<?> plugin, String module) {
         _plugin = plugin;
         _module = module;
         _logger = Logger.getLogger(plugin.getName());

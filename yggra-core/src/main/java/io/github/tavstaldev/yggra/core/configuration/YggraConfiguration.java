@@ -15,7 +15,7 @@ import java.util.List;
  * Handles file creation (from a resource or blank), loading, saving, and default resolution.
  */
 public abstract class YggraConfiguration extends YamlConfiguration {
-    private final YggraPlugin plugin;
+    private final YggraPlugin<?> plugin;
     private final File _file;
 
     /**
@@ -26,7 +26,7 @@ public abstract class YggraConfiguration extends YamlConfiguration {
      * @param relativePath The file path relative to the plugin data folder.
      * @param resourcePath An optional embedded resource path to copy from, or null for a blank file.
      */
-    public YggraConfiguration(YggraPlugin plugin, String relativePath, @Nullable String resourcePath) {
+    public YggraConfiguration(YggraPlugin<?> plugin, String relativePath, @Nullable String resourcePath) {
         this.plugin = plugin;
         Path filePath = Paths.get(plugin.getDataFolder().getPath(), relativePath);
         _file = filePath.toFile();
@@ -66,7 +66,7 @@ public abstract class YggraConfiguration extends YamlConfiguration {
      * @param plugin       The plugin instance.
      * @param relativePath The file path relative to the plugin data folder.
      */
-    public YggraConfiguration(YggraPlugin plugin, String relativePath) {
+    public YggraConfiguration(YggraPlugin<?> plugin, String relativePath) {
         this(plugin, relativePath, null);
     }
 

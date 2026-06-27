@@ -16,7 +16,7 @@ import java.util.*;
  * dynamic slot parsing, and configuration persistence.
  */
 public abstract class GuiBase extends YggraConfiguration {
-    protected final YggraPlugin plugin;
+    protected final YggraPlugin<?> plugin;
     protected final YggraLogger logger;
     protected final TranslationService translator;
     public final String id;
@@ -38,7 +38,7 @@ public abstract class GuiBase extends YggraConfiguration {
      * @param defaultDynamicSlots Default dynamic slot definitions.
      * @param defaultButtons      Default button definitions.
      */
-    public GuiBase(String id, YggraPlugin plugin, String fileName, String title, boolean isTitleTranslated, int size, HashMap<String, List<String>> defaultDynamicSlots,
+    public GuiBase(String id, YggraPlugin<?> plugin, String fileName, String title, boolean isTitleTranslated, int size, HashMap<String, List<String>> defaultDynamicSlots,
                    HashSet<GuiButton> defaultButtons) {
         super(plugin, "menus/" + fileName, null);
         this.id = id;

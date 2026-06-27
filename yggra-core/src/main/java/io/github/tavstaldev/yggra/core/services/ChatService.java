@@ -18,16 +18,16 @@ import java.util.Map;
  * to players and command senders.
  */
 public class ChatService {
-    private final YggraPlugin plugin;
+    private final YggraPlugin<?> plugin;
     private final YggraLogger logger;
     private final TranslationService translator;
 
     /**
      * Constructs a new ChatService.
      *
-     * @param plugin The YggraPlugin instance, used to access the logger and translator.
+     * @param plugin The YggraPlugin<?> instance, used to access the logger and translator.
      */
-    public ChatService(YggraPlugin plugin) {
+    public ChatService(YggraPlugin<?> plugin) {
         this.plugin = plugin;
         logger = plugin.logger().withModule(ChatService.class);
         translator = plugin.translator();
