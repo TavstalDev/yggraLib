@@ -269,7 +269,7 @@ public class PostgreSqlRepository<ID, T> implements IRepository<ID, T> {
 
         var result = this.query(dynamicSql, args);
         if (result != null && !result.isEmpty() && !finalCacheKey.isEmpty()) {
-            cache.put(cacheKey, result.toArray((T[])Array.newInstance(entityClass, result.size())), cacheDuration);
+            cache.put(finalCacheKey, result.toArray((T[])Array.newInstance(entityClass, result.size())), cacheDuration);
         }
 
         return result;
