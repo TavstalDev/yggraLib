@@ -4,6 +4,7 @@ import com.zaxxer.hikari.HikariDataSource;
 import io.github.tavstaldev.yggra.core.YggraPlugin;
 import io.github.tavstaldev.yggra.core.cache.ICache;
 import io.github.tavstaldev.yggra.core.database.DatabaseHelper;
+import io.github.tavstaldev.yggra.core.database.QueryCondition;
 import io.github.tavstaldev.yggra.core.database.annotations.Column;
 import io.github.tavstaldev.yggra.core.database.annotations.Table;
 import io.github.tavstaldev.yggra.core.database.enums.EColumnKind;
@@ -13,7 +14,10 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -235,6 +239,38 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
 
     @Override
     @SuppressWarnings("unchecked")
+    public @Nullable List<T> findByCriteria(@Nullable String cacheKey, QueryCondition... conditions) {
+        if (conditions == null || conditions.length == 0) {
+            return new ArrayList<>();
+        }
+
+        String finalCacheKey = "";
+        if (cacheKey != null) {
+            finalCacheKey = "db:" + tableName + ":" + cacheKey;
+            Class<T[]> arrayClass = (Class<T[]>) Array.newInstance(entityClass, 0).getClass();
+            T[] cachedArray = cache.get(finalCacheKey, arrayClass);
+            if (cachedArray != null) {
+                return Arrays.asList(cachedArray);
+            }
+        }
+
+        String whereClause = Arrays.stream(conditions)
+                .map(cond -> cond.columnName() + " = ?")
+                .collect(Collectors.joining(" AND "));
+
+        String dynamicSql = "SELECT * FROM" + tableName +  "WHERE " + whereClause + ";";
+        Object[] args = Arrays.stream(conditions).map(QueryCondition::value).toArray();
+
+        var result = this.query(dynamicSql, args);
+        if (result != null && !result.isEmpty() && !finalCacheKey.isEmpty()) {
+            cache.put(cacheKey, result.toArray((T[])Array.newInstance(entityClass, result.size())), cacheDuration);
+        }
+
+        return result;
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
     public @Nullable List<T> findAll() {
         String cacheKey = "db:" + tableName + ":all";
         Class<T[]> arrayClass = (Class<T[]>) Array.newInstance(entityClass, 0).getClass();
@@ -322,6 +358,62 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
     }
 
     @Override
+    public boolean deleteByCriteria(@Nullable String cacheKey, QueryCondition... conditions) {
+
+        if (conditions == null || conditions.length == 0) {
+            return false;
+        }
+
+        var result = findByCriteria(cacheKey, conditions);
+
+        String whereClause = Arrays.stream(conditions)
+                .map(cond -> cond.columnName() + " = ?")
+                .collect(Collectors.joining(" AND "));
+
+        String dynamicSql = "DELETE FROM" + tableName + "WHERE" + whereClause + ";";
+        Object[] args = Arrays.stream(conditions).map(QueryCondition::value).toArray();
+
+        try (Connection connection = dataSource.getConnection()) {
+            if (connection == null) {
+                logger.error("Failed to create database connection for existsById.");
+                return false;
+            }
+
+            try (PreparedStatement statement = connection.prepareStatement(dynamicSql)) {
+
+                for (int i = 0; i < args.length; i++) {
+                    statement.setObject(i + 1, args[i]);
+                }
+
+                if (statement.executeUpdate() > 0)
+                {
+                    if (result != null) {
+                        for (var entity : result) {
+                            try {
+                                Object id = idField.get(entity);
+                                if (id != null) {
+                                    cache.evict("db:" + tableName + ":" + id.toString());
+                                }
+                            } catch (Exception ex) {
+                                logger.error("Failed to evict targeted entity from cache during criteria delete", ex);
+                            }
+                        }
+                    }
+                    if (cacheKey != null)
+                        cache.evict("db:" + tableName + ":" + cacheKey);
+                    cache.evict("db:" + tableName + ":all");
+                    return true;
+                }
+                return false;
+            }
+        }
+        catch (Exception ex) {
+            logger.error("Failed to check if entity exists in MySQL/MariaDB database", ex);
+            return false;
+        }
+    }
+
+    @Override
     public boolean existsById(ID id) {
         String cacheKey = "db:" + tableName + ":" + id;
         T cachedEntity = cache.get(cacheKey, entityClass);
@@ -385,19 +477,14 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
             }
 
             try (PreparedStatement statement = connection.prepareStatement(sql)) {
-
-                // 1. Bind variables dynamically
                 for (int i = 0; i < args.length; i++) {
                     statement.setObject(i + 1, args[i]);
                 }
 
                 try (ResultSet resultSet = statement.executeQuery()) {
-                    // 2. Loop through rows
                     while (resultSet.next()) {
-                        // Instantiate a new blank entity instance
                         T entity = entityClass.getDeclaredConstructor().newInstance();
 
-                        // 3. Map resultSet columns back to fields using your pre-cached map
                         for (Map.Entry<String, Field> entry : columnToFieldMap.entrySet()) {
                             String columnName = entry.getKey();
                             Field field = entry.getValue();

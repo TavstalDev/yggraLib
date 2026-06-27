@@ -1,5 +1,6 @@
 package io.github.tavstaldev.yggra.core.database.repositories;
 
+import io.github.tavstaldev.yggra.core.database.QueryCondition;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.List;
@@ -40,6 +41,8 @@ public interface IRepository<ID, T> {
      */
     @Nullable T findById(ID id);
 
+    @Nullable List<T> findByCriteria(@Nullable String cacheKey, QueryCondition... conditions);
+
     /**
      * Retrieves all entities of this type.
      *
@@ -62,6 +65,8 @@ public interface IRepository<ID, T> {
      * @return true if the deletion succeeded.
      */
     boolean deleteById(ID id);
+
+    boolean deleteByCriteria(@Nullable String cacheKey, QueryCondition... conditions);
 
     /**
      * Checks whether an entity with the given identifier exists.
