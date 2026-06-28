@@ -56,6 +56,7 @@ public abstract class GuiBase extends YggraConfiguration {
         this.menuSize = resolveGet("size", size);
         this.dynamicSlots = resolveDynamicSlots(defaultDynamicSlots);
         this.buttons = resolveButtons(defaultButtons);
+        this.save();
     }
 
     @Override
