@@ -4,5 +4,5 @@ public interface ITask {
 
     void cancel();
 
-    boolean isActive();
+    boolean isCancelled();
 }

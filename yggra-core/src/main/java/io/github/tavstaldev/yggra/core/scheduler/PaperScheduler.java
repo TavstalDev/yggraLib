@@ -1,6 +1,8 @@
 package io.github.tavstaldev.yggra.core.scheduler;
 
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.entity.Entity;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitTask;
 
@@ -17,25 +19,79 @@ public class PaperScheduler implements IScheduler {
 
     @Override
     public ITask run(Runnable runnable) {
-        BukkitTask task = Bukkit.getScheduler().runTask(plugin, runnable);
-        return wrap(task);
-    }
+        boolean isYggraTask = runnable instanceof YggraTask;
+        YggraTask yggraTask = isYggraTask ? (YggraTask)runnable : null;
 
-    @Override
-    public ITask runAsync(Runnable runnable) {
-        BukkitTask task = Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
+        BukkitTask task = Bukkit.getScheduler().runTask(plugin, runnable);
+        if (isYggraTask) {
+            yggraTask.setPaperTask(task);
+            return yggraTask;
+        }
         return wrap(task);
     }
 
     @Override
     public ITask runLater(Runnable runnable, long delay) {
+        boolean isYggraTask = runnable instanceof YggraTask;
+        YggraTask yggraTask = isYggraTask ? (YggraTask)runnable : null;
+
         BukkitTask task = Bukkit.getScheduler().runTaskLater(plugin, runnable, delay);
+        if (isYggraTask) {
+            yggraTask.setPaperTask(task);
+            return yggraTask;
+        }
         return wrap(task);
     }
 
     @Override
     public ITask runRepeating(Runnable runnable, long delay, long period) {
+        boolean isYggraTask = runnable instanceof YggraTask;
+        YggraTask yggraTask = isYggraTask ? (YggraTask)runnable : null;
+
         BukkitTask task = Bukkit.getScheduler().runTaskTimer(plugin, runnable, delay, period);
+        if (isYggraTask) {
+            yggraTask.setPaperTask(task);
+            return yggraTask;
+        }
+        return wrap(task);
+    }
+
+    @Override
+    public ITask runAsync(Runnable runnable) {
+        boolean isYggraTask = runnable instanceof YggraTask;
+        YggraTask yggraTask = isYggraTask ? (YggraTask)runnable : null;
+
+        BukkitTask task = Bukkit.getScheduler().runTaskAsynchronously(plugin, runnable);
+        if (isYggraTask) {
+            yggraTask.setPaperTask(task);
+            return yggraTask;
+        }
+        return wrap(task);
+    }
+
+    @Override
+    public ITask runLaterAsync(Runnable runnable, long delay) {
+        boolean isYggraTask = runnable instanceof YggraTask;
+        YggraTask yggraTask = isYggraTask ? (YggraTask)runnable : null;
+
+        BukkitTask task = Bukkit.getScheduler().runTaskLaterAsynchronously(plugin, runnable, delay);
+        if (isYggraTask) {
+            yggraTask.setPaperTask(task);
+            return yggraTask;
+        }
+        return wrap(task);
+    }
+
+    @Override
+    public ITask runRepeatingAsync(Runnable runnable, long delay, long period) {
+        boolean isYggraTask = runnable instanceof YggraTask;
+        YggraTask yggraTask = isYggraTask ? (YggraTask)runnable : null;
+
+        BukkitTask task = Bukkit.getScheduler().runTaskTimerAsynchronously(plugin, runnable, delay, period);
+        if (isYggraTask) {
+            yggraTask.setPaperTask(task);
+            return yggraTask;
+        }
         return wrap(task);
     }
 
@@ -54,6 +110,36 @@ public class PaperScheduler implements IScheduler {
         return future;
     }
 
+    @Override
+    public ITask run(Runnable runnable, Location context) {
+        return run(runnable);
+    }
+
+    @Override
+    public ITask runLater(Runnable runnable, long delay, Location context) {
+        return runLater(runnable, delay);
+    }
+
+    @Override
+    public ITask runRepeating(Runnable runnable, long delay, long period, Location context) {
+        return runRepeating(runnable, delay, period);
+    }
+
+    @Override
+    public ITask run(Runnable runnable, Entity context) {
+        return run(runnable);
+    }
+
+    @Override
+    public ITask runLater(Runnable runnable, long delay, Entity context) {
+        return runLater(runnable, delay);
+    }
+
+    @Override
+    public ITask runRepeating(Runnable runnable, long delay, long period, Entity context) {
+        return runRepeating(runnable, delay, period);
+    }
+
     private ITask wrap(BukkitTask task) {
         return new ITask() {
             @Override
@@ -62,8 +148,8 @@ public class PaperScheduler implements IScheduler {
             }
 
             @Override
-            public boolean isActive() {
-                return !task.isCancelled();
+            public boolean isCancelled() {
+                return task.isCancelled();
             }
         };
     }
