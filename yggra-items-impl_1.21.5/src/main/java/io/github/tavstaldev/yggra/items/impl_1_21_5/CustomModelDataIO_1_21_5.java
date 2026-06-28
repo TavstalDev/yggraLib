@@ -5,6 +5,7 @@ import org.bukkit.Color;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.components.CustomModelDataComponent;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -40,10 +41,26 @@ public class CustomModelDataIO_1_21_5 implements ICustomModelDataIO {
         {
             var customModelData = itemData.get("customModelDataComponent");
             if (customModelData instanceof Map<?, ?> customModelDataMap) {
-                List<Color> colors = (List<Color>) customModelDataMap.get("colors");
-                List<Boolean> flags = (List<Boolean>) customModelDataMap.get("flags");
-                List<Float> floats = (List<Float>) customModelDataMap.get("floats");
-                List<String> strings = (List<String>) customModelDataMap.get("strings");
+                List<Color> colors = new ArrayList<>();
+                if (customModelDataMap.containsKey("colors")) {
+                    //noinspection unchecked
+                    colors = (List<Color>) customModelDataMap.get("colors");
+                }
+                List<Boolean> flags = new ArrayList<>();
+                if (customModelDataMap.containsKey("flags")) {
+                    //noinspection unchecked
+                    flags = (List<Boolean>) customModelDataMap.get("flags");
+                }
+                List<Float> floats = new ArrayList<>();
+                if (customModelDataMap.containsKey("floats")) {
+                    //noinspection unchecked
+                    floats = (List<Float>) customModelDataMap.get("floats");
+                }
+                List<String> strings = new ArrayList<>();
+                if (customModelDataMap.containsKey("strings")) {
+                    //noinspection unchecked
+                    strings = (List<String>) customModelDataMap.get("strings");
+                }
 
                 CustomModelDataComponent component = meta.getCustomModelDataComponent();
                 component.setColors(colors);
