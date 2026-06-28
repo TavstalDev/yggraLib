@@ -25,8 +25,10 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
     private final YggraLogger logger;
     private final HikariDataSource dataSource;
     private final long cacheDuration;
+    private final boolean isMariaDb;
     private final String tableName;
     private final Field idField;
+    private final String idColumn;
     private final Class<T> entityClass;
     private final Map<String, Field> columnToFieldMap = new LinkedHashMap<>();
 
@@ -39,10 +41,11 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
     private final String existsByIdSqlStatement;
 
     @SuppressWarnings("unchecked")
-    public MySqlRepository(YggraPlugin<?> plugin, Class<T> entityClass, HikariDataSource dataSource, long cacheDuration, @Nullable String tablePrefix) {
+    public MySqlRepository(YggraPlugin<?> plugin, Class<T> entityClass, HikariDataSource dataSource, boolean isMariaDb, long cacheDuration, @Nullable String tablePrefix) {
         this.cache = plugin.cache();
         this.logger = plugin.logger().withModule(SqLiteRepository.class);
         this.dataSource = dataSource;
+        this.isMariaDb = isMariaDb;
         this.cacheDuration = cacheDuration;
         this.entityClass = entityClass;
 
@@ -88,7 +91,7 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
         }
 
         this.idField = tempIdField;
-        String idColumn = tempIdColumn;
+        this.idColumn = tempIdColumn;
 
         var keySet = columnToFieldMap.keySet();
         String columns = String.join(", ", keySet);
@@ -361,13 +364,67 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
             return false;
         }
 
-        var result = findByCriteria(cacheKey, conditions);
-
         String whereClause = Arrays.stream(conditions)
                 .map(cond -> cond.columnName() + " " + cond.operator().getSqlOperator() + " ?")
                 .collect(Collectors.joining(" AND "));
 
-        String dynamicSql = "DELETE FROM " + tableName + " WHERE " + whereClause + ";";
+        if (isMariaDb) {
+            return deleteByCriteriaMariaDb(cacheKey, whereClause, conditions);
+        } else {
+            return deleteByCriteriaMySql(cacheKey, whereClause, conditions);
+        }
+    }
+
+    private boolean deleteByCriteriaMySql(@Nullable String cacheKey, String whereClause, QueryCondition... conditions) {
+        String selectSql = "SELECT " + idColumn +
+                " FROM " + tableName + " WHERE " + whereClause + " FOR UPDATE;";
+        String deleteSql = "DELETE FROM " + tableName + " WHERE " + whereClause + ";";
+        Object[] args = Arrays.stream(conditions).map(QueryCondition::value).toArray();
+
+        try (Connection conn = dataSource.getConnection()) {
+            conn.setAutoCommit(false);
+            try {
+                List<Object> ids = new ArrayList<>();
+
+                try (PreparedStatement select = conn.prepareStatement(selectSql)) {
+                    for (int i = 0; i < args.length; i++)
+                        select.setObject(i + 1, args[i]);
+                    try (ResultSet rs = select.executeQuery()) {
+                        while (rs.next())
+                            ids.add(rs.getObject(1));
+                    }
+                }
+
+                try (PreparedStatement delete = conn.prepareStatement(deleteSql)) {
+                    for (int i = 0; i < args.length; i++)
+                        delete.setObject(i + 1, args[i]);
+                    delete.executeUpdate();
+                }
+
+                conn.commit();
+
+                // Evict collected IDs
+                ids.forEach(id -> cache.evict("db:" + tableName + ":" + id));
+                if (cacheKey != null) cache.evict("db:" + tableName + ":" + cacheKey);
+                cache.evict("db:" + tableName + ":all");
+                return true;
+
+            } catch (Exception ex) {
+                conn.rollback();
+                logger.error("Failed to delete entities by criteria in MySQL database", ex);
+                return false;
+            } finally {
+                conn.setAutoCommit(true);
+            }
+        }
+        catch (Exception ex) {
+            logger.error("Failed to check if entity exists in MySQL/MariaDB database", ex);
+            return false;
+        }
+    }
+
+    private boolean deleteByCriteriaMariaDb(@Nullable String cacheKey, String whereClause, QueryCondition... conditions) {
+        String dynamicSql = "DELETE FROM " + tableName + " WHERE " + whereClause + " RETURNING " + idColumn + ";";
         Object[] args = Arrays.stream(conditions).map(QueryCondition::value).toArray();
 
         try (Connection connection = dataSource.getConnection()) {
@@ -382,26 +439,17 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
                     statement.setObject(i + 1, args[i]);
                 }
 
-                if (statement.executeUpdate() > 0)
-                {
-                    if (result != null) {
-                        for (var entity : result) {
-                            try {
-                                Object id = idField.get(entity);
-                                if (id != null) {
-                                    cache.evict("db:" + tableName + ":" + id.toString());
-                                }
-                            } catch (Exception ex) {
-                                logger.error("Failed to evict targeted entity from cache during criteria delete", ex);
-                            }
-                        }
+                try (ResultSet rs = statement.executeQuery()) {
+                    while (rs.next()) {
+                        String id = rs.getString(1);
+                        cache.evict("db:" + tableName + ":" + id);
                     }
-                    if (cacheKey != null)
-                        cache.evict("db:" + tableName + ":" + cacheKey);
-                    cache.evict("db:" + tableName + ":all");
-                    return true;
                 }
-                return false;
+
+                if (cacheKey != null)
+                    cache.evict("db:" + tableName + ":" + cacheKey);
+                cache.evict("db:" + tableName + ":all");
+                return true;
             }
         }
         catch (Exception ex) {

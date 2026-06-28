@@ -1,5 +1,6 @@
 package io.github.tavstaldev.yggra.core.database.repositories;
 
+import com.zaxxer.hikari.HikariDataSource;
 import io.github.tavstaldev.yggra.core.YggraPlugin;
 import io.github.tavstaldev.yggra.core.cache.ICache;
 import io.github.tavstaldev.yggra.core.database.DatabaseHelper;
@@ -20,9 +21,11 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
     private final String pluginName;
     private final ICache cache;
     private final YggraLogger logger;
+    private final HikariDataSource dataSource;
     private final String tableName;
     private final long cacheDuration;
     private final Field idField;
+    private final String idColumn;
     private final Class<T> entityClass;
     private final Map<String, Field> columnToFieldMap = new LinkedHashMap<>();
 
@@ -35,10 +38,11 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
     private final String existsByIdSqlStatement;
 
     @SuppressWarnings("unchecked")
-    public SqLiteRepository(YggraPlugin<?> plugin, Class<T> entityClass, long cacheDuration, @Nullable String tablePrefix) {
+    public SqLiteRepository(YggraPlugin<?> plugin, Class<T> entityClass, HikariDataSource dataSource, long cacheDuration, @Nullable String tablePrefix) {
         this.pluginName = plugin.getName();
         this.cache = plugin.cache();
         this.logger = plugin.logger().withModule(SqLiteRepository.class);
+        this.dataSource = dataSource;
         this.cacheDuration = cacheDuration;
         this.entityClass = entityClass;
 
@@ -84,7 +88,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
         }
 
         this.idField = tempIdField;
-        String idColumn = tempIdColumn;
+        this.idColumn = tempIdColumn;
 
         var keySet = columnToFieldMap.keySet();
         String columns = String.join(", ", keySet);
@@ -109,7 +113,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
 
     @Override
     public void checkSchema() {
-        try (Connection connection = createConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             if (connection == null) {
                 logger.error("Failed to create database connection for checkSchema.");
                 return;
@@ -160,7 +164,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
 
     @Override
     public boolean add(T entity) {
-        try (Connection connection = createConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
 
             if (connection == null) {
                 logger.error("Failed to create database connection for add.");
@@ -200,7 +204,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
             return cachedEntity;
         }
 
-       try (Connection connection = createConnection()) {
+       try (Connection connection = dataSource.getConnection()) {
            if (connection == null) {
                logger.error("Failed to create database connection for findById.");
                return null;
@@ -272,7 +276,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
             return Arrays.asList(cachedArray);
         }
 
-        try (Connection connection = createConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             if (connection == null) {
                 logger.error("Failed to create database connection for findAll.");
                 return null;
@@ -303,7 +307,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
 
     @Override
     public boolean delete(T entity) {
-        try (Connection connection = createConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             if (connection == null) {
                 logger.error("Failed to create database connection for delete.");
                 return false;
@@ -328,7 +332,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
 
     @Override
     public boolean deleteById(ID id) {
-        try (Connection connection = createConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             if (connection == null) {
                 logger.error("Failed to create database connection for deleteById.");
                 return false;
@@ -363,10 +367,10 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
                 .map(cond -> cond.columnName() + " " + cond.operator().getSqlOperator() + " ?")
                 .collect(Collectors.joining(" AND "));
 
-        String dynamicSql = "DELETE FROM " + tableName + " WHERE " + whereClause + ";";
+        String dynamicSql = "DELETE FROM " + tableName + " WHERE " + whereClause + " RETURNING " + idColumn + ";";
         Object[] args = Arrays.stream(conditions).map(QueryCondition::value).toArray();
 
-        try (Connection connection = createConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             if (connection == null) {
                 logger.error("Failed to create database connection for existsById.");
                 return false;
@@ -378,26 +382,17 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
                     statement.setObject(i + 1, args[i]);
                 }
 
-                if (statement.executeUpdate() > 0)
-                {
-                    if (result != null) {
-                        for (var entity : result) {
-                            try {
-                                Object id = idField.get(entity);
-                                if (id != null) {
-                                    cache.evict("db:" + tableName + ":" + id.toString());
-                                }
-                            } catch (Exception ex) {
-                                logger.error("Failed to evict targeted entity from cache during criteria delete", ex);
-                            }
-                        }
+                try (ResultSet rs = statement.executeQuery()) {
+                    while (rs.next()) {
+                        String id = rs.getString(1);
+                        cache.evict("db:" + tableName + ":" + id);
                     }
-                    if (cacheKey != null)
-                        cache.evict("db:" + tableName + ":" + cacheKey);
-                    cache.evict("db:" + tableName + ":all");
-                    return true;
                 }
-                return false;
+
+                if (cacheKey != null)
+                    cache.evict("db:" + tableName + ":" + cacheKey);
+                cache.evict("db:" + tableName + ":all");
+                return true;
             }
         }
         catch (Exception ex) {
@@ -414,7 +409,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
             return true;
         }
 
-        try (Connection connection = createConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             if (connection == null) {
                 logger.error("Failed to create database connection for existsById.");
                 return false;
@@ -440,7 +435,7 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
 
     @Override
     public long count() {
-        try (Connection connection = createConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             if (connection == null) {
                 logger.error("Failed to create database connection for count.");
                 return -1;
@@ -460,20 +455,10 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
         }
     }
     
-    private Connection createConnection() {
-        try {
-            Class.forName("org.sqlite.JDBC");
-            return DriverManager.getConnection(String.format("jdbc:sqlite:plugins/%s/%s.db", pluginName, pluginName));
-        } catch (Exception ex) {
-            logger.error(String.format("Unknown error happened while creating db connection...\n%s", ex.getMessage()));
-            return null;
-        }
-    }
-
     public List<T> query(String sql, Object... args) {
         List<T> results = new ArrayList<>();
 
-        try (Connection connection = createConnection()) {
+        try (Connection connection = dataSource.getConnection()) {
             if (connection == null) {
                 logger.error("Failed to create database connection for query.");
                 return results;

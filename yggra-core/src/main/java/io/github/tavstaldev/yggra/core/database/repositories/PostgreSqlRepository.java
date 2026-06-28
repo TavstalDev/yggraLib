@@ -27,6 +27,7 @@ public class PostgreSqlRepository<ID, T> implements IRepository<ID, T> {
     private final String tableName;
     private final long cacheDuration;
     private final Field idField;
+    private final String idColumn;
     private final Class<T> entityClass;
     private final Map<String, Field> columnToFieldMap = new LinkedHashMap<>();
 
@@ -92,7 +93,7 @@ public class PostgreSqlRepository<ID, T> implements IRepository<ID, T> {
         }
 
         this.idField = tempIdField;
-        String idColumn = tempIdColumn;
+        this.idColumn = tempIdColumn;
 
         var keySet = columnToFieldMap.keySet();
         String columns = String.join(", ", keySet);
@@ -374,13 +375,11 @@ public class PostgreSqlRepository<ID, T> implements IRepository<ID, T> {
             return false;
         }
 
-        var result = findByCriteria(cacheKey, conditions);
-
         String whereClause = Arrays.stream(conditions)
                 .map(cond -> cond.columnName() + " " + cond.operator().getSqlOperator() + " ?")
                 .collect(Collectors.joining(" AND "));
 
-        String dynamicSql = "DELETE FROM " + tableName + " WHERE " + whereClause + ";";
+        String dynamicSql = "DELETE FROM " + tableName + " WHERE " + whereClause + " RETURNING " + idColumn + ";";
         Object[] args = Arrays.stream(conditions).map(QueryCondition::value).toArray();
 
         try (Connection connection = dataSource.getConnection()) {
@@ -395,26 +394,17 @@ public class PostgreSqlRepository<ID, T> implements IRepository<ID, T> {
                     statement.setObject(i + 1, args[i]);
                 }
 
-                if (statement.executeUpdate() > 0)
-                {
-                    if (result != null) {
-                        for (var entity : result) {
-                            try {
-                                Object id = idField.get(entity);
-                                if (id != null) {
-                                    cache.evict("db:" + tableName + ":" + id.toString());
-                                }
-                            } catch (Exception ex) {
-                                logger.error("Failed to evict targeted entity from cache during criteria delete", ex);
-                            }
-                        }
+                try (ResultSet rs = statement.executeQuery()) {
+                    while (rs.next()) {
+                        String id = rs.getString(1);
+                        cache.evict("db:" + tableName + ":" + id);
                     }
-                    if (cacheKey != null)
-                        cache.evict("db:" + tableName + ":" + cacheKey);
-                    cache.evict("db:" + tableName + ":all");
-                    return true;
                 }
-                return false;
+
+                if (cacheKey != null)
+                    cache.evict("db:" + tableName + ":" + cacheKey);
+                cache.evict("db:" + tableName + ":all");
+                return true;
             }
         }
         catch (Exception ex) {

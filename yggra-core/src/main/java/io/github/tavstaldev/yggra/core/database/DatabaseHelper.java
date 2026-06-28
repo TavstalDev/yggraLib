@@ -1,6 +1,9 @@
 package io.github.tavstaldev.yggra.core.database;
 
+import com.zaxxer.hikari.HikariDataSource;
+
 import java.lang.reflect.Field;
+import java.sql.Connection;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -93,5 +96,17 @@ public class DatabaseHelper {
                 clazz == UUID.class ||
                 Number.class.isAssignableFrom(clazz) ||
                 clazz == Boolean.class);
+    }
+
+    public static boolean isMariaDB(HikariDataSource dataSource) {
+        try (Connection connection = dataSource.getConnection()) {
+            if (connection == null) {
+                return false;
+            }
+            String databaseProductName = connection.getMetaData().getDatabaseProductName();
+            return databaseProductName != null && databaseProductName.toLowerCase().contains("mariadb");
+        } catch (Exception ex) {
+            return false;
+        }
     }
 }
