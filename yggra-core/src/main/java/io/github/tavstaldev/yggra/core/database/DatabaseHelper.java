@@ -43,7 +43,7 @@ public class DatabaseHelper {
      */
     public static boolean shouldAutoIncrement(Field field) {
         return switch (field.getType().getName()) {
-            case "int", "java.lang.Integer", "long", "java.lang.Long" -> true;
+            case "int", "java.lang.Integer" -> true;
             default -> false;
         };
     }

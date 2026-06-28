@@ -12,7 +12,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.lang.reflect.ParameterizedType;
 import java.sql.*;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,14 +35,12 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
     private final String existsByIdSqlStatement;
 
     @SuppressWarnings("unchecked")
-    public SqLiteRepository(YggraPlugin<?> plugin, long cacheDuration, @Nullable String tablePrefix) {
+    public SqLiteRepository(YggraPlugin<?> plugin, Class<T> entityClass, long cacheDuration, @Nullable String tablePrefix) {
         this.pluginName = plugin.getName();
         this.cache = plugin.cache();
         this.logger = plugin.logger().withModule(SqLiteRepository.class);
         this.cacheDuration = cacheDuration;
-
-        ParameterizedType superClass = (ParameterizedType) getClass().getGenericSuperclass();
-        this.entityClass = (Class<T>) superClass.getActualTypeArguments()[0];
+        this.entityClass = entityClass;
 
         if (!entityClass.isAnnotationPresent(Table.class)) {
             throw new IllegalArgumentException("Class missing @Table annotation: " + entityClass.getName());
@@ -251,10 +248,10 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
         }
 
         String whereClause = Arrays.stream(conditions)
-                .map(cond -> cond.columnName() + " = ?")
+                .map(cond -> cond.columnName() + " " + cond.operator().getSqlOperator() + " ?")
                 .collect(Collectors.joining(" AND "));
 
-        String dynamicSql = "SELECT * FROM" + tableName +  "WHERE " + whereClause + ";";
+        String dynamicSql = "SELECT * FROM " + tableName +  " WHERE " + whereClause + ";";
         Object[] args = Arrays.stream(conditions).map(QueryCondition::value).toArray();
 
         var result = this.query(dynamicSql, args);
@@ -363,10 +360,10 @@ public class SqLiteRepository<ID, T> implements IRepository<ID, T> {
         var result = findByCriteria(cacheKey, conditions);
 
         String whereClause = Arrays.stream(conditions)
-                .map(cond -> cond.columnName() + " = ?")
+                .map(cond -> cond.columnName() + " " + cond.operator().getSqlOperator() + " ?")
                 .collect(Collectors.joining(" AND "));
 
-        String dynamicSql = "DELETE FROM" + tableName + "WHERE" + whereClause + ";";
+        String dynamicSql = "DELETE FROM " + tableName + " WHERE " + whereClause + ";";
         Object[] args = Arrays.stream(conditions).map(QueryCondition::value).toArray();
 
         try (Connection connection = createConnection()) {
