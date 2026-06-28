@@ -211,11 +211,6 @@ public abstract class ItemSerializerBase {
                         persistentDataProvider.setPersistentData(item, dataMap);
                 }
 
-                // customModelData
-                if (itemMap.containsKey("customModelData")) {
-                    customModelDataIO.deserialize(meta, itemMap);
-                }
-
                 for (var handler : metaHandlers.entrySet()) {
                     try {
                         handler.getValue().deserialize(this, meta, itemMap);
@@ -225,6 +220,9 @@ public abstract class ItemSerializerBase {
                                 handler.getKey().name(), metaEx.getMessage()));
                     }
                 }
+
+                // customModelData
+                customModelDataIO.deserialize(meta, itemMap);
 
                 item.setItemMeta(meta);  // Set the meta data to the item
                 itemResult = item;
