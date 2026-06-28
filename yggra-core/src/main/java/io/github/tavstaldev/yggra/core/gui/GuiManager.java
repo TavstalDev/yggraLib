@@ -1,7 +1,6 @@
 package io.github.tavstaldev.yggra.core.gui;
 
-import com.samjakob.spigui.SpiGUI;
-import com.samjakob.spigui.menu.SGMenu;
+import dev.triumphteam.gui.guis.BaseGui;
 import io.github.tavstaldev.yggra.core.YggraPlugin;
 import io.github.tavstaldev.yggra.core.cache.ICache;
 import io.github.tavstaldev.yggra.core.logger.YggraLogger;
@@ -9,7 +8,6 @@ import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Map;
 import java.util.UUID;
 
@@ -22,12 +20,6 @@ public class GuiManager {
     private final ICache cache;
     @SuppressWarnings("FieldCanBeLocal")
     private final long CACHE_EXPIRATION_SECONDS = 600; // 10 minutes
-    private final SpiGUI _spiGUI;
-
-    /** @return The underlying SpiGUI instance. */
-    public SpiGUI getSpiGUI() {
-        return _spiGUI;
-    }
     private final HashMap<String, GuiBase> _registeredMenus = new HashMap<>();
     private final HashMap<UUID, String> _playersWithOpenMenus = new HashMap<>();
 
@@ -40,7 +32,6 @@ public class GuiManager {
         this.plugin = plugin;
         this.cache = plugin.cache();
         this.logger = plugin.logger().withModule(this.getClass());
-        _spiGUI = new SpiGUI(plugin);
     }
 
     /**
@@ -78,19 +69,20 @@ public class GuiManager {
      *
      * @param player The player to open the menu for.
      * @param menuId The menu ID.
+     * @param args Args passed to the opened menu
      */
-    public void open(Player player, String menuId) {
+    public void open(Player player, String menuId, @Nullable Object... args) {
         String cacheKey = getPlayerCacheKey(player);
         GuiBase menuBase = _registeredMenus.get(menuId);
         if (menuBase == null)
             return;
 
         @SuppressWarnings("unchecked")
-        Map<String, SGMenu> playerMenus = cache.get(cacheKey, Map.class);
+        Map<String, BaseGui> playerMenus = cache.get(cacheKey, Map.class);
         if (playerMenus != null && playerMenus.containsKey(menuId)) {
-            SGMenu existingMenu = playerMenus.get(menuId);
-            player.openInventory(existingMenu.getInventory());
-            menuBase.onOpen(player);
+            BaseGui existingMenu = playerMenus.get(menuId);
+            existingMenu.open(player);
+            menuBase.onOpen(player, args);
             _playersWithOpenMenus.put(player.getUniqueId(), menuId);
             return;
         }
@@ -98,15 +90,15 @@ public class GuiManager {
             playerMenus = new HashMap<>();
         }
 
-        SGMenu menu = menuBase.create(player);
+        BaseGui menu = menuBase.create(player);
         if (menu == null) {
             logger.error("Failed to create menu with ID: " + menuId + " for player: " + player.getName());
             return;
         }
         playerMenus.put(menuId, menu);
         cache.put(cacheKey, playerMenus, CACHE_EXPIRATION_SECONDS);
-        player.openInventory(menu.getInventory());
-        menuBase.onOpen(player);
+        menu.open(player);
+        menuBase.onOpen(player, args);
         _playersWithOpenMenus.put(player.getUniqueId(), menuId);
     }
 
@@ -171,11 +163,11 @@ public class GuiManager {
     public void refresh(Player player, String menuId) {
         String cacheKey = getPlayerCacheKey(player);
         @SuppressWarnings("unchecked")
-        Map<String, SGMenu> playerMenus = cache.get(cacheKey, Map.class);
+        Map<String, BaseGui> playerMenus = cache.get(cacheKey, Map.class);
         if (playerMenus == null || !playerMenus.containsKey(menuId))
             return;
 
-        SGMenu menu = playerMenus.get(menuId);
+        BaseGui menu = playerMenus.get(menuId);
         GuiBase menuBase = _registeredMenus.get(menuId);
         if (menuBase == null)
             return;
@@ -188,12 +180,12 @@ public class GuiManager {
      *
      * @param player The player whose menu to retrieve.
      * @param menuId The menu ID.
-     * @return The cached SGMenu, or null.
+     * @return The cached BaseGui, or null.
      */
-    public @Nullable SGMenu getMenu(Player player, String menuId) {
+    public @Nullable BaseGui getMenu(Player player, String menuId) {
         String cacheKey = getPlayerCacheKey(player);
         @SuppressWarnings("unchecked")
-        Map<String, SGMenu> playerMenus = cache.get(cacheKey, Map.class);
+        Map<String, BaseGui> playerMenus = cache.get(cacheKey, Map.class);
         if (playerMenus != null && playerMenus.containsKey(menuId)) {
             return playerMenus.get(menuId);
         }

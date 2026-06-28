@@ -71,9 +71,6 @@ public class YggraPlugin<TConfig extends YggraConfiguration> extends JavaPlugin 
         return _cache;
     }
     protected @Nullable IDatabase _database;
-    public @Nullable IDatabase database() {
-        return _database;
-    }
     protected @Nullable GuiManager _gui;
     public @Nullable GuiManager gui() {
         return _gui;
@@ -85,6 +82,7 @@ public class YggraPlugin<TConfig extends YggraConfiguration> extends JavaPlugin 
                 .version(HttpClient.Version.HTTP_2)
                 .connectTimeout(Duration.ofSeconds(120))
                 .build();
+        _translator = new TranslationService(this);
         _chat = new ChatService(this);
         _bossBar = new BossBarService();
         _title = new TitleService(this, _chat);

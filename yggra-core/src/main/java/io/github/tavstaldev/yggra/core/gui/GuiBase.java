@@ -1,10 +1,13 @@
 package io.github.tavstaldev.yggra.core.gui;
 
-import com.samjakob.spigui.menu.SGMenu;
+import dev.triumphteam.gui.guis.BaseGui;
+import dev.triumphteam.gui.guis.Gui;
 import io.github.tavstaldev.yggra.core.YggraPlugin;
 import io.github.tavstaldev.yggra.core.configuration.YggraConfiguration;
 import io.github.tavstaldev.yggra.core.logger.YggraLogger;
 import io.github.tavstaldev.yggra.core.services.TranslationService;
+import io.github.tavstaldev.yggra.items.api.utils.AdventureUtils;
+import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -61,21 +64,29 @@ public abstract class GuiBase extends YggraConfiguration {
     }
 
     /**
-     * Creates and returns the SGMenu for the given player, applying localized title and button layouts.
+     * Creates and returns the BaseGui for the given player, applying localized title and button layouts.
      *
      * @param player The player to create the menu for.
-     * @return The constructed SGMenu instance.
+     * @return The constructed BaseGui instance.
      */
-    public SGMenu create(Player player) {
+    public BaseGui create(Player player) {
         GuiManager menuManager = plugin.gui();
         if (menuManager == null)
             throw new RuntimeException("Menu manager was not initialized.");
-        SGMenu menu = menuManager.getSpiGUI().create(isTitleTranslated ? translator.localize(player, menuTitle) : menuTitle, menuSize);
+        String rawTitle = isTitleTranslated ? translator.localize(player, menuTitle) : menuTitle;
+        Component titleComponent = AdventureUtils.translateColors(rawTitle, true);
+
+        BaseGui gui = Gui.gui()
+                .title(titleComponent)
+                .rows(menuSize)
+                .create();
+
+        gui.setDefaultClickAction(event -> event.setCancelled(true));
 
         for (GuiButton button : buttons) {
-            button.apply(player, translator, menu, this);
+            button.apply(player, translator, gui, this);
         }
-        return menu;
+        return gui;
     }
 
     /**
@@ -84,7 +95,7 @@ public abstract class GuiBase extends YggraConfiguration {
      * @param player The player viewing the menu.
      * @param menu   The menu to refresh.
      */
-    public abstract void refresh(Player player, SGMenu menu);
+    public abstract void refresh(Player player, BaseGui menu);
 
     /**
      * Executes a button action for the given player.
@@ -99,8 +110,9 @@ public abstract class GuiBase extends YggraConfiguration {
      * Called when a player opens this menu. Override to implement custom behavior.
      *
      * @param player The player who opened the menu.
+     * @param args Optional contextual arguments
      */
-    public void onOpen(Player player) {
+    public void onOpen(Player player, Object... args) {
         // optional
     }
 

@@ -1,7 +1,7 @@
 package io.github.tavstaldev.yggra.core.gui;
 
-import com.samjakob.spigui.buttons.SGButton;
-import com.samjakob.spigui.menu.SGMenu;
+import dev.triumphteam.gui.guis.BaseGui;
+import dev.triumphteam.gui.guis.GuiItem;
 import io.github.tavstaldev.yggra.core.gui.renderer.GuiItemRenderer;
 import io.github.tavstaldev.yggra.core.services.TranslationService;
 import org.bukkit.Material;
@@ -64,6 +64,8 @@ public class GuiButton {
         this.slots = slots;
     }
 
+    /** @return The action of the button. */
+    public @Nullable String getAction() {return action;}
     /** @return The material of the button. */
     public Material getMaterial() {return material; }
     /** @return The optional base64 head texture. */
@@ -94,38 +96,27 @@ public class GuiButton {
     }
 
     /**
-     * Renders this button into an SGButton for the given player.
-     *
-     * @param player     The player viewing the button.
-     * @param translator The translation service.
-     * @return The constructed SGButton.
-     */
-    public SGButton get(final Player player, final TranslationService translator) {
-        ItemStack itemStack = GuiItemRenderer.render(this, player, translator);
-        return new SGButton(itemStack);
-    }
-
-    /**
      * Applies this button to the given menu at its resolved slots, attaching the click listener.
      *
      * @param player     The player viewing the menu.
      * @param translator The translation service.
-     * @param sgMenu     The menu to place the button in.
+     * @param baseGui    The menu to place the button in.
      * @param gui        The GUI base for action execution.
      */
-    public void apply(@NotNull final Player player, @NotNull final TranslationService translator, @NotNull SGMenu sgMenu, @NotNull GuiBase gui) {
+    public void apply(@NotNull final Player player, @NotNull final TranslationService translator, @NotNull BaseGui baseGui, @NotNull GuiBase gui) {
         List<Integer> slots = getSlots();
         if (slots.isEmpty())
             return;
 
-        SGButton btn = get(player, translator);
-        if (action != null) {
-            btn.withListener(x -> {
-                gui.executeCommand(player, action, x);
-            });
-        }
+        ItemStack itemStack = GuiItemRenderer.render(this, player, translator);
+
+        GuiItem btn = new GuiItem(itemStack, event -> {
+            if (action == null)
+                return;
+            gui.executeCommand(player, action, event);
+        });
         for (Integer slot : slots) {
-            sgMenu.setButton(0, slot, btn);
+            baseGui.setItem(slot, btn);
         }
     }
 

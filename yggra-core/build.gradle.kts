@@ -7,7 +7,7 @@ val adventureApiVersion = project.property("adventureApiVersion") as String
 val hikariVersion = project.property("hikariVersion") as String
 val caffeineVersion = project.property("caffeineVersion") as String
 val redisVersion = project.property("redisVersion") as String
-val spiGuiVersion = project.property("spiGuiVersion") as String
+val triumphGuiVersion = project.property("triumphGuiVersion") as String
 val bstatsVersion = project.property("bstatsVersion") as String
 val fastboardVersion = project.property("fastboardVersion") as String
 
@@ -20,10 +20,10 @@ dependencies {
     compileOnly("com.github.ben-manes.caffeine:caffeine:${caffeineVersion}")
     compileOnly("redis.clients:jedis:${redisVersion}")
 
-    compileOnly("com.samjakob:SpiGUI:${spiGuiVersion}")
-    compileOnly("org.bstats:bstats-bukkit:${bstatsVersion}")
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
 
+    implementation("org.bstats:bstats-bukkit:${bstatsVersion}")
+    implementation("dev.triumphteam:triumph-gui:${triumphGuiVersion}")
     implementation(project(":yggra-items-api"))
     implementation(project(":yggra-items-impl_1.20.4"))
     implementation(project(":yggra-items-impl_1.21"))
@@ -46,6 +46,10 @@ tasks.shadowJar {
     exclude("com/google/**")
     exclude("org/jspecify/**")
     exclude("org/slf4j/**")
+    exclude("net/kyori/**")
+
+    relocate("org.bstats", "${project.group}.shadow.bstats")
+    relocate("dev.triumphteam.gui", "${project.group}.shadow.triumpGui")
 }
 
 // Ensure the Shadow JAR task runs during the build process
