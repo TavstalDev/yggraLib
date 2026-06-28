@@ -9,10 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Base class for plugin commands. Automatically registers as executor and tab completer.
@@ -23,10 +20,19 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
     private final YggraPlugin<?> plugin;
     /** The command name (must be defined in plugin.yml). */
     private final String command;
+    public final String getCommand() {
+        return command;
+    }
     /** Required permission node; null or blank allows all. */
     private final String permission;
+    public final String getPermission() {
+        return permission;
+    }
     /** Registered subcommands. */
     private final List<SubCommand> subCommands;
+    public final List<SubCommand> getSubCommands() {
+        return Collections.unmodifiableList(subCommands);
+    }
 
     /**
      * Creates and registers a command with subcommands.

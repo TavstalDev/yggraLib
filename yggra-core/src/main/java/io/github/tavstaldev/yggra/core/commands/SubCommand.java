@@ -1,25 +1,32 @@
 package io.github.tavstaldev.yggra.core.commands;
 
 import io.github.tavstaldev.yggra.core.YggraPlugin;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
 /**
  * Base class for a subcommand within a parent {@link CommandBase}.
- * Subclasses override {@link #onCommand} and {@link #onTabComplete} to implement behavior.
  */
-public abstract class SubCommand implements CommandExecutor, TabCompleter {
+public class SubCommand {
     /** The subcommand name (used after the base command). */
-    public String command;
+    private final String command;
+    public final String getCommand() {
+        return command;
+    }
     /** Optional permission node; null or blank allows all. */
-    public String permission;
+    private final String permission;
+    public final String getPermission() {
+        return permission;
+    }
     /** Extra arguments passed to the help translation. Keys are placeholder names, values are localized strings. */
-    public Map<String, Object> arguments;
+    private final Map<String, Object> arguments;
+    public final Map<String, Object> getArguments() {
+        return Collections.unmodifiableMap(arguments);
+    }
 
     /**
      * @param command    The subcommand name.
