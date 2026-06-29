@@ -1,5 +1,6 @@
 package io.github.tavstaldev.yggra.items.api.handlers;
 
+import com.destroystokyo.paper.profile.ProfileProperty;
 import io.github.tavstaldev.yggra.items.api.IMetaHandler;
 import io.github.tavstaldev.yggra.items.api.ItemSerializerBase;
 import org.bukkit.Bukkit;
@@ -46,16 +47,25 @@ public class SkullMetaHandler implements IMetaHandler {
             skullMeta.setOwningPlayer(player);
         }
 
+        UUID profileUUID;
         // Restore player profile (for custom skins)
         if (itemData.containsKey("profile")) {
-            UUID profileUUID = (UUID) itemData.get("profile");
-            var profile = Bukkit.createProfile(profileUUID);
-            var textures = profile.getTextures();
-            if (itemData.containsKey("profileUrl")) {
-                textures.setSkin((URL) itemData.get("profileUrl"));
-                profile.setTextures(textures);
-            }
-            skullMeta.setPlayerProfile(profile);
+           profileUUID = (UUID) itemData.get("profile");
         }
+        else {
+            profileUUID = UUID.randomUUID();
+        }
+
+        var profile = Bukkit.createProfile(profileUUID);
+        var textures = profile.getTextures();
+        if (itemData.containsKey("profileUrl")) {
+            textures.setSkin((URL) itemData.get("profileUrl"));
+            profile.setTextures(textures);
+        }
+        else if (itemData.containsKey("headTexture")) {
+            String texture = (String)itemData.get("headTexture");
+            profile.setProperty(new ProfileProperty("textures", texture));
+        }
+        skullMeta.setPlayerProfile(profile);
     }
 }
