@@ -53,8 +53,12 @@ public class CustomModelDataIO_1_21_5 implements ICustomModelDataIO {
                 }
                 List<Float> floats = new ArrayList<>();
                 if (customModelDataMap.containsKey("floats")) {
-                    //noinspection unchecked
-                    floats = (List<Float>) customModelDataMap.get("floats");
+                    List<?> rawList = (List<?>) customModelDataMap.get("floats");
+                    for (Object obj : rawList) {
+                        if (obj instanceof Number number) {
+                            floats.add(number.floatValue());
+                        }
+                    }
                 }
                 List<String> strings = new ArrayList<>();
                 if (customModelDataMap.containsKey("strings")) {
