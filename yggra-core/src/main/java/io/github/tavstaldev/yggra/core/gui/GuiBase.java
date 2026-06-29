@@ -156,15 +156,18 @@ public abstract class GuiBase extends YggraConfiguration {
         if (buttonMap.isEmpty()) {
             List<Map<String, Object>> defaultList = new ArrayList<>();
             for (GuiButton button : defaultButtons) {
-                defaultList.add(button.toMap());
+                defaultList.add(button.toMap(plugin.itemSerializer()));
             }
             this.set("buttons", defaultList);
             return defaultButtons;
         }
         for (Map<?, ?> btnElem : buttonMap) {
-            GuiButton btn = GuiButton.fromMap(btnElem);
+            GuiButton btn = GuiButton.fromMap(btnElem, plugin.itemSerializer(), logger);
             if (btn != null) {
                 buttons.add(btn);
+            }
+            else {
+                logger.warn("Failed to resolve: " + btnElem);
             }
         }
         return buttons;

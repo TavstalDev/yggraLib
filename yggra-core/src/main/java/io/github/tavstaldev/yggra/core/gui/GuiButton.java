@@ -3,17 +3,16 @@ package io.github.tavstaldev.yggra.core.gui;
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.GuiItem;
 import io.github.tavstaldev.yggra.core.gui.renderer.GuiItemRenderer;
+import io.github.tavstaldev.yggra.core.logger.YggraLogger;
 import io.github.tavstaldev.yggra.core.services.TranslationService;
-import org.bukkit.Material;
+import io.github.tavstaldev.yggra.items.api.ItemSerializerBase;
+import io.github.tavstaldev.yggra.items.api.utils.TypeUtils;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 /**
  * Represents a single button in a GUI menu, with support for materials, head textures,
@@ -21,13 +20,11 @@ import java.util.Map;
  */
 public class GuiButton {
     private final @Nullable String action;
-    private final Material material;
-    private @Nullable final String headTexture;
-    private final Integer amount;
     private @Nullable final String title;
     private final boolean translateTitle;
     private @Nullable final List<String> lore;
     private final boolean translateLore;
+    private final ItemStack displayItem;
     private final List<String> slots;
     private List<Integer> slotCache = null;
 
@@ -35,9 +32,6 @@ public class GuiButton {
      * Constructs a new GuiButton.
      *
      * @param action         The action identifier for click handling.
-     * @param material       The material of the button.
-     * @param headTexture    Optional base64 head texture.
-     * @param amount         The item amount.
      * @param title          Optional display title.
      * @param translateTitle Whether the title should be localized.
      * @param lore           Optional lore lines.
@@ -45,33 +39,27 @@ public class GuiButton {
      * @param slots          The slot definitions (e.g. "0-4", "5").
      */
     public GuiButton(@Nullable String action,
-            Material material,
-            @Nullable String headTexture,
-            Integer amount,
             @Nullable String title,
             boolean translateTitle,
             @Nullable List<String> lore,
             boolean translateLore,
-            List<String> slots) {
+            List<String> slots,
+            ItemStack displayItem) {
         this.action = action;
-        this.material = material;
-        this.headTexture = headTexture;
-        this.amount = amount;
         this.title = title;
         this.translateTitle = translateTitle;
         this.lore = lore;
         this.translateLore = translateLore;
         this.slots = slots;
+        this.displayItem = displayItem;
     }
 
     /** @return The action of the button. */
     public @Nullable String getAction() {return action;}
-    /** @return The material of the button. */
-    public Material getMaterial() {return material; }
-    /** @return The optional base64 head texture. */
-    public @Nullable String getHeadTexture() { return headTexture; }
-    /** @return The item amount. */
-    public Integer getAmount() { return  amount; }
+
+    public ItemStack getDisplayItem() {
+        return displayItem.clone();
+    }
     /** @return The optional display title. */
     public @Nullable String getTitle() { return title; }
     /** @return Whether the title should be localized. */
@@ -125,23 +113,19 @@ public class GuiButton {
      *
      * @return The map representation of this button.
      */
-    public Map<String, Object> toMap() {
-        Map<String, Object> map = new HashMap<>();
+    public Map<String, Object> toMap(ItemSerializerBase itemSerializer) {
+        Map<String, Object> map = new LinkedHashMap<>();
         if (action != null) {
             map.put("action", action);
         }
-        if (headTexture != null) {
-            map.put("head", headTexture);
-        } else {
-            map.put("material", material.toString());
-        }
-        map.put("amount", amount);
         if (title != null) {
             map.put("title", title);
         }
+        map.put("translate-title", translateTitle);
         if (lore != null) {
             map.put("lore", lore);
         }
+        map.put("translate-lore", translateLore);
         if (slots != null) {
             if (slots.size() == 1) {
                 var slotValue = slots.getFirst();
@@ -153,6 +137,7 @@ public class GuiButton {
                 map.put("slots", slots);
             }
         }
+        map.put("item", itemSerializer.serializeItemStack(displayItem));
         return map;
     }
 
@@ -162,17 +147,23 @@ public class GuiButton {
      * @param map The map containing button data.
      * @return The deserialized GuiButton, or null on failure.
      */
-    public static @Nullable GuiButton fromMap(Map<?, ?> map) {
+    public static @Nullable GuiButton fromMap(Map<?, ?> map, ItemSerializerBase itemSerializer, @Nullable YggraLogger logger) {
         if (map == null) return null;
 
         try {
             String action = map.containsKey("action") ? (String) map.get("action") : null;
-            Material material = map.containsKey("head") ? Material.PLAYER_HEAD : Material.getMaterial(((String) map.get("material")).toUpperCase());
-            String headTexture = map.containsKey("head") ? (String) map.get("head") : null;
-            Integer amount = (Integer) map.get("amount");
             String title = (String) map.get("title");
             boolean translateTitle = (boolean)map.get("translate-title");
             boolean translateLore = (boolean)map.get("translate-lore");
+            Map<String, Object> itemMap = TypeUtils.castAsMap(map.get("item"), null);
+            if (itemMap == null) {
+                if (logger != null) {
+                    logger.error("Failed to get item map for gui button.");
+                }
+                return null;
+            }
+
+            ItemStack displayItem = itemSerializer.deserializeItemStack(itemMap);
 
             List<String> lore = map.containsKey("lore") && map.get("lore") instanceof List<?> loreList
                     ? loreList.stream().map(Object::toString).toList()
@@ -186,8 +177,11 @@ public class GuiButton {
                 slots = slot != null ? List.of(slot.toString()) : new ArrayList<>();
             }
 
-            return new GuiButton(action, material, headTexture, amount, title, translateTitle, lore, translateLore, slots);
+            return new GuiButton(action, title, translateTitle, lore, translateLore, slots, displayItem);
         } catch (Exception ex) {
+            if (logger != null) {
+                logger.error("Failed to get guiButton from map.", ex);
+            }
             return null;
         }
     }

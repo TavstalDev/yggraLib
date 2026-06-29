@@ -31,7 +31,7 @@ public final class GuiItemRenderer {
                             Player player,
                             TranslationService translator) {
 
-        ItemStack itemStack = new ItemStack(button.getMaterial(), button.getAmount());
+        ItemStack itemStack = button.getDisplayItem();
         ItemMeta meta = itemStack.getItemMeta();
         String buttonTitle = button.getTitle();
         if (buttonTitle != null) {
@@ -62,10 +62,6 @@ public final class GuiItemRenderer {
         meta.lore(lore);
 
         meta.getPersistentDataContainer().set(GuiDupeDetector.getDupeProtectedKey(), PersistentDataType.BOOLEAN, true);
-
-        var headTexture = button.getHeadTexture();
-        if (headTexture != null)
-            GuiHeadRenderer.apply(meta, headTexture);
         itemStack.setItemMeta(meta);
         return itemStack;
     }
