@@ -328,7 +328,7 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
                     ordinal++;
                 }
                 // WHERE clause
-                statement.setObject(ordinal + 1, id);
+                statement.setObject(ordinal, id);
                 if (statement.executeUpdate() > 0) {
                     cache.evict("db:" + tableName + ":" + id);
                     cache.evict("db:" + tableName + ":all");
