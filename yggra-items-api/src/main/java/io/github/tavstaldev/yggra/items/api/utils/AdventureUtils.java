@@ -45,16 +45,32 @@ public final class AdventureUtils {
             return MINI_MESSAGE.deserialize(text).decoration(TextDecoration.ITALIC, false);
         }
 
+        boolean hasMiniMessage = text.indexOf('<') != -1;
         if (hasSection && !hasAmpersand) {
+            if (hasMiniMessage) {
+                Component sectionParsed = SECTION_SERIALIZER.deserialize(text);
+                String mmString = MINI_MESSAGE.serialize(sectionParsed);
+                return MINI_MESSAGE.deserialize(mmString).decoration(TextDecoration.ITALIC, false);
+            }
             return SECTION_SERIALIZER.deserialize(text).decoration(TextDecoration.ITALIC, false);
         }
 
         if (!hasSection) {
+            if (hasMiniMessage) {
+                Component ampersandParsed = AMPERSAND_SERIALIZER.deserialize(text);
+                String mmString = MINI_MESSAGE.serialize(ampersandParsed);
+                return MINI_MESSAGE.deserialize(mmString).decoration(TextDecoration.ITALIC, false);
+            }
             return AMPERSAND_SERIALIZER.deserialize(text).decoration(TextDecoration.ITALIC, false);
         }
 
         String cleanLegacy = text.replace('§', '&');
-        return SECTION_SERIALIZER.deserialize(cleanLegacy).decoration(TextDecoration.ITALIC, false);
+        if (hasMiniMessage) {
+            Component ampersandParsed = AMPERSAND_SERIALIZER.deserialize(cleanLegacy);
+            String mmString = MINI_MESSAGE.serialize(ampersandParsed);
+            return MINI_MESSAGE.deserialize(mmString).decoration(TextDecoration.ITALIC, false);
+        }
+        return AMPERSAND_SERIALIZER.deserialize(cleanLegacy).decoration(TextDecoration.ITALIC, false);
     }
 
     /**
