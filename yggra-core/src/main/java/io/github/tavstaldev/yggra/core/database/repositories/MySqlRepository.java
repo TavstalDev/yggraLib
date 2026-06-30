@@ -2,96 +2,22 @@ package io.github.tavstaldev.yggra.core.database.repositories;
 
 import com.zaxxer.hikari.HikariDataSource;
 import io.github.tavstaldev.yggra.core.YggraPlugin;
-import io.github.tavstaldev.yggra.core.cache.ICache;
 import io.github.tavstaldev.yggra.core.database.DatabaseHelper;
-import io.github.tavstaldev.yggra.core.database.QueryCondition;
 import io.github.tavstaldev.yggra.core.database.annotations.Column;
-import io.github.tavstaldev.yggra.core.database.annotations.Table;
 import io.github.tavstaldev.yggra.core.database.enums.EColumnKind;
-import io.github.tavstaldev.yggra.core.logger.YggraLogger;
 import org.jetbrains.annotations.Nullable;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Field;
-import java.sql.Connection;
-import java.sql.DatabaseMetaData;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.util.*;
+import java.sql.*;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
-public class MySqlRepository<ID, T> implements IRepository<ID, T> {
-    private final ICache cache;
-    private final YggraLogger logger;
-    private final HikariDataSource dataSource;
-    private final long cacheDuration;
+public class MySqlRepository<ID, T> extends RepositoryBase<ID, T> {
     private final boolean isMariaDb;
-    private final String tableName;
-    private final Field idField;
-    private final String idColumn;
-    private final Class<T> entityClass;
-    private final Map<String, Field> columnToFieldMap = new LinkedHashMap<>();
-
-    private final String createTableStatement;
-    private final String addSqlStatement;
-    private final String findByIdSqlStatement;
-    private final String findAllSqlStatement;
-    private final String updateByIdSqlStatement;
-    private final String deleteByIdSqlStatement;
-    private final String countSqlStatement;
-    private final String existsByIdSqlStatement;
 
     public MySqlRepository(YggraPlugin<?> plugin, Class<T> entityClass, HikariDataSource dataSource, boolean isMariaDb, long cacheDuration, @Nullable String tablePrefix) {
-        this.cache = plugin.cache();
-        this.logger = plugin.logger().withModule(MySqlRepository.class);
-        this.dataSource = dataSource;
-        this.isMariaDb = isMariaDb;
-        this.cacheDuration = cacheDuration;
-        this.entityClass = entityClass;
-
-        if (!entityClass.isAnnotationPresent(Table.class)) {
-            throw new IllegalArgumentException("Class missing @Table annotation: " + entityClass.getName());
-        }
-
-        Table tableAnnotation = entityClass.getAnnotation(Table.class);
-        tableName = (tablePrefix != null ? tablePrefix : "") + tableAnnotation.value();
-
-        Field tempIdField = null;
-        String tempIdColumn = null;
-
-        List<String> createColumnDefinitions = new ArrayList<>();
-        for (Field field : entityClass.getDeclaredFields()) {
-            field.setAccessible(true); // Allow reading values quickly later
-
-            if (field.isAnnotationPresent(Column.class)) {
-                var annotation = field.getAnnotation(Column.class);
-                String columnName = annotation.value();
-                EColumnKind columnKind = annotation.kind();
-                int columnLength = annotation.length();
-                columnToFieldMap.put(columnName, field);
-
-                String sqlType = DatabaseHelper.getSqlTypeForField(field, columnLength);
-                String columnDefinition = columnName + " " + sqlType;
-                if (columnKind == EColumnKind.PRIMARY) {
-                    tempIdField = field;
-                    tempIdColumn = columnName;
-                    columnDefinition += " PRIMARY KEY";
-                    if (DatabaseHelper.shouldAutoIncrement(field))
-                        columnDefinition += " AUTO_INCREMENT";
-                }
-                else {
-                    if (columnKind == EColumnKind.UNIQUE)
-                        columnDefinition += " UNIQUE";
-
-                    if (!annotation.nullable())
-                        columnDefinition += " NOT NULL";
-                }
-                createColumnDefinitions.add(columnDefinition);
-            }
-        }
-
-        this.idField = tempIdField;
-        this.idColumn = tempIdColumn;
+       super(plugin.cache(), plugin.logger().withModule(MySqlRepository.class), entityClass, dataSource, cacheDuration, tablePrefix);
+       this.isMariaDb = isMariaDb;
 
         var keySet = columnToFieldMap.keySet();
         String columns = String.join(", ", keySet);
@@ -99,10 +25,12 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
                 .map(c -> "?")
                 .collect(Collectors.joining(", "));
         String updatePlaceholders = keySet.stream()
+                .filter(c -> !Objects.equals(c, idColumn))
                 .map(c -> c + "=?")
                 .collect(Collectors.joining(", "));
 
         String createPlaceholders = String.join(", ", createColumnDefinitions);
+
         createTableStatement = String.format("CREATE TABLE IF NOT EXISTS %s (%s);", tableName, createPlaceholders);
         addSqlStatement = String.format("INSERT INTO %s (%s) VALUES (%s);", tableName, columns, placeholders);
         findByIdSqlStatement = String.format("SELECT * FROM %s WHERE %s = ?;", tableName, idColumn);
@@ -111,11 +39,7 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
         deleteByIdSqlStatement = String.format("DELETE FROM %s WHERE %s = ?;", tableName, idColumn);
         countSqlStatement = String.format("SELECT COUNT(*) FROM %s;", tableName);
         existsByIdSqlStatement = String.format("SELECT EXISTS(SELECT 1 FROM %s WHERE %s = ?);", tableName, idColumn);
-    }
-
-    @Override
-    public String getTableName() {
-        return tableName;
+        createColumnDefinitions.clear();
     }
 
     @Override
@@ -169,419 +93,35 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
         }
     }
 
+    //#region Abstract implementations
+
     @Override
-    public boolean add(T entity) {
-        try (Connection connection = dataSource.getConnection()) {
-
-            if (connection == null) {
-                logger.error("Failed to create database connection for add.");
-                return false;
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement(addSqlStatement)) {
-
-                int ordinal = 1;
-                for (Field field : columnToFieldMap.values()) {
-                    Object value = field.get(entity);
-                    statement.setObject(ordinal, value);
-                    ordinal++;
-                }
-
-                if (statement.executeUpdate() == 0) {
-                    logger.error("Failed to add entity to MySQL/MariaDB database: No rows affected.");
-                    return false;
-                }
-
-                cache.put("db:" + tableName + ":" + idField.get(entity), entity, cacheDuration);
-                cache.evict("db:" + tableName + ":all");
-                return true;
-            }
-        }
-        catch (Exception ex) {
-            logger.error("Failed to add entity to MySQL/MariaDB database", ex);
-            return false;
-        }
+    protected void setStatementParameter(PreparedStatement statement, int ordinal, Object value) throws SQLException {
+        statement.setObject(ordinal, value);
     }
 
     @Override
-    public @Nullable T findById(ID id) {
-        String cacheKey = "db:" + tableName + ":" + id.toString();
-        T cachedEntity = cache.get(cacheKey, entityClass);
-        if (cachedEntity != null) {
-            return cachedEntity;
-        }
-
-        try (Connection connection = dataSource.getConnection()) {
-            if (connection == null) {
-                logger.error("Failed to create database connection for findById.");
-                return null;
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement(findByIdSqlStatement)) {
-                statement.setObject(1, id);
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        T entity = entityClass.getDeclaredConstructor().newInstance();
-                        for (Map.Entry<String, Field> entry : columnToFieldMap.entrySet()) {
-                            String columnName = entry.getKey();
-                            Field field = entry.getValue();
-                            Object value = resultSet.getObject(columnName);
-                            DatabaseHelper.setValueSafely(entity, field, value);
-                        }
-                        cache.put(cacheKey, entity, cacheDuration);
-                        return entity;
-                    }
-                }
-                return null;
-            }
-        }
-        catch (Exception ex) {
-            logger.error("Failed to find entity by ID in MySQL/MariaDB database", ex);
-            return null;
-        }
+    protected boolean performDeleteByCriteria(Connection connection, String whereClause, Object[] args) throws SQLException {
+        if (isMariaDb)
+            return deleteByCriteriaWithReturning(connection, whereClause, args);
+        else
+            return deleteByCriteriaWithoutReturning(connection, whereClause, args);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public @Nullable List<T> findByCriteria(@Nullable String cacheKey, QueryCondition... conditions) {
-        if (conditions == null || conditions.length == 0) {
-            return new ArrayList<>();
-        }
-
-        String finalCacheKey = "";
-        if (cacheKey != null) {
-            finalCacheKey = "db:" + tableName + ":" + cacheKey;
-            Class<T[]> arrayClass = (Class<T[]>) Array.newInstance(entityClass, 0).getClass();
-            T[] cachedArray = cache.get(finalCacheKey, arrayClass);
-            if (cachedArray != null) {
-                return Arrays.asList(cachedArray);
-            }
-        }
-
-        String whereClause = Arrays.stream(conditions)
-                .map(cond -> cond.columnName() + " " + cond.operator().getSqlOperator() + " ?")
-                .collect(Collectors.joining(" AND "));
-
-        String dynamicSql = "SELECT * FROM " + tableName +  " WHERE " + whereClause + ";";
-        Object[] args = Arrays.stream(conditions).map(QueryCondition::value).toArray();
-
-        var result = this.query(dynamicSql, args);
-        if (result != null && !result.isEmpty() && !finalCacheKey.isEmpty()) {
-            cache.put(finalCacheKey, result.toArray((T[])Array.newInstance(entityClass, result.size())), cacheDuration);
-        }
-
-        return result;
+    protected String resolveSqlType(Field field, int columnLength, EColumnKind columnKind) {
+        return DatabaseHelper.getSqlTypeForField(field, columnLength);
     }
 
     @Override
-    @SuppressWarnings("unchecked")
-    public @Nullable List<T> findAll() {
-        String cacheKey = "db:" + tableName + ":all";
-        Class<T[]> arrayClass = (Class<T[]>) Array.newInstance(entityClass, 0).getClass();
-        T[] cachedArray = cache.get(cacheKey, arrayClass);
-        if (cachedArray != null) {
-            return Arrays.asList(cachedArray);
-        }
-
-        try (Connection connection = dataSource.getConnection()) {
-            if (connection == null) {
-                logger.error("Failed to create database connection for findAll.");
-                return null;
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement(findAllSqlStatement);
-                 ResultSet resultSet = statement.executeQuery()) {
-                List<T> entities = new ArrayList<>();
-                while (resultSet.next()) {
-                    T entity = entityClass.getDeclaredConstructor().newInstance();
-                    for (Map.Entry<String, Field> entry : columnToFieldMap.entrySet()) {
-                        String columnName = entry.getKey();
-                        Field field = entry.getValue();
-                        Object value = resultSet.getObject(columnName);
-                        DatabaseHelper.setValueSafely(entity, field, value);
-                    }
-                    entities.add(entity);
-                }
-                cache.put(cacheKey, entities.toArray((T[])Array.newInstance(entityClass, entities.size())), cacheDuration);
-                return entities;
-            }
-        }
-        catch (Exception ex) {
-            logger.error("Failed to find all entities in MySQL/MariaDB database", ex);
-            return null;
-        }
+    protected String getAutoIncrementText() {
+        return " AUTO_INCREMENT";
     }
 
     @Override
-    public boolean update(ID id, T entity) {
-        try (Connection connection = dataSource.getConnection()) {
-            if (connection == null) {
-                logger.error("Failed to create database connection for delete.");
-                return false;
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement(updateByIdSqlStatement)) {
-                int ordinal = 1;
-                for (Field field : columnToFieldMap.values()) {
-                    Object value = field.get(entity);
-                    statement.setObject(ordinal, value);
-                    ordinal++;
-                }
-                // WHERE clause
-                statement.setObject(ordinal, id);
-                if (statement.executeUpdate() > 0) {
-                    cache.evict("db:" + tableName + ":" + id);
-                    cache.evict("db:" + tableName + ":all");
-                    cache.put("db:" + tableName + ":" + id, entity, cacheDuration);
-                    return true;
-                }
-                return false;
-            }
-        }
-        catch (Exception ex) {
-            logger.error("Failed to update entity from MySQL/MariaDB database", ex);
-            return false;
-        }
+    protected boolean getExistsByIdResult(ResultSet resultSet) throws SQLException {
+        return resultSet.getInt(1) == 1;
     }
 
-    @Override
-    public boolean delete(T entity) {
-        try (Connection connection = dataSource.getConnection()) {
-            if (connection == null) {
-                logger.error("Failed to create database connection for delete.");
-                return false;
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement(deleteByIdSqlStatement)) {
-                var id = idField.get(entity);
-                statement.setObject(1, id);
-                if (statement.executeUpdate() > 0) {
-                    cache.evict("db:" + tableName + ":" + id);
-                    cache.evict("db:" + tableName + ":all");
-                    return true;
-                }
-                return false;
-            }
-        }
-        catch (Exception ex) {
-            logger.error("Failed to delete entity from MySQL/MariaDB database", ex);
-            return false;
-        }
-    }
-
-    @Override
-    public boolean deleteById(ID id) {
-        try (Connection connection = dataSource.getConnection()) {
-            if (connection == null) {
-                logger.error("Failed to create database connection for deleteById.");
-                return false;
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement(deleteByIdSqlStatement)) {
-                statement.setObject(1, id);
-                if (statement.executeUpdate() > 0) {
-                    cache.evict("db:" + tableName + ":" + id);
-                    cache.evict("db:" + tableName + ":all");
-                    return true;
-                }
-                return false;
-            }
-        }
-        catch (Exception ex) {
-            logger.error("Failed to delete entity by id from MySQL/MariaDB database", ex);
-            return false;
-        }
-    }
-
-    @Override
-    public boolean deleteByCriteria(@Nullable String cacheKey, QueryCondition... conditions) {
-
-        if (conditions == null || conditions.length == 0) {
-            return false;
-        }
-
-        String whereClause = Arrays.stream(conditions)
-                .map(cond -> cond.columnName() + " " + cond.operator().getSqlOperator() + " ?")
-                .collect(Collectors.joining(" AND "));
-
-        if (isMariaDb) {
-            return deleteByCriteriaMariaDb(cacheKey, whereClause, conditions);
-        } else {
-            return deleteByCriteriaMySql(cacheKey, whereClause, conditions);
-        }
-    }
-
-    private boolean deleteByCriteriaMySql(@Nullable String cacheKey, String whereClause, QueryCondition... conditions) {
-        String selectSql = "SELECT " + idColumn +
-                " FROM " + tableName + " WHERE " + whereClause + " FOR UPDATE;";
-        String deleteSql = "DELETE FROM " + tableName + " WHERE " + whereClause + ";";
-        Object[] args = Arrays.stream(conditions).map(QueryCondition::value).toArray();
-
-        try (Connection conn = dataSource.getConnection()) {
-            conn.setAutoCommit(false);
-            try {
-                List<Object> ids = new ArrayList<>();
-
-                try (PreparedStatement select = conn.prepareStatement(selectSql)) {
-                    for (int i = 0; i < args.length; i++)
-                        select.setObject(i + 1, args[i]);
-                    try (ResultSet rs = select.executeQuery()) {
-                        while (rs.next())
-                            ids.add(rs.getObject(1));
-                    }
-                }
-
-                try (PreparedStatement delete = conn.prepareStatement(deleteSql)) {
-                    for (int i = 0; i < args.length; i++)
-                        delete.setObject(i + 1, args[i]);
-                    delete.executeUpdate();
-                }
-
-                conn.commit();
-
-                // Evict collected IDs
-                ids.forEach(id -> cache.evict("db:" + tableName + ":" + id));
-                if (cacheKey != null) cache.evict("db:" + tableName + ":" + cacheKey);
-                cache.evict("db:" + tableName + ":all");
-                return true;
-
-            } catch (Exception ex) {
-                conn.rollback();
-                logger.error("Failed to delete entities by criteria in MySQL database", ex);
-                return false;
-            } finally {
-                conn.setAutoCommit(true);
-            }
-        }
-        catch (Exception ex) {
-            logger.error("Failed to check if entity exists in MySQL/MariaDB database", ex);
-            return false;
-        }
-    }
-
-    private boolean deleteByCriteriaMariaDb(@Nullable String cacheKey, String whereClause, QueryCondition... conditions) {
-        String dynamicSql = "DELETE FROM " + tableName + " WHERE " + whereClause + " RETURNING " + idColumn + ";";
-        Object[] args = Arrays.stream(conditions).map(QueryCondition::value).toArray();
-
-        try (Connection connection = dataSource.getConnection()) {
-            if (connection == null) {
-                logger.error("Failed to create database connection for existsById.");
-                return false;
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement(dynamicSql)) {
-
-                for (int i = 0; i < args.length; i++) {
-                    statement.setObject(i + 1, args[i]);
-                }
-
-                try (ResultSet rs = statement.executeQuery()) {
-                    while (rs.next()) {
-                        String id = rs.getString(1);
-                        cache.evict("db:" + tableName + ":" + id);
-                    }
-                }
-
-                if (cacheKey != null)
-                    cache.evict("db:" + tableName + ":" + cacheKey);
-                cache.evict("db:" + tableName + ":all");
-                return true;
-            }
-        }
-        catch (Exception ex) {
-            logger.error("Failed to check if entity exists in MySQL/MariaDB database", ex);
-            return false;
-        }
-    }
-
-    @Override
-    public boolean existsById(ID id) {
-        String cacheKey = "db:" + tableName + ":" + id;
-        T cachedEntity = cache.get(cacheKey, entityClass);
-        if (cachedEntity != null) {
-            return true;
-        }
-
-        try (Connection connection = dataSource.getConnection()) {
-            if (connection == null) {
-                logger.error("Failed to create database connection for existsById.");
-                return false;
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement(existsByIdSqlStatement)) {
-
-                statement.setObject(1, id);
-
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    if (resultSet.next()) {
-                        return resultSet.getInt(1) == 1;
-                    }
-                    return false;
-                }
-            }
-        }
-        catch (Exception ex) {
-            logger.error("Failed to check if entity exists in MySQL/MariaDB database", ex);
-            return false;
-        }
-    }
-
-    @Override
-    public long count() {
-        try (Connection connection = dataSource.getConnection()) {
-            if (connection == null) {
-                logger.error("Failed to create database connection for count.");
-                return -1;
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement(countSqlStatement);
-                 ResultSet resultSet = statement.executeQuery()) {
-                if (resultSet.next()) {
-                    return resultSet.getLong(1);
-                }
-                return 0;
-            }
-        }
-        catch (Exception ex) {
-            logger.error("Failed to count entities in MySQL/MariaDB database", ex);
-            return -1;
-        }
-    }
-
-    public List<T> query(String sql, Object... args) {
-        List<T> results = new ArrayList<>();
-
-        try (Connection connection = dataSource.getConnection()) {
-            if (connection == null) {
-                logger.error("Failed to create database connection for query.");
-                return results;
-            }
-
-            try (PreparedStatement statement = connection.prepareStatement(sql)) {
-                for (int i = 0; i < args.length; i++) {
-                    statement.setObject(i + 1, args[i]);
-                }
-
-                try (ResultSet resultSet = statement.executeQuery()) {
-                    while (resultSet.next()) {
-                        T entity = entityClass.getDeclaredConstructor().newInstance();
-
-                        for (Map.Entry<String, Field> entry : columnToFieldMap.entrySet()) {
-                            String columnName = entry.getKey();
-                            Field field = entry.getValue();
-
-                            Object value = resultSet.getObject(columnName);
-                            if (value != null) {
-                                DatabaseHelper.setValueSafely(entity, field, value);
-                            }
-                        }
-                        results.add(entity);
-                    }
-                }
-            }
-        } catch (Exception ex) {
-            logger.error("Failed to execute custom query: " + sql, ex);
-        }
-        return results;
-    }
+    //#endregion
 }

@@ -85,11 +85,11 @@ public interface IRepository<ID, T> {
     /**
      * Deletes entities matching the given criteria.
      *
-     * @param cacheKey   Optional cache key; null to bypass caching.
      * @param conditions The query conditions to filter by.
      * @return true if the deletion succeeded.
      */
-    boolean deleteByCriteria(@Nullable String cacheKey, QueryCondition... conditions);
+    @SuppressWarnings("UnusedReturnValue")
+    boolean deleteByCriteria(QueryCondition... conditions);
 
     /**
      * Checks whether an entity with the given identifier exists.
