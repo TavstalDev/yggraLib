@@ -10,6 +10,7 @@ import org.jetbrains.annotations.Nullable;
 import java.lang.reflect.Field;
 import java.sql.*;
 import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class MySqlRepository<ID, T> extends RepositoryBase<ID, T> {
@@ -97,7 +98,12 @@ public class MySqlRepository<ID, T> extends RepositoryBase<ID, T> {
 
     @Override
     protected void setStatementParameter(PreparedStatement statement, int ordinal, Object value) throws SQLException {
-        statement.setObject(ordinal, value);
+        switch (value) {
+            case null -> statement.setNull(ordinal, Types.NULL);
+            case UUID uuid -> statement.setString(ordinal, uuid.toString());
+            case Enum<?> anEnum -> statement.setString(ordinal, anEnum.name());
+            default -> statement.setObject(ordinal, value);
+        }
     }
 
     @Override

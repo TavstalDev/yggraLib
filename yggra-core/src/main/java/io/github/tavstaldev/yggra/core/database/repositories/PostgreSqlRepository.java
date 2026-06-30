@@ -86,12 +86,11 @@ public class PostgreSqlRepository<ID, T> extends RepositoryBase<ID, T> {
 
     @Override
     protected void setStatementParameter(PreparedStatement statement, int ordinal, Object value) throws SQLException {
-        if (value instanceof UUID uuid) {
-            statement.setObject(ordinal, uuid, java.sql.Types.OTHER);
-        } else if (value != null && value.getClass().isEnum()) {
-            statement.setString(ordinal, ((Enum<?>) value).name());
-        } else {
-            statement.setObject(ordinal, value);
+        switch (value) {
+            case null -> statement.setNull(ordinal, Types.NULL);
+            case UUID uuid -> statement.setString(ordinal, uuid.toString());
+            case Enum<?> anEnum -> statement.setString(ordinal, anEnum.name());
+            default -> statement.setObject(ordinal, value);
         }
     }
 
