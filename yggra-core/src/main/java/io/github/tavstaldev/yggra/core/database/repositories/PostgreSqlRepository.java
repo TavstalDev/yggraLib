@@ -342,7 +342,7 @@ public class PostgreSqlRepository<ID, T> implements IRepository<ID, T> {
             }
         }
         catch (Exception ex) {
-            logger.error("Failed to delete entity from SQLite database", ex);
+            logger.error("Failed to update entity from PostgreSql database", ex);
             return false;
         }
     }
@@ -444,7 +444,7 @@ public class PostgreSqlRepository<ID, T> implements IRepository<ID, T> {
             }
         }
         catch (Exception ex) {
-            logger.error("Failed to check if entity exists in MySQL/MariaDB database", ex);
+            logger.error("Failed to check if entity exists in PostgreSql database", ex);
             return false;
         }
     }

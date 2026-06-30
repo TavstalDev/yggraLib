@@ -43,7 +43,7 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
 
     public MySqlRepository(YggraPlugin<?> plugin, Class<T> entityClass, HikariDataSource dataSource, boolean isMariaDb, long cacheDuration, @Nullable String tablePrefix) {
         this.cache = plugin.cache();
-        this.logger = plugin.logger().withModule(SqLiteRepository.class);
+        this.logger = plugin.logger().withModule(MySqlRepository.class);
         this.dataSource = dataSource;
         this.isMariaDb = isMariaDb;
         this.cacheDuration = cacheDuration;
@@ -339,7 +339,7 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
             }
         }
         catch (Exception ex) {
-            logger.error("Failed to delete entity from SQLite database", ex);
+            logger.error("Failed to update entity from MySQL/MariaDB database", ex);
             return false;
         }
     }
