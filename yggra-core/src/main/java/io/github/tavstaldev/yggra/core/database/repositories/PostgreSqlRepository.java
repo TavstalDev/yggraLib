@@ -9,7 +9,11 @@ import org.jetbrains.annotations.Nullable;
 
 import java.lang.reflect.Field;
 import java.sql.*;
-import java.util.*;
+import java.time.Instant;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 public class PostgreSqlRepository<ID, T> extends RepositoryBase<ID, T> {
@@ -66,7 +70,7 @@ public class PostgreSqlRepository<ID, T> extends RepositoryBase<ID, T> {
                         // Note: Primary detection is not supported here
                         boolean unique = annotation.kind() == EColumnKind.UNIQUE;
 
-                        String columnDefinition = columnName + " " + DatabaseHelper.getSqlTypeForField(field, columnLength) +
+                        String columnDefinition = columnName + " " + DatabaseHelper.getPostgresSqlTypeForField(field, columnLength) +
                                 (unique ? " UNIQUE" : "") +
                                 (nullable ? "" : " NOT NULL");
                         String alterTableSql = String.format("ALTER TABLE %s ADD COLUMN %s;", tableName, columnDefinition);
@@ -88,8 +92,11 @@ public class PostgreSqlRepository<ID, T> extends RepositoryBase<ID, T> {
     protected void setStatementParameter(PreparedStatement statement, int ordinal, Object value) throws SQLException {
         switch (value) {
             case null -> statement.setNull(ordinal, Types.NULL);
-            case UUID uuid -> statement.setString(ordinal, uuid.toString());
+            case UUID uuid -> statement.setObject(ordinal, uuid, Types.OTHER);
             case Enum<?> anEnum -> statement.setString(ordinal, anEnum.name());
+            case LocalDateTime ldt -> statement.setTimestamp(ordinal, Timestamp.valueOf(ldt));
+            case Instant instant -> statement.setTimestamp(ordinal, Timestamp.from(instant));
+            case LocalDate ld -> statement.setDate(ordinal, Date.valueOf(ld));
             default -> statement.setObject(ordinal, value);
         }
     }
@@ -101,7 +108,7 @@ public class PostgreSqlRepository<ID, T> extends RepositoryBase<ID, T> {
 
     @Override
     protected String resolveSqlType(Field field, int columnLength, EColumnKind columnKind) {
-        String sqlType = DatabaseHelper.getSqlTypeForField(field, columnLength);
+        String sqlType = DatabaseHelper.getPostgresSqlTypeForField(field, columnLength);
         if (columnKind == EColumnKind.PRIMARY && DatabaseHelper.shouldAutoIncrement(field)) {
             sqlType = sqlType.equalsIgnoreCase("BIGINT") ? "BIGSERIAL" : "SERIAL";
         }

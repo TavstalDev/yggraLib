@@ -39,6 +39,33 @@ public class DatabaseHelper {
     }
 
     /**
+     * Maps a Java field type to its corresponding PostgreSQL column type.
+     *
+     * @param field The Java field to map.
+     * @param columnLength The column length used for VARCHAR types.
+     * @return The PostgreSQL SQL type string.
+     * @throws IllegalArgumentException if the field type is not supported.
+     */
+    public static String getPostgresSqlTypeForField(Field field, int columnLength) {
+        if (field.getType().isEnum()) {
+            return String.format("VARCHAR(%s)", columnLength > 0 ? columnLength : 64);
+        }
+
+        return switch (field.getType().getName()) {
+            case "java.lang.String" -> String.format("VARCHAR(%s)", columnLength);
+            case "java.util.UUID" -> "UUID";
+            case "int", "java.lang.Integer" -> "INTEGER";
+            case "long", "java.lang.Long" -> "BIGINT";
+            case "boolean", "java.lang.Boolean" -> "BOOLEAN";
+            case "double", "java.lang.Double" -> "DOUBLE PRECISION";
+            case "float", "java.lang.Float" -> "REAL";
+            case "java.time.Instant" -> "TIMESTAMPTZ";
+            case "java.time.LocalDateTime" -> "TIMESTAMP";
+            default -> throw new IllegalArgumentException("Unsupported field type: " + field.getType().getName());
+        };
+    }
+
+    /**
      * Checks whether the field type supports SQL AUTO_INCREMENT.
      *
      * @param field The Java field to check.
@@ -75,6 +102,13 @@ public class DatabaseHelper {
                     @SuppressWarnings({"unchecked", "rawtypes"})
                     Object enumValue = Enum.valueOf((Class<Enum>) fieldType, stringValue);
                     value = enumValue;
+                }
+            }
+            else if (value instanceof java.sql.Timestamp sqlTimestamp) {
+                if (fieldType == LocalDateTime.class) {
+                    value = sqlTimestamp.toLocalDateTime();
+                } else if (fieldType == Instant.class) {
+                    value = sqlTimestamp.toInstant();
                 }
             }
         }
