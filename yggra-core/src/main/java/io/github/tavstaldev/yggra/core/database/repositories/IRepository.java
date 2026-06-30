@@ -41,6 +41,13 @@ public interface IRepository<ID, T> {
      */
     @Nullable T findById(ID id);
 
+    /**
+     * Retrieves entities matching the given criteria.
+     *
+     * @param cacheKey   Optional cache key; null to bypass caching.
+     * @param conditions The query conditions to filter by.
+     * @return A list of matching entities, or null if the query failed.
+     */
     @Nullable List<T> findByCriteria(@Nullable String cacheKey, QueryCondition... conditions);
 
     /**
@@ -49,6 +56,15 @@ public interface IRepository<ID, T> {
      * @return A list of all entities, or null if the query failed.
      */
     @Nullable List<T> findAll();
+
+    /**
+     * Updates an existing entity in the database.
+     *
+     * @param id     The identifier of the entity to update.
+     * @param entity The entity containing the updated data.
+     * @return true if the update succeeded.
+     */
+    boolean update(ID id, T entity);
 
     /**
      * Deletes an entity from the database.
@@ -66,6 +82,13 @@ public interface IRepository<ID, T> {
      */
     boolean deleteById(ID id);
 
+    /**
+     * Deletes entities matching the given criteria.
+     *
+     * @param cacheKey   Optional cache key; null to bypass caching.
+     * @param conditions The query conditions to filter by.
+     * @return true if the deletion succeeded.
+     */
     boolean deleteByCriteria(@Nullable String cacheKey, QueryCondition... conditions);
 
     /**

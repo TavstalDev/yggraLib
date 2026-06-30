@@ -36,11 +36,11 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
     private final String addSqlStatement;
     private final String findByIdSqlStatement;
     private final String findAllSqlStatement;
+    private final String updateByIdSqlStatement;
     private final String deleteByIdSqlStatement;
     private final String countSqlStatement;
     private final String existsByIdSqlStatement;
 
-    @SuppressWarnings("unchecked")
     public MySqlRepository(YggraPlugin<?> plugin, Class<T> entityClass, HikariDataSource dataSource, boolean isMariaDb, long cacheDuration, @Nullable String tablePrefix) {
         this.cache = plugin.cache();
         this.logger = plugin.logger().withModule(SqLiteRepository.class);
@@ -98,12 +98,16 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
         String placeholders = keySet.stream()
                 .map(c -> "?")
                 .collect(Collectors.joining(", "));
+        String updatePlaceholders = keySet.stream()
+                .map(c -> c + "=?")
+                .collect(Collectors.joining(", "));
 
         String createPlaceholders = String.join(", ", createColumnDefinitions);
         createTableStatement = String.format("CREATE TABLE IF NOT EXISTS %s (%s);", tableName, createPlaceholders);
         addSqlStatement = String.format("INSERT INTO %s (%s) VALUES (%s);", tableName, columns, placeholders);
         findByIdSqlStatement = String.format("SELECT * FROM %s WHERE %s = ?;", tableName, idColumn);
         findAllSqlStatement = String.format("SELECT * FROM %s;", tableName);
+        updateByIdSqlStatement = String.format("UPDATE %s SET %s WHERE %s = ?;", tableName, updatePlaceholders, idColumn);
         deleteByIdSqlStatement = String.format("DELETE FROM %s WHERE %s = ?;", tableName, idColumn);
         countSqlStatement = String.format("SELECT COUNT(*) FROM %s;", tableName);
         existsByIdSqlStatement = String.format("SELECT EXISTS(SELECT 1 FROM %s WHERE %s = ?);", tableName, idColumn);
@@ -305,6 +309,38 @@ public class MySqlRepository<ID, T> implements IRepository<ID, T> {
         catch (Exception ex) {
             logger.error("Failed to find all entities in MySQL/MariaDB database", ex);
             return null;
+        }
+    }
+
+    @Override
+    public boolean update(ID id, T entity) {
+        try (Connection connection = dataSource.getConnection()) {
+            if (connection == null) {
+                logger.error("Failed to create database connection for delete.");
+                return false;
+            }
+
+            try (PreparedStatement statement = connection.prepareStatement(updateByIdSqlStatement)) {
+                int ordinal = 1;
+                for (Field field : columnToFieldMap.values()) {
+                    Object value = field.get(entity);
+                    statement.setObject(ordinal, value);
+                    ordinal++;
+                }
+                // WHERE clause
+                statement.setObject(ordinal + 1, id);
+                if (statement.executeUpdate() > 0) {
+                    cache.evict("db:" + tableName + ":" + id);
+                    cache.evict("db:" + tableName + ":all");
+                    cache.put("db:" + tableName + ":" + id, entity, cacheDuration);
+                    return true;
+                }
+                return false;
+            }
+        }
+        catch (Exception ex) {
+            logger.error("Failed to delete entity from SQLite database", ex);
+            return false;
         }
     }
 
