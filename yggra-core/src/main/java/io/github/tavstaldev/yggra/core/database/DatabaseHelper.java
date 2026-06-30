@@ -98,6 +98,12 @@ public class DatabaseHelper {
                 clazz == Boolean.class);
     }
 
+    /**
+     * Checks whether the given data source connects to a MariaDB database.
+     *
+     * @param dataSource The HikariCP data source to test.
+     * @return true if the underlying database is MariaDB, false otherwise.
+     */
     public static boolean isMariaDB(HikariDataSource dataSource) {
         try (Connection connection = dataSource.getConnection()) {
             if (connection == null) {

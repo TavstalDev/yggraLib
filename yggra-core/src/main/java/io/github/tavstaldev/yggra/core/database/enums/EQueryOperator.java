@@ -1,5 +1,8 @@
 package io.github.tavstaldev.yggra.core.database.enums;
 
+/**
+ * SQL comparison operators used in query conditions.
+ */
 public enum EQueryOperator {
     EQUALS("="),
     NOT_EQUALS("<>"),
@@ -16,6 +19,11 @@ public enum EQueryOperator {
         this.sqlOperator = sqlOperator;
     }
 
+    /**
+     * Returns the SQL string representation of this operator.
+     *
+     * @return The SQL operator (e.g. "=", "<>", "LIKE").
+     */
     public String getSqlOperator() {
         return sqlOperator;
     }
