@@ -110,7 +110,7 @@ public class BossBarService {
      */
     public void updateTitle(String id, String title) {
         BossBar bossBar = ensureExists(id);
-        bossBar.name(AdventureUtils.translateColors(title, true));
+        bossBar.name(AdventureUtils.parse(title, true));
     }
 
     /**

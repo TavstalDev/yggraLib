@@ -46,8 +46,8 @@ public class TitleService {
             return;
         }
 
-        Title title = Title.title(AdventureUtils.translateColors(mainTitle, true),
-        AdventureUtils.translateColors(subTitle, true), times);
+        Title title = Title.title(AdventureUtils.parse(mainTitle, true),
+        AdventureUtils.parse(subTitle, true), times);
         player.showTitle(title);
     }
 
@@ -80,8 +80,8 @@ public class TitleService {
             return;
         }
 
-        Title screenTitle = Title.title(AdventureUtils.translateColors(title, true),
-                AdventureUtils.translateColors(subTitle, true), times);
+        Title screenTitle = Title.title(AdventureUtils.parse(title, true),
+                AdventureUtils.parse(subTitle, true), times);
         player.showTitle(screenTitle);
     }
 

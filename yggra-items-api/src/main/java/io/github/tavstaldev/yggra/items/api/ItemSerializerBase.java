@@ -171,7 +171,7 @@ public abstract class ItemSerializerBase {
                     if (rawName.contains("{") && rawName.contains("}")) {
                         meta.displayName(GsonComponentSerializer.gson().deserialize(rawName));
                     } else {
-                        meta.displayName(AdventureUtils.translateColors(rawName, true));
+                        meta.displayName(AdventureUtils.parse(rawName, true));
                     }
                 }
 
@@ -186,7 +186,7 @@ public abstract class ItemSerializerBase {
                                 if (line.contains("{") && line.contains("}")) {
                                     loreList.add(GsonComponentSerializer.gson().deserialize(line));
                                 } else {
-                                    loreList.add(AdventureUtils.translateColors(line, true));
+                                    loreList.add(AdventureUtils.parse(line, true));
                                 }
                             }
                         }

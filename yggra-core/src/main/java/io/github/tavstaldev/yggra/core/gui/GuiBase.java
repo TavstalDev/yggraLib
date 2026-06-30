@@ -75,7 +75,7 @@ public abstract class GuiBase extends YggraConfiguration {
         if (menuManager == null)
             throw new RuntimeException("Menu manager was not initialized.");
         String rawTitle = isTitleTranslated ? translator.localize(player, menuTitle) : menuTitle;
-        Component titleComponent = AdventureUtils.translateColors(rawTitle, true);
+        Component titleComponent = AdventureUtils.parse(rawTitle, true);
 
         BaseGui gui = Gui.gui()
                 .title(titleComponent)

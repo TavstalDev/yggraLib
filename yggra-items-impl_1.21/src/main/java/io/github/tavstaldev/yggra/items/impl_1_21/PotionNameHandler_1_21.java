@@ -32,6 +32,6 @@ public class PotionNameHandler_1_21 implements IPotionNameHandler {
      */
     @Override
     public void setCustomName(PotionMeta potionMeta, String name) {
-        potionMeta.displayName(AdventureUtils.translateColors(name, true));
+        potionMeta.displayName(AdventureUtils.parse(name, true));
     }
 }

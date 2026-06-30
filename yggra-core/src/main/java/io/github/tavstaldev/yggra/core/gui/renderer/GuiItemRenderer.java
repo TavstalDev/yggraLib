@@ -36,9 +36,9 @@ public final class GuiItemRenderer {
         String buttonTitle = button.getTitle();
         if (buttonTitle != null) {
             if (button.shouldTranslateTitle()) {
-                meta.displayName(AdventureUtils.translateColors(translator.localize(player, buttonTitle), true));
+                meta.displayName(AdventureUtils.parse(translator.localize(player, buttonTitle), true));
             } else {
-                meta.displayName(AdventureUtils.translateColors(buttonTitle, true));
+                meta.displayName(AdventureUtils.parse(buttonTitle, true));
             }
         }
 
@@ -49,13 +49,13 @@ public final class GuiItemRenderer {
                 String loreKey = buttonLore.getFirst();
                 List<String> loreLines = translator.localizeList(player, loreKey);
                 for (String line : loreLines) {
-                    lore.add(AdventureUtils.translateColors(line, true));
+                    lore.add(AdventureUtils.parse(line, true));
                 }
             } else {
                 for (String line : buttonLore) {
                     if (line == null)
                         continue;
-                    lore.add(AdventureUtils.translateColors(line, true));
+                    lore.add(AdventureUtils.parse(line, true));
                 }
             }
         }

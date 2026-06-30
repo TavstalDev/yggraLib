@@ -147,16 +147,16 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
 
         Map<String, Component> bottomParams = new HashMap<>();
         if (page > 1)
-            bottomParams.put("previous_btn", AdventureUtils.translateColors(previousBtn, true)
+            bottomParams.put("previous_btn", AdventureUtils.parse(previousBtn, true)
                     .clickEvent(ClickEvent.runCommand(String.format("/%s help %s", command, page - 1))));
         else
-            bottomParams.put("previous_btn", AdventureUtils.translateColors(previousBtn, true));
+            bottomParams.put("previous_btn", AdventureUtils.parse(previousBtn, true));
 
         if (!reachedEnd && maxPage >= page + 1)
-            bottomParams.put("next_btn", AdventureUtils.translateColors(nextBtn, true)
+            bottomParams.put("next_btn", AdventureUtils.parse(nextBtn, true)
                     .clickEvent(ClickEvent.runCommand(String.format("/%s help %s", command, page + 1))));
         else
-            bottomParams.put("next_btn", AdventureUtils.translateColors(nextBtn, true));
+            bottomParams.put("next_btn", AdventureUtils.parse(nextBtn, true));
 
         Component bottomComp = chat.buildWithButtons(bottomMsg, bottomParams);
         sender.sendMessage(bottomComp);

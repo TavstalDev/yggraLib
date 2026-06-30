@@ -41,7 +41,7 @@ public class ChatService {
      * @return The Component message with buttons.
      */
     public Component buildWithButtons(String message, Map<String, Component> parameters) {
-        Component result = AdventureUtils.translateColors(message, true);
+        Component result = AdventureUtils.parse(message, true);
         // Get the keys
         var keys = parameters.keySet();
         for (@RegExp var dirKey : keys) {
@@ -69,7 +69,7 @@ public class ChatService {
      * @param message The raw message containing placeholders and legacy/MiniMessage color codes.
      */
     public void sendRichMsg(Player player, String message) {
-        player.sendMessage(AdventureUtils.translateColors(plugin.replacePlaceholders(message), true));
+        player.sendMessage(AdventureUtils.parse(plugin.replacePlaceholders(message), true));
     }
 
     /**
