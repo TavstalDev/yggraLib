@@ -8,6 +8,7 @@ allprojects {
 }
 
 val javaVersion = project.property("javaVersion") as String
+val lombokVersion = project.property("lombokVersion") as String
 java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(javaVersion)
@@ -23,6 +24,11 @@ subprojects {
         mavenCentral()
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://jitpack.io")
+    }
+
+    dependencies {
+        compileOnly("org.projectlombok:lombok:${lombokVersion}")
+        annotationProcessor("org.projectlombok:lombok:${lombokVersion}")
     }
 
     java {
