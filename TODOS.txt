@@ -1,0 +1,4 @@
+1. Implement action bar service
+2. Implement cooldown system (similar to caches, but it also should support persistent storage)
+3. Implement tests
+4. Implement fluent api where possible
