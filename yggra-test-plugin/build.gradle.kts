@@ -16,22 +16,24 @@ val yamlConfigVersion = project.property("yamlConfigVersion") as String
 val triumphGuiVersion = project.property("triumphGuiVersion") as String
 val fastboardVersion = project.property("fastboardVersion") as String
 val adventureApiVersion = project.property("adventureApiVersion") as String
+val libbyVersion = project.property("libbyVersion") as String
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
     //compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
-    implementation("org.yaml:snakeyaml:${snakeYamlVersion}")
-    implementation("org.bspfsystems:yamlconfiguration:${yamlConfigVersion}")
-    implementation("dev.triumphteam:triumph-gui:${triumphGuiVersion}")
-    implementation("fr.mrmicky:fastboard:${fastboardVersion}")
+    compileOnly("org.yaml:snakeyaml:${snakeYamlVersion}")
+    compileOnly("dev.triumphteam:triumph-gui:${triumphGuiVersion}")
+    compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
 
-    implementation("net.kyori:adventure-api:${adventureApiVersion}")
-    implementation("net.kyori:adventure-text-serializer-legacy:${adventureApiVersion}")
-    implementation("net.kyori:adventure-text-minimessage:${adventureApiVersion}")
-    implementation("net.kyori:adventure-text-serializer-plain:${adventureApiVersion}")
-    implementation("net.kyori:adventure-text-serializer-gson:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-api:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-text-serializer-legacy:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-text-minimessage:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-text-serializer-plain:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-text-serializer-gson:${adventureApiVersion}")
 
     implementation(project(":yggra-core"))
+    implementation("net.byteflux:libby-bukkit:${libbyVersion}")
+    implementation("org.bspfsystems:yamlconfiguration:${yamlConfigVersion}")
 }
 
 configurations.runtimeClasspath {
@@ -58,14 +60,13 @@ tasks.shadowJar {
     exclude("com/google/**")
     exclude("org/jspecify/**")
     exclude("org/slf4j/**")
-    //exclude("net/kyori/**")
+    exclude("net/kyori/**")
     exclude("org/bstats/**")
+    exclude("org/yaml/**")
 
+    relocate("net.byteflux", "${project.group}.shadow.libby")
     relocate("org.yaml", "com.example.plugin.shadow.yaml")
     relocate("org.bspfsystems", "com.example.plugin.shadow.bspfsystems")
-    relocate("dev.triumphteam", "com.example.plugin.shadow.triumphteam")
-    relocate("fr.mrmicky", "com.example.plugin.shadow.mrmicky")
-    relocate("net.kyori", "com.example.plugin.shadow.kyori")
 }
 
 // Ensure the Shadow JAR task runs during the build process
