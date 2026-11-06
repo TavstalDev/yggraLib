@@ -1,0 +1,8 @@
+main: com.example.plugin.ExamplePlugin
+version: '1.0.0'
+api-version: '1.20'
+
+name: Example
+prefix: Example
+authors: [ Tavstal ]
+website: https://tavstaldev.github.io/
