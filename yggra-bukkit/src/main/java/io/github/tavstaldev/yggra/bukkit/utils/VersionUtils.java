@@ -1,4 +1,4 @@
-package io.github.tavstaldev.yggra.core.utils;
+package io.github.tavstaldev.yggra.bukkit.utils;
 
 import org.bukkit.Bukkit;
 
@@ -79,5 +79,14 @@ public class VersionUtils {
      */
     public static boolean isLegacy() {
         return !isAtLeast(1, 13); // Legacy if not at least 1.13
+    }
+
+    public static boolean isFolia() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            return true;
+        } catch (ClassNotFoundException ignored) {
+            return false;
+        }
     }
 }

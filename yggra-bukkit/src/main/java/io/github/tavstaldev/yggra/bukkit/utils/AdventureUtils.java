@@ -1,4 +1,4 @@
-package io.github.tavstaldev.yggra.items.api.utils;
+package io.github.tavstaldev.yggra.bukkit.utils;
 
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.TextDecoration;
@@ -8,6 +8,7 @@ import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.jetbrains.annotations.NotNull;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -20,36 +21,37 @@ import java.util.regex.Pattern;
  */
 public final class AdventureUtils {
 
-    private static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
-    private static final LegacyComponentSerializer SECTION_SERIALIZER = LegacyComponentSerializer.legacySection();
-    private static final LegacyComponentSerializer AMPERSAND_SERIALIZER = LegacyComponentSerializer.legacyAmpersand();
-    private static final PlainTextComponentSerializer PLAIN_TEXT = PlainTextComponentSerializer.plainText();
-    private static final GsonComponentSerializer GSON = GsonComponentSerializer.gson();
+    public static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    public static final LegacyComponentSerializer SECTION_SERIALIZER = LegacyComponentSerializer.legacySection();
+    public static final PlainTextComponentSerializer PLAIN_TEXT = PlainTextComponentSerializer.plainText();
+    public static final GsonComponentSerializer GSON = GsonComponentSerializer.gson();
     private static final Pattern LEGACY_TO_MINI_PATTERN = Pattern.compile("[&§]([0-9a-fk-or])", Pattern.CASE_INSENSITIVE);
-    private static final Map<Character, String> LEGACY_TO_MINI = Map.ofEntries(
-            Map.entry('0', "<black>"),
-            Map.entry('1', "<dark_blue>"),
-            Map.entry('2', "<dark_green>"),
-            Map.entry('3', "<dark_aqua>"),
-            Map.entry('4', "<dark_red>"),
-            Map.entry('5', "<dark_purple>"),
-            Map.entry('6', "<gold>"),
-            Map.entry('7', "<gray>"),
-            Map.entry('8', "<dark_gray>"),
-            Map.entry('9', "<blue>"),
-            Map.entry('a', "<green>"),
-            Map.entry('b', "<aqua>"),
-            Map.entry('c', "<red>"),
-            Map.entry('d', "<light_purple>"),
-            Map.entry('e', "<yellow>"),
-            Map.entry('f', "<white>"),
-            Map.entry('l', "<bold>"),
-            Map.entry('o', "<italic>"),
-            Map.entry('n', "<underlined>"),
-            Map.entry('m', "<strikethrough>"),
-            Map.entry('k', "<obfuscated>"),
-            Map.entry('r', "<reset>")
-    );
+    private static final Map<Character, String> LEGACY_TO_MINI = new HashMap<>();
+
+    static {
+        LEGACY_TO_MINI.put('0', "<black>");
+        LEGACY_TO_MINI.put('1', "<dark_blue>");
+        LEGACY_TO_MINI.put('2', "<dark_green>");
+        LEGACY_TO_MINI.put('3', "<dark_aqua>");
+        LEGACY_TO_MINI.put('4', "<dark_red>");
+        LEGACY_TO_MINI.put('5', "<dark_purple>");
+        LEGACY_TO_MINI.put('6', "<gold>");
+        LEGACY_TO_MINI.put('7', "<gray>");
+        LEGACY_TO_MINI.put('8', "<dark_gray>");
+        LEGACY_TO_MINI.put('9', "<blue>");
+        LEGACY_TO_MINI.put('a', "<green>");
+        LEGACY_TO_MINI.put('b', "<aqua>");
+        LEGACY_TO_MINI.put('c', "<red>");
+        LEGACY_TO_MINI.put('d', "<light_purple>");
+        LEGACY_TO_MINI.put('e', "<yellow>");
+        LEGACY_TO_MINI.put('f', "<white>");
+        LEGACY_TO_MINI.put('l', "<bold>");
+        LEGACY_TO_MINI.put('o', "<italic>");
+        LEGACY_TO_MINI.put('n', "<underlined>");
+        LEGACY_TO_MINI.put('m', "<strikethrough>");
+        LEGACY_TO_MINI.put('k', "<obfuscated>");
+        LEGACY_TO_MINI.put('r', "<reset>");
+    }
 
 
     /**
@@ -61,7 +63,7 @@ public final class AdventureUtils {
      */
     private static @NotNull String legacyToMiniMessage(@NotNull String input) {
         Matcher matcher = LEGACY_TO_MINI_PATTERN.matcher(input);
-        StringBuilder sb = new StringBuilder();
+        StringBuffer sb = new StringBuffer();
 
         while (matcher.find()) {
             char code = Character.toLowerCase(matcher.group(1).charAt(0));

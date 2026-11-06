@@ -1,11 +1,16 @@
-package io.github.tavstaldev.yggra.core.commands;
+package io.github.tavstaldev.yggra.bukkit.commands;
 
-import io.github.tavstaldev.yggra.core.YggraPlugin;
-import io.github.tavstaldev.yggra.items.api.utils.AdventureUtils;
+import io.github.tavstaldev.yggra.api.IYggraPlugin;
+import io.github.tavstaldev.yggra.api.localization.ITranslationService;
+import io.github.tavstaldev.yggra.api.utils.MapUtil;
+import io.github.tavstaldev.yggra.bukkit.services.IChatService;
+import io.github.tavstaldev.yggra.bukkit.utils.AdventureUtils;
+import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.event.ClickEvent;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.PluginCommand;
 import org.bukkit.command.TabCompleter;
 import org.bukkit.entity.Player;
 
@@ -17,7 +22,7 @@ import java.util.*;
  */
 public abstract class CommandBase implements CommandExecutor, TabCompleter {
     /** The plugin instance. */
-    private final YggraPlugin<?> plugin;
+    private final IYggraPlugin plugin;
     /** The command name (must be defined in plugin.yml). */
     private final String command;
     public final String getCommand() {
@@ -43,18 +48,19 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
      * @param subCommands List of subcommands.
      * @throws IllegalAccessException If the command is not defined in plugin.yml.
      */
-    public CommandBase(YggraPlugin<?> plugin, String command, String permission, List<SubCommand> subCommands) throws IllegalAccessException {
+    public CommandBase(IYggraPlugin plugin, String command, String permission, List<SubCommand> subCommands) throws IllegalAccessException {
         this.plugin = plugin;
         this.command = command;
         this.permission = permission;
         this.subCommands = subCommands;
 
-        var commandObj = plugin.getCommand(command);
+        Object commandObj = plugin.command(command);
         if (commandObj == null)
             throw new IllegalAccessException("Command '" + command + "' is not defined in plugin.yml");
 
-        commandObj.setExecutor(this);
-        commandObj.setTabCompleter(this);
+        PluginCommand cmd = (PluginCommand)commandObj;
+        cmd.setExecutor(this);
+        cmd.setTabCompleter(this);
     }
 
     /**
@@ -65,7 +71,7 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
      * @param permission  Required permission, or null/blank for none.
      * @throws IllegalAccessException If the command is not defined in plugin.yml.
      */
-    public CommandBase(YggraPlugin<?> plugin, String command, String permission) throws IllegalAccessException {
+    public CommandBase(IYggraPlugin plugin, String command, String permission) throws IllegalAccessException {
         this(plugin, command, permission, new ArrayList<>());
     }
 
@@ -76,9 +82,9 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
      * @return True if no permission is set or the sender has it.
      */
     public boolean hasPermission(CommandSender commandSender) {
-        if (this.permission == null || permission.isBlank())
+        if (permission == null || permission.isEmpty())
             return true;
-        return commandSender.hasPermission(this.permission);
+        return commandSender.hasPermission(permission);
     }
 
     /**
@@ -88,9 +94,10 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
      * @param sender The recipient.
      * @param page   The page number (1-indexed, clamped to valid range).
      */
+    @SneakyThrows
     protected void sendHelp(CommandSender sender, int page) {
-        var chat = plugin.chat();
-        var translator = plugin.translator();
+        ITranslationService translator = plugin.getRequiredService(ITranslationService.class);
+        IChatService chatService = plugin.getRequiredService(IChatService.class);
         int maxPage = 1 + (subCommands.size() / 15);
         if (page > maxPage)
             page = maxPage;
@@ -98,12 +105,12 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
             page = 1;
         int finalPage = page;
 
-        chat.sendCommandReply(sender, "commands.help.title", Map.of(
+        chatService.sendCommandReply(sender, "commands.help.title", MapUtil.of(
                         "current_page", finalPage,
                         "max_page", maxPage
                 )
         );
-        chat.sendCommandReply(sender, "commands.help.info");
+        chatService.sendCommandReply(sender, "commands.help.info");
 
         boolean reachedEnd = false;
         int itemIndex = 0;
@@ -127,11 +134,12 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
 
         // Display navigation buttons for the help menu
         String previousBtn, nextBtn, bottomMsg;
-        if (sender instanceof Player player)
+        if (sender instanceof Player)
         {
-            previousBtn = translator.localize(player, "commands.help.previous-button");
-            nextBtn = translator.localize(player, "commands.help.next-button");
-            bottomMsg = translator.localize(player, "commands.help.bottom", Map.of(
+            Player player = (Player)sender;
+            previousBtn = translator.localize(player.getUniqueId(), "commands.help.previous-button");
+            nextBtn = translator.localize(player.getUniqueId(), "commands.help.next-button");
+            bottomMsg = translator.localize(player.getUniqueId(), "commands.help.bottom", MapUtil.of(
                     "current_page", page,
                     "max_page", maxPage
             ));
@@ -139,7 +147,7 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
         else {
             previousBtn = translator.localize("commands.help.previous-button");
             nextBtn = translator.localize("commands.help.next-button");
-            bottomMsg = translator.localize("commands.help.bottom", Map.of(
+            bottomMsg = translator.localize("commands.help.bottom", MapUtil.of(
                     "current_page", page,
                     "max_page", maxPage
             ));
@@ -158,7 +166,7 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
         else
             bottomParams.put("next_btn", AdventureUtils.parse(nextBtn, true));
 
-        Component bottomComp = chat.buildWithButtons(bottomMsg, bottomParams);
-        sender.sendMessage(bottomComp);
+        Component bottomComp = chatService.buildWithButtons(bottomMsg, bottomParams);
+        sender.sendMessage(AdventureUtils.PLAIN_TEXT.serialize(bottomComp));
     }
 }

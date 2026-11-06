@@ -1,9 +1,10 @@
-package io.github.tavstaldev.yggra.core.gui;
+package io.github.tavstaldev.yggra.bukkit.gui;
 
 import dev.triumphteam.gui.guis.BaseGui;
-import io.github.tavstaldev.yggra.core.YggraPlugin;
-import io.github.tavstaldev.yggra.core.cache.ICache;
-import io.github.tavstaldev.yggra.core.logger.YggraLogger;
+import io.github.tavstaldev.yggra.api.IYggraPlugin;
+import io.github.tavstaldev.yggra.api.cache.ICache;
+import io.github.tavstaldev.yggra.api.logger.YggraLogger;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
@@ -14,8 +15,7 @@ import java.util.UUID;
 /**
  * Manages GUI menu registration, caching, opening, closing, and refresh for players.
  */
-public class GuiManager {
-    private final YggraPlugin<?> plugin;
+public class GuiService {
     private final YggraLogger logger;
     private final ICache cache;
     @SuppressWarnings("FieldCanBeLocal")
@@ -24,13 +24,12 @@ public class GuiManager {
     private final HashMap<UUID, String> _playersWithOpenMenus = new HashMap<>();
 
     /**
-     * Constructs a new GuiManager.
+     * Constructs a new GuiService.
      *
      * @param plugin The plugin instance.
      */
-    public GuiManager(YggraPlugin<?> plugin) {
-        this.plugin = plugin;
-        this.cache = plugin.cache();
+    public GuiService(IYggraPlugin plugin, ICache cache) {
+        this.cache = cache;
         this.logger = plugin.logger().withModule(this.getClass());
     }
 
@@ -40,7 +39,6 @@ public class GuiManager {
      * @param menuBase The menu to register.
      */
     public void register(GuiBase menuBase) {
-        menuBase.load();
         _registeredMenus.put(menuBase.id, menuBase);
         logger.debug("Registered menu with ID: " + menuBase.id);
     }
@@ -128,7 +126,7 @@ public class GuiManager {
      */
     public void closeAll() {
         for (UUID playerId : _playersWithOpenMenus.keySet()) {
-            Player player = plugin.getServer().getPlayer(playerId);
+            Player player = Bukkit.getServer().getPlayer(playerId);
             if (player != null && player.isOnline()) {
                 close(player, false);
             }
@@ -149,7 +147,7 @@ public class GuiManager {
      * Invalidates cached menu data for all online players.
      */
     public void invalidateAllCaches() {
-        for (Player player : plugin.getServer().getOnlinePlayers()) {
+        for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             invalidateCache(player);
         }
     }

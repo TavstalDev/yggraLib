@@ -1,4 +1,4 @@
-package io.github.tavstaldev.yggra.items.api;
+package io.github.tavstaldev.yggra.bukkit.items;
 
 import org.bukkit.inventory.meta.PotionMeta;
 

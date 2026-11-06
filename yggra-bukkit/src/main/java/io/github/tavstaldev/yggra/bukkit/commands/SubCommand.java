@@ -1,12 +1,16 @@
-package io.github.tavstaldev.yggra.core.commands;
+package io.github.tavstaldev.yggra.bukkit.commands;
 
-import io.github.tavstaldev.yggra.core.YggraPlugin;
+import io.github.tavstaldev.yggra.api.IYggraPlugin;
+import io.github.tavstaldev.yggra.api.localization.ITranslationService;
+import io.github.tavstaldev.yggra.api.utils.MapUtil;
+import io.github.tavstaldev.yggra.bukkit.services.IChatService;
+import lombok.SneakyThrows;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * Base class for a subcommand within a parent {@link CommandBase}.
@@ -46,9 +50,9 @@ public class SubCommand {
      * @return True if no permission is set or the sender has it.
      */
     public boolean hasPermission(CommandSender commandSender) {
-        if (this.permission == null || permission.isBlank())
+        if (permission == null || permission.isEmpty())
             return true;
-        return commandSender.hasPermission(this.permission);
+        return commandSender.hasPermission(permission);
     }
 
     /**
@@ -59,33 +63,43 @@ public class SubCommand {
      * @param commandSender  The recipient.
      * @param baseCommand    The parent command name.
      */
-    public void sendHelp(YggraPlugin<?> plugin, CommandSender commandSender, String baseCommand) {
+    @SneakyThrows
+    public void sendHelp(IYggraPlugin plugin, CommandSender commandSender, String baseCommand) {
         if (arguments == null)
             return;
 
-        Map<String, Object> args = new HashMap<>(Map.of("command", baseCommand, "subcommand", command));
-        var keys = arguments.keySet();
+        Map<String, Object> args = MapUtil.of("command", baseCommand, "subcommand", command);
+        Set<String> keys = arguments.keySet();
 
         Player player = null;
-        if (commandSender instanceof Player p)
-            player = p;
+        if (commandSender instanceof Player)
+            player = (Player)commandSender;
 
+        ITranslationService translator = plugin.getRequiredService(ITranslationService.class);
+        IChatService chatService = plugin.getRequiredService(IChatService.class);
         for (String key : keys) {
             Object param = arguments.get(key);
             if (param == null) {
                 args.put(key, "");
                 continue;
             }
-            if (param instanceof String stringParam && stringParam.isEmpty()) {
-                args.put(key, param);
-                continue;
+
+
+            if (param instanceof String) {
+                String stringParam = (String)param;
+                if (stringParam.isEmpty()) {
+                    args.put(key, param);
+                    continue;
+                }
             }
+
+
             if (player != null)
-                args.put(key, plugin.translator().localize(player, param.toString()));
+                args.put(key, translator.localize(player.getUniqueId(), param.toString()));
             else
-                args.put(key, plugin.translator().localize(param.toString()));
+                args.put(key, translator.localize(param.toString()));
         }
 
-        plugin.chat().sendCommandReply(commandSender, "commands.help.line", args);
+        chatService.sendCommandReply(commandSender, "commands.help.line", args);
     }
 }

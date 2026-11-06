@@ -1,4 +1,4 @@
-package io.github.tavstaldev.yggra.core.utils;
+package io.github.tavstaldev.yggra.bukkit.utils;
 
 import org.bukkit.Bukkit;
 import org.bukkit.Location;

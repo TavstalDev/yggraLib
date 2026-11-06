@@ -1,27 +1,36 @@
-package io.github.tavstaldev.yggra.core.gui;
+package io.github.tavstaldev.yggra.bukkit.gui;
 
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.Gui;
-import io.github.tavstaldev.yggra.core.YggraPlugin;
-import io.github.tavstaldev.yggra.core.configuration.YggraConfiguration;
-import io.github.tavstaldev.yggra.core.logger.YggraLogger;
-import io.github.tavstaldev.yggra.core.services.TranslationService;
-import io.github.tavstaldev.yggra.items.api.utils.AdventureUtils;
+import io.github.tavstaldev.yggra.api.IYggraPlugin;
+import io.github.tavstaldev.yggra.api.gui.SlotParser;
+import io.github.tavstaldev.yggra.api.localization.ITranslationService;
+import io.github.tavstaldev.yggra.api.logger.YggraLogger;
+import io.github.tavstaldev.yggra.bukkit.items.ItemSerializerBase;
+import io.github.tavstaldev.yggra.bukkit.utils.AdventureUtils;
+import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
+import java.io.File;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.util.*;
 
 /**
  * Abstract base class for all GUI menus. Handles menu creation, button resolution,
  * dynamic slot parsing, and configuration persistence.
  */
-public abstract class GuiBase extends YggraConfiguration {
-    protected final YggraPlugin<?> plugin;
+public abstract class GuiBase extends FileConfiguration {
+    protected final File file;
+    protected final IYggraPlugin plugin;
     protected final YggraLogger logger;
-    protected final TranslationService translator;
+    protected final ITranslationService translator;
+    protected final IGuiRenderer guiRenderer;
+    protected final ItemSerializerBase itemSerializer;
     public final String id;
     protected String menuTitle;
     protected boolean isTitleTranslated;
@@ -41,27 +50,45 @@ public abstract class GuiBase extends YggraConfiguration {
      * @param defaultDynamicSlots Default dynamic slot definitions.
      * @param defaultButtons      Default button definitions.
      */
-    public GuiBase(String id, YggraPlugin<?> plugin, String fileName, String title, boolean isTitleTranslated, int size, HashMap<String, List<String>> defaultDynamicSlots,
+    @SneakyThrows
+    public GuiBase(String id, IYggraPlugin plugin, String fileName, String title, boolean isTitleTranslated, int size, HashMap<String, List<String>> defaultDynamicSlots,
                    HashSet<GuiButton> defaultButtons) {
-        super(plugin, "menus/" + fileName, null);
+        Path filePath = Paths.get(plugin.dataFolder().getPath(), "menus", fileName);
+        file = filePath.toFile();
+        try {
+            if (!file.exists()) {
+
+                if (!file.isDirectory()) {
+                    //noinspection ResultOfMethodCallIgnored
+                    file.getParentFile().mkdirs();
+                }
+                //noinspection ResultOfMethodCallIgnored
+                file.createNewFile();
+            }
+            else {
+                this.load(file);
+            }
+        }
+        catch (Exception ignored) {}
+
         this.id = id;
         this.plugin = plugin;
         this.logger = plugin.logger().withModule(GuiBase.class);
-        this.translator = plugin.translator();
+        this.translator = plugin.getRequiredService(ITranslationService.class);
+        this.guiRenderer = plugin.getRequiredService(IGuiRenderer.class);
+        this.itemSerializer = plugin.getRequiredService(ItemSerializerBase.class);
 
-        this.menuTitle = resolveGet("title", title);
-        this.isTitleTranslated = resolveGet("title-translated", isTitleTranslated);
+        this.menuTitle = this.getString("title", title);
+        this.isTitleTranslated = this.getBoolean("title-translated", isTitleTranslated);
         if (size > 6 || size < 1)
             size = 6;
-        this.menuSize = resolveGet("size", size);
+        this.menuSize = this.getInt("size", size);
         this.dynamicSlots = resolveDynamicSlots(defaultDynamicSlots);
         this.buttons = resolveButtons(defaultButtons);
-        this.save();
-    }
-
-    @Override
-    public final void loadDefaults() {
-        // Prevent overwriting of defaults, as they are already set in the constructor
+        try {
+            this.save(file);
+        }
+        catch (Exception ignored) { }
     }
 
     /**
@@ -71,10 +98,7 @@ public abstract class GuiBase extends YggraConfiguration {
      * @return The constructed BaseGui instance.
      */
     public BaseGui create(Player player) {
-        GuiManager menuManager = plugin.gui();
-        if (menuManager == null)
-            throw new RuntimeException("Menu manager was not initialized.");
-        String rawTitle = isTitleTranslated ? translator.localize(player, menuTitle) : menuTitle;
+        String rawTitle = isTitleTranslated ? translator.localize(player.getUniqueId(), menuTitle) : menuTitle;
         Component titleComponent = AdventureUtils.parse(rawTitle, true);
 
         BaseGui gui = Gui.gui()
@@ -85,7 +109,7 @@ public abstract class GuiBase extends YggraConfiguration {
         gui.setDefaultClickAction(event -> event.setCancelled(true));
 
         for (GuiButton button : buttons) {
-            button.apply(player, translator, gui, this);
+            button.apply(player, translator, guiRenderer, gui, this);
         }
         return gui;
     }
@@ -156,13 +180,13 @@ public abstract class GuiBase extends YggraConfiguration {
         if (buttonMap.isEmpty()) {
             List<Map<String, Object>> defaultList = new ArrayList<>();
             for (GuiButton button : defaultButtons) {
-                defaultList.add(button.toMap(plugin.itemSerializer()));
+                defaultList.add(button.toMap(itemSerializer));
             }
             this.set("buttons", defaultList);
             return defaultButtons;
         }
         for (Map<?, ?> btnElem : buttonMap) {
-            GuiButton btn = GuiButton.fromMap(btnElem, plugin.itemSerializer(), logger);
+            GuiButton btn = GuiButton.fromMap(btnElem, itemSerializer, logger);
             if (btn != null) {
                 buttons.add(btn);
             }

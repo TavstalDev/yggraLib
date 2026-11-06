@@ -1,4 +1,4 @@
-package io.github.tavstaldev.yggra.items.api;
+package io.github.tavstaldev.yggra.bukkit.items;
 
 /**
  * Enum representing the various types of item metadata that can be serialized/deserialized.

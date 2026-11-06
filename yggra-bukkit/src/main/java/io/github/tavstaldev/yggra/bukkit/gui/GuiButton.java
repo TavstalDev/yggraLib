@@ -1,18 +1,22 @@
-package io.github.tavstaldev.yggra.core.gui;
+package io.github.tavstaldev.yggra.bukkit.gui;
 
 import dev.triumphteam.gui.guis.BaseGui;
 import dev.triumphteam.gui.guis.GuiItem;
-import io.github.tavstaldev.yggra.core.gui.renderer.GuiItemRenderer;
-import io.github.tavstaldev.yggra.core.logger.YggraLogger;
-import io.github.tavstaldev.yggra.core.services.TranslationService;
-import io.github.tavstaldev.yggra.items.api.ItemSerializerBase;
-import io.github.tavstaldev.yggra.items.api.utils.TypeUtils;
+import io.github.tavstaldev.yggra.api.gui.SlotParser;
+import io.github.tavstaldev.yggra.api.localization.ITranslationService;
+import io.github.tavstaldev.yggra.api.logger.YggraLogger;
+import io.github.tavstaldev.yggra.api.utils.TypeUtils;
+import io.github.tavstaldev.yggra.bukkit.items.ItemSerializerBase;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * Represents a single button in a GUI menu, with support for materials, head textures,
@@ -91,12 +95,14 @@ public class GuiButton {
      * @param baseGui    The menu to place the button in.
      * @param gui        The GUI base for action execution.
      */
-    public void apply(@NotNull final Player player, @NotNull final TranslationService translator, @NotNull BaseGui baseGui, @NotNull GuiBase gui) {
+    public void apply(@NotNull final Player player, @NotNull final ITranslationService translator,
+                      @NotNull final IGuiRenderer guiRenderer,
+                      @NotNull BaseGui baseGui, @NotNull GuiBase gui) {
         List<Integer> slots = getSlots();
         if (slots.isEmpty())
             return;
 
-        ItemStack itemStack = GuiItemRenderer.render(this, player, translator);
+        ItemStack itemStack = guiRenderer.render(this, player, translator);
 
         GuiItem btn = new GuiItem(itemStack, event -> {
             if (action == null)
@@ -128,7 +134,7 @@ public class GuiButton {
         map.put("translate-lore", translateLore);
         if (slots != null) {
             if (slots.size() == 1) {
-                var slotValue = slots.getFirst();
+                String slotValue = slots.get(0);
                 if (slotValue.contains("-"))
                     map.put("slots", slots);
                 else
@@ -153,8 +159,8 @@ public class GuiButton {
         try {
             String action = map.containsKey("action") ? (String) map.get("action") : null;
             String title = (String) map.get("title");
-            boolean translateTitle = (boolean)map.get("translate-title");
-            boolean translateLore = (boolean)map.get("translate-lore");
+            boolean translateTitle = (Boolean)map.get("translate-title");
+            boolean translateLore = (Boolean)map.get("translate-lore");
             Map<String, Object> itemMap = TypeUtils.castAsMap(map.get("item"), null);
             if (itemMap == null) {
                 if (logger != null) {
@@ -164,17 +170,22 @@ public class GuiButton {
             }
 
             ItemStack displayItem = itemSerializer.deserializeItemStack(itemMap);
+            List<String> lore = null;
+            if (map.containsKey("lore") && map.get("lore") instanceof List<?>) {
+                lore = ((List<?>)map.get("lore")).stream().map(Object::toString).collect(Collectors.toList());
+            }
 
-            List<String> lore = map.containsKey("lore") && map.get("lore") instanceof List<?> loreList
-                    ? loreList.stream().map(Object::toString).toList()
-                    : null;
+            List<String> slots = null;
+            if (map.containsKey("slots") && map.get("slots") instanceof List<?>)
+            {
+                slots = ((List<?>)map.get("slots")).stream().map(Object::toString).collect(Collectors.toList());
+            }
 
-            List<String> slots = map.containsKey("slots") && map.get("slots") instanceof List<?> slotsList
-                    ? slotsList.stream().map(Object::toString).toList()
-                    : null;
             if (slots == null) {
                 Integer slot = (Integer) map.get("slot");
-                slots = slot != null ? List.of(slot.toString()) : new ArrayList<>();
+                slots = new ArrayList<>();
+                if (slot != null)
+                    slots.add(slot.toString());
             }
 
             return new GuiButton(action, title, translateTitle, lore, translateLore, slots, displayItem);
