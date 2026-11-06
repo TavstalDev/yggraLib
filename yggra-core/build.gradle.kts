@@ -28,7 +28,6 @@ dependencies {
     runtimeOnly(project(":yggra-impl_1.8.8"))
     runtimeOnly(project(":yggra-impl_1.20.4"))
     runtimeOnly(project(":yggra-impl_1.21"))
-    runtimeOnly(project(":yggra-impl_1.21.4"))
     runtimeOnly(project(":yggra-impl_1.21.5"))
 }
 

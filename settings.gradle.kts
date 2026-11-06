@@ -6,7 +6,6 @@ include(
     "yggra-impl_1.8.8",
     "yggra-impl_1.20.4",
     "yggra-impl_1.21",
-    "yggra-impl_1.21.4",
     "yggra-impl_1.21.5",
     "yggra-core",
     "yggra-test-plugin"
@@ -15,5 +14,4 @@ include(
 project(":yggra-impl_1.8.8").projectDir = file("implementation/yggra-impl_1.8.8")
 project(":yggra-impl_1.20.4").projectDir = file("implementation/yggra-impl_1.20.4")
 project(":yggra-impl_1.21").projectDir = file("implementation/yggra-impl_1.21")
-project(":yggra-impl_1.21.4").projectDir = file("implementation/yggra-impl_1.21.4")
 project(":yggra-impl_1.21.5").projectDir = file("implementation/yggra-impl_1.21.5")

@@ -4,6 +4,7 @@ import io.github.tavstaldev.yggra.api.IPlatform;
 import io.github.tavstaldev.yggra.api.IYggraConfig;
 import io.github.tavstaldev.yggra.api.IYggraPlugin;
 import io.github.tavstaldev.yggra.api.logger.YggraLogger;
+import io.github.tavstaldev.yggra.bukkit.utils.VersionUtils;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -122,17 +123,18 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
 
     private static @NonNull String getImplClassName() {
         String implClassName;
-        String v = Bukkit.getBukkitVersion();
-        if (v.startsWith("1.8"))
-            implClassName = "io.github.tavstaldev.yggra.impl.v1_8_8.Platform";
-        else if (v.startsWith("1.20"))
-            implClassName = "io.github.tavstaldev.yggra.impl.v1_20_4.Platform";
-        else if (v.startsWith("1.21.5"))
+
+        if (VersionUtils.isAtLeast(1, 21, 5))
             implClassName = "io.github.tavstaldev.yggra.impl.v1_21_5.Platform";
-        else if (v.startsWith("1.21.4"))
-            implClassName = "io.github.tavstaldev.yggra.impl.v1_21_4.Platform";
-        else
+        else if (VersionUtils.isAtLeast(1, 21))
             implClassName = "io.github.tavstaldev.yggra.impl.v1_21.Platform";
+        else if (VersionUtils.isAtLeast(1, 20))
+            implClassName = "io.github.tavstaldev.yggra.impl.v1_20_4.Platform";
+        else if (VersionUtils.isAtLeast(1, 8))
+            implClassName = "io.github.tavstaldev.yggra.impl.v1_8_8.Platform";
+        else
+            throw new RuntimeException("Unsupported Minecraft version: " + Bukkit.getBukkitVersion());
+
         return implClassName;
     }
 }
