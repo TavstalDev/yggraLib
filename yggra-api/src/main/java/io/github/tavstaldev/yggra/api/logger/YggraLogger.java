@@ -32,7 +32,7 @@ public class YggraLogger {
      */
     public YggraLogger(IYggraPlugin plugin) {
         _plugin = plugin;
-        _module = null;
+        _module = plugin.name();
         _logger = Logger.getLogger(plugin.name());
     }
 
@@ -86,7 +86,7 @@ public class YggraLogger {
     private void logRich(@NotNull Level level, @NotNull String text, @Nullable Exception ex) {
         String moduleText = "";
         if (_module != null)
-            moduleText = String.format(" [%s]", _module);
+            moduleText = String.format("[%s]", _module);
 
         String color;
         switch (level.intValue())
@@ -124,7 +124,7 @@ public class YggraLogger {
             }
         }
 
-        _logger.log(level, String.format("%s%s: %s\u001B[0m", color, moduleText, text));
+        _logger.log(level, String.format("%s%s %s\u001B[0m", color, moduleText, text));
         if (ex != null)
             _logger.log(level, String.format("%s└── Exception: %s: %s\u001B[0m", color, ex.getClass().getTypeName(), ex.getMessage()));
     }
