@@ -2,7 +2,8 @@ plugins {
     id("com.gradleup.shadow") version "9.3.1"
 }
 
-val paperApiVersion = project.property("paperApiVersion") as String
+val snakeYamlVersion = project.property("snakeYamlVersion") as String
+val yamlConfigVersion = project.property("yamlConfigVersion") as String
 val adventureApiVersion = project.property("adventureApiVersion") as String
 val hikariVersion = project.property("hikariVersion") as String
 val caffeineVersion = project.property("caffeineVersion") as String
@@ -12,23 +13,33 @@ val bstatsVersion = project.property("bstatsVersion") as String
 val fastboardVersion = project.property("fastboardVersion") as String
 
 dependencies {
-
-    compileOnly("io.papermc.paper:paper-api:${paperApiVersion}")
-    compileOnly("net.kyori:adventure-api:${adventureApiVersion}")
-    compileOnly("net.kyori:adventure-text-minimessage:${adventureApiVersion}")
+    compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
+    compileOnly("org.bspfsystems:yamlconfiguration:${yamlConfigVersion}")
     compileOnly("com.zaxxer:HikariCP:${hikariVersion}")
     compileOnly("com.github.ben-manes.caffeine:caffeine:${caffeineVersion}")
     compileOnly("redis.clients:jedis:${redisVersion}")
-
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
+    compileOnly("dev.triumphteam:triumph-gui:${triumphGuiVersion}")
+
 
     implementation("org.bstats:bstats-bukkit:${bstatsVersion}")
-    implementation("dev.triumphteam:triumph-gui:${triumphGuiVersion}")
-    implementation(project(":yggra-items-api"))
-    implementation(project(":yggra-items-impl_1.20.4"))
-    implementation(project(":yggra-items-impl_1.21"))
-    implementation(project(":yggra-items-impl_1.21.4"))
-    implementation(project(":yggra-items-impl_1.21.5"))
+    implementation(project(":yggra-api"))
+    implementation(project(":yggra-bukkit"))
+    runtimeOnly(project(":yggra-impl_1.8.8"))
+    runtimeOnly(project(":yggra-impl_1.20.4"))
+    runtimeOnly(project(":yggra-impl_1.21"))
+    runtimeOnly(project(":yggra-impl_1.21.4"))
+    runtimeOnly(project(":yggra-impl_1.21.5"))
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}
+
+configurations.runtimeClasspath {
+    attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 21)
 }
 
 // Disable the default JAR task
@@ -47,9 +58,11 @@ tasks.shadowJar {
     exclude("org/jspecify/**")
     exclude("org/slf4j/**")
     exclude("net/kyori/**")
+    exclude("dev/triumphteam/**")
+    exclude("org/yaml/**")
+    exclude("org/bspfsystems/**")
 
     relocate("org.bstats", "${project.group}.shadow.bstats")
-    relocate("dev.triumphteam.gui", "${project.group}.shadow.triumpGui")
 }
 
 // Ensure the Shadow JAR task runs during the build process

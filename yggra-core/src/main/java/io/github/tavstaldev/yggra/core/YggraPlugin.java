@@ -1,109 +1,75 @@
 package io.github.tavstaldev.yggra.core;
 
-import io.github.tavstaldev.yggra.core.gui.GuiManager;
-import io.github.tavstaldev.yggra.core.services.*;
-import io.github.tavstaldev.yggra.core.cache.ICache;
-import io.github.tavstaldev.yggra.core.configuration.YggraConfiguration;
-import io.github.tavstaldev.yggra.core.database.IDatabase;
-import io.github.tavstaldev.yggra.core.gui.GuiDupeDetector;
-import io.github.tavstaldev.yggra.core.logger.YggraLogger;
-import io.github.tavstaldev.yggra.core.scheduler.FoliaScheduler;
-import io.github.tavstaldev.yggra.core.scheduler.IScheduler;
-import io.github.tavstaldev.yggra.core.scheduler.PaperScheduler;
-import io.github.tavstaldev.yggra.core.utils.VersionUtils;
-import io.github.tavstaldev.yggra.items.api.ItemSerializerBase;
-import io.github.tavstaldev.yggra.items.impl_1_20_4.ItemSerializer_1_20_4;
-import io.github.tavstaldev.yggra.items.impl_1_21.ItemSerializer_1_21;
-import io.github.tavstaldev.yggra.items.impl_1_21_4.ItemSerializer_1_21_4;
-import io.github.tavstaldev.yggra.items.impl_1_21_5.ItemSerializer_1_21_5;
+import io.github.tavstaldev.yggra.api.IPlatform;
+import io.github.tavstaldev.yggra.api.IYggraConfig;
+import io.github.tavstaldev.yggra.api.IYggraPlugin;
+import io.github.tavstaldev.yggra.api.logger.YggraLogger;
 import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
+import org.jspecify.annotations.NonNull;
 
-import java.net.http.HttpClient;
-import java.time.Duration;
+import java.io.File;
+import java.io.InputStream;
+import java.util.HashMap;
 import java.util.Objects;
 
-public class YggraPlugin<TConfig extends YggraConfiguration> extends JavaPlugin {
+public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlugin implements IYggraPlugin {
 
-    protected final YggraLogger _logger;
+    protected final HashMap<Class<?>, Object> _serviceCollection = new HashMap<>();
+    private final YggraLogger _logger;
+    private final @Nullable Integer _pluginId;
+    protected TConfig _config;
+
+    @Override
+    public String name() {
+        return this.getName();
+    }
+
+    @Override
+    public TConfig config() { return _config; }
+
+    @Override
     public YggraLogger logger() {
         return _logger;
     }
-    protected TConfig _config;
-    public TConfig config() {
-        return _config;
+
+    @Override
+    public @org.jspecify.annotations.Nullable <T> T getService(Class<T> clazz) {
+        Object obj = _serviceCollection.get(clazz);
+        if (obj == null)
+            return null;
+        return clazz.cast(obj);
     }
-    protected TranslationService _translator;
-    public TranslationService translator() {
-        return _translator;
+
+    @Override
+    public <T> T getRequiredService(Class<T> clazz) throws Exception {
+        Object obj = _serviceCollection.get(clazz);
+        if (obj == null)
+            throw new Exception("Failed to get required service for: " + clazz.getName());
+
+        return clazz.cast(obj);
     }
-    protected IScheduler _scheduler;
-    public IScheduler scheduler() {
-        return _scheduler;
+
+    @Override
+    public File dataFolder() {
+        return this.getDataFolder();
     }
-    protected ChatService _chat;
-    public ChatService chat() {
-        return _chat;
+
+    @Override
+    public InputStream resource(String path) {
+        return this.getResource(path);
     }
-    protected BossBarService _bossBar;
-    public BossBarService bossBar() {
-        return _bossBar;
-    }
-    protected TitleService _title;
-    public TitleService title() {
-        return _title;
-    }
-    protected ScoreboardService _scoreboard;
-    public ScoreboardService scoreboard() {return _scoreboard;}
-    protected SoundService _sound;
-    public SoundService sound() {return _sound;}
-    protected ItemSerializerBase _itemSerializer;
-    public ItemSerializerBase itemSerializer() {
-        return  _itemSerializer;
-    }
-    private final HttpClient _httpClient;
-    public HttpClient httpClient() {
-        return _httpClient;
-    }
-    protected @Nullable ICache _cache;
-    public @Nullable ICache cache() {
-        return _cache;
-    }
-    protected @Nullable IDatabase _database;
-    protected @Nullable GuiManager _gui;
-    public @Nullable GuiManager gui() {
-        return _gui;
+
+    @Override
+    public Object command(String name) {
+        return this.getCommand(name);
     }
 
     public YggraPlugin(@Nullable Integer pluginId) {
+        _pluginId = pluginId;
         _logger = new YggraLogger(this);
-        _httpClient = HttpClient.newBuilder()
-                .version(HttpClient.Version.HTTP_2)
-                .connectTimeout(Duration.ofSeconds(120))
-                .build();
-        _translator = new TranslationService(this);
-        _chat = new ChatService(this);
-        _bossBar = new BossBarService();
-        _title = new TitleService(this, _chat);
-        _scoreboard = new ScoreboardService();
-        _sound = new SoundService();
-        if (VersionUtils.isAtLeast(1, 21, 5))
-        {
-            _itemSerializer = new ItemSerializer_1_21_5(getLogger());
-        }
-        else if (VersionUtils.isAtLeast(1, 21, 4)) {
-            _itemSerializer = new ItemSerializer_1_21_4(getLogger());
-        }
-        else if (VersionUtils.isAtLeast(1, 21)) {
-            _itemSerializer = new ItemSerializer_1_21(getLogger());
-        }
-        else {
-            _itemSerializer = new ItemSerializer_1_20_4(getLogger());
-        }
-        if (pluginId != null) {
-            Metrics metrics = new Metrics(this, pluginId);
-        }
     }
 
     public YggraPlugin() {
@@ -112,15 +78,27 @@ public class YggraPlugin<TConfig extends YggraConfiguration> extends JavaPlugin 
 
     @Override
     public final void onEnable() {
-        if (_gui != null) {
-            GuiDupeDetector.register(this);
+        onPrePluginEnable();
+        try {
+            String implClassName = getImplClassName();
+            IPlatform platform = (IPlatform) Class.forName(implClassName)
+                    .getDeclaredConstructor().newInstance();
+            platform.setup(this, _serviceCollection);
+
+            if (_pluginId != null) {
+                Metrics metrics = new Metrics(this, _pluginId);
+            }
         }
-        if (isFolia()) {
-            _scheduler = new FoliaScheduler(this);
-        } else {
-            _scheduler = new PaperScheduler(this);
+        catch (Exception ex) {
+            _logger.error("Failed to initialize the plugin.", ex);
+            Bukkit.getPluginManager().disablePlugin(this);
+            return;
         }
         onPluginEnable();
+    }
+
+    public void onPrePluginEnable() {
+        // To be overridden by subclasses
     }
 
     public void onPluginEnable() {
@@ -129,9 +107,7 @@ public class YggraPlugin<TConfig extends YggraConfiguration> extends JavaPlugin 
 
     @Override
     public final void onDisable() {
-        if (_gui != null) {
-            GuiDupeDetector.unregister(this);
-        }
+        _serviceCollection.clear();
         onPluginDisable();
     }
 
@@ -139,16 +115,24 @@ public class YggraPlugin<TConfig extends YggraConfiguration> extends JavaPlugin 
         // To be overridden by subclasses
     }
 
-    public String replacePlaceholders(String message) {
-        return message.replace("%prefix%", Objects.requireNonNull(_config.getString("general.prefix")));
+    @Override
+    public @NonNull String replacePlaceholders(String message) {
+        return message.replace("%prefix%", Objects.requireNonNull(config().get("general.prefix", "")));
     }
 
-    private static boolean isFolia() {
-        try {
-            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
-            return true;
-        } catch (ClassNotFoundException ignored) {
-            return false;
-        }
+    private static @NonNull String getImplClassName() {
+        String implClassName;
+        String v = Bukkit.getBukkitVersion();
+        if (v.startsWith("1.8"))
+            implClassName = "io.github.tavstaldev.yggra.impl.v1_8_8.Platform";
+        else if (v.startsWith("1.20"))
+            implClassName = "io.github.tavstaldev.yggra.impl.v1_20_4.Platform";
+        else if (v.startsWith("1.21.5"))
+            implClassName = "io.github.tavstaldev.yggra.impl.v1_21_5.Platform";
+        else if (v.startsWith("1.21.4"))
+            implClassName = "io.github.tavstaldev.yggra.impl.v1_21_4.Platform";
+        else
+            implClassName = "io.github.tavstaldev.yggra.impl.v1_21.Platform";
+        return implClassName;
     }
 }
