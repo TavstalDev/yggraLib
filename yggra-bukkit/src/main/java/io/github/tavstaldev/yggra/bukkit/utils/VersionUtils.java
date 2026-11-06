@@ -89,4 +89,20 @@ public class VersionUtils {
             return false;
         }
     }
+
+    public static boolean isPaper() {
+        try {
+            // Modern Paper (1.20+) uses ServerBuildInfo
+            Class.forName("io.papermc.paper.ServerBuildInfo");
+            return true;
+        } catch (ClassNotFoundException e1) {
+            try {
+                // Older Paper versions use PaperConfig
+                Class.forName("com.destroystokyo.paper.PaperConfig");
+                return true;
+            } catch (ClassNotFoundException e2) {
+                return false;
+            }
+        }
+    }
 }
