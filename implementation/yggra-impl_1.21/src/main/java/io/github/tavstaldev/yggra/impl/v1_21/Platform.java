@@ -27,6 +27,7 @@ public class Platform implements IPlatform {
         ITranslationService translationService = new TranslationService(plugin);
         serviceCollection.put(ITranslationService.class, translationService);
 
+        serviceCollection.put(IActionBarService.class, new ActionBarService_1_21(plugin, translationService));
         serviceCollection.put(IChatService.class, new ChatService_1_21(plugin, translationService));
         serviceCollection.put(IBossBarService.class, new BossBarService_1_21());
         serviceCollection.put(ITitleService.class, new TitleService_1_21(plugin, translationService));
