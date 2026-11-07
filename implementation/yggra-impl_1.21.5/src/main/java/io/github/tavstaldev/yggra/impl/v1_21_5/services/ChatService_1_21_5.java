@@ -74,19 +74,7 @@ public class ChatService_1_21_5 {
     }
 
     public void sendLocalizedMsg(Player player, String key, Map<String, Object> parameters) {
-        String rawMessage = translator.localize(player.getUniqueId(), key);
-
-        // Get the keys
-        var keys = parameters.keySet();
-        for (@RegExp var dirKey : keys) {
-            @RegExp String finalKey;
-            if (dirKey.startsWith("%"))
-                finalKey = dirKey;
-            else
-                finalKey = "%" + dirKey + "%";
-            rawMessage = rawMessage.replace(finalKey, parameters.get(dirKey).toString());
-        }
-
+        String rawMessage = translator.localize(player.getUniqueId(), key, parameters);
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
