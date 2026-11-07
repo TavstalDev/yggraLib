@@ -5,6 +5,7 @@ dependencies {
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
     compileOnly(project(":yggra-api"))
     compileOnly(project(":yggra-bukkit"))
+    compileOnly(project(":yggra-impl_modern"))
 }
 
 java {

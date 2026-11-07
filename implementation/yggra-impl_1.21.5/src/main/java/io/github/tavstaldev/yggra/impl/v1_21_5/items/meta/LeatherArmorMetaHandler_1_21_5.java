@@ -2,7 +2,7 @@ package io.github.tavstaldev.yggra.impl.v1_21_5.items.meta;
 
 import io.github.tavstaldev.yggra.bukkit.items.IMetaHandler;
 import io.github.tavstaldev.yggra.bukkit.items.ItemSerializerBase;
-import io.github.tavstaldev.yggra.impl.v1_21_5.utils.ColorUtils_1_21_5;
+import io.github.tavstaldev.yggra.impl.vmodern.utils.ColorUtils_modern;
 import org.bukkit.Color;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.LeatherArmorMeta;
@@ -23,7 +23,7 @@ public class LeatherArmorMetaHandler_1_21_5 implements IMetaHandler {
             return;
 
         Color color = leatherArmorMeta.getColor();
-        itemData.put("color", ColorUtils_1_21_5.serializeColor(color));
+        itemData.put("color", ColorUtils_modern.serializeColor(color));
     }
 
     /**
@@ -37,6 +37,6 @@ public class LeatherArmorMetaHandler_1_21_5 implements IMetaHandler {
             return;
 
         String colorData = (String) itemData.get("color");
-        leatherArmorMeta.setColor(ColorUtils_1_21_5.deserializeColor(colorData));
+        leatherArmorMeta.setColor(ColorUtils_modern.deserializeColor(colorData));
     }
 }

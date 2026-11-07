@@ -3,7 +3,7 @@ package io.github.tavstaldev.yggra.impl.v1_21_5.items.meta;
 import io.github.tavstaldev.yggra.api.utils.TypeUtils;
 import io.github.tavstaldev.yggra.bukkit.items.IMetaHandler;
 import io.github.tavstaldev.yggra.bukkit.items.ItemSerializerBase;
-import io.github.tavstaldev.yggra.impl.v1_21_5.utils.ColorUtils_1_21_5;
+import io.github.tavstaldev.yggra.impl.vmodern.utils.ColorUtils_modern;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
 import org.bukkit.inventory.meta.FireworkMeta;
@@ -39,7 +39,7 @@ public class FireworkMetaHandler_1_21_5 implements IMetaHandler {
                 var colorList = effect.getColors();
                 List<String> colors = new ArrayList<>();
                 for (Color color : colorList) {
-                    colors.add(ColorUtils_1_21_5.serializeColor(color));
+                    colors.add(ColorUtils_modern.serializeColor(color));
                 }
                 effectData.put("colors", colors);
 
@@ -47,7 +47,7 @@ public class FireworkMetaHandler_1_21_5 implements IMetaHandler {
                 var fadeColor = effect.getFadeColors();
                 List<String> fadeColors = new ArrayList<>();
                 for (Color color : fadeColor) {
-                    fadeColors.add(ColorUtils_1_21_5.serializeColor(color));
+                    fadeColors.add(ColorUtils_modern.serializeColor(color));
                 }
                 effectData.put("fadeColors", fadeColors);
                 effects.add(effectData);
@@ -82,7 +82,7 @@ public class FireworkMetaHandler_1_21_5 implements IMetaHandler {
                     List<String> rawColors = TypeUtils.castAsList(effectData.get("colors"), null);
                     if (rawColors != null) {
                         for (String colorData : rawColors) {
-                            colors.add(ColorUtils_1_21_5.deserializeColor(colorData));
+                            colors.add(ColorUtils_modern.deserializeColor(colorData));
                         }
                     }
                 }
@@ -93,7 +93,7 @@ public class FireworkMetaHandler_1_21_5 implements IMetaHandler {
                     List<String> rawFadeColors = TypeUtils.castAsList(effectData.get("fadeColors"), null);
                     if (rawFadeColors != null) {
                         for (String colorData : rawFadeColors) {
-                            fadeColors.add(ColorUtils_1_21_5.deserializeColor(colorData));
+                            fadeColors.add(ColorUtils_modern.deserializeColor(colorData));
                         }
                     }
                 }

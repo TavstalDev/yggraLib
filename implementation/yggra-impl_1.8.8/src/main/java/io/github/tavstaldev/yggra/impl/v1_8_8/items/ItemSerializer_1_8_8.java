@@ -73,10 +73,10 @@ public class ItemSerializer_1_8_8 extends ItemSerializerBase {
 
                 for (Map.Entry<EHandlerType, IMetaHandler> handler : metaHandlers.entrySet()) {
                     try {
-                        handler.getValue().deserialize(this, meta, itemData);
+                        handler.getValue().serialize(this, meta, itemData);
                     }
                     catch (Exception metaEx) {
-                        logger.severe(String.format("An error occurred while deserializing %s meta: %s",
+                        logger.severe(String.format("An error occurred while serializing %s meta: %s",
                                 handler.getKey().name(), metaEx.getMessage()));
                     }
                 }
@@ -137,10 +137,8 @@ public class ItemSerializer_1_8_8 extends ItemSerializerBase {
                     }
                 }
 
-                // customModelData
-                customModelDataIO.deserialize(meta, itemMap);
 
-                item.setItemMeta(meta);  // Set the meta data to the item
+                item.setItemMeta(meta);  // Set the metadata to the item
                 itemResult = item;
             }
         } catch (Exception ex) {

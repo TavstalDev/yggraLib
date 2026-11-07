@@ -3,6 +3,7 @@ package io.github.tavstaldev.yggra.impl.v1_8_8.services;
 import io.github.tavstaldev.yggra.api.IYggraPlugin;
 import io.github.tavstaldev.yggra.api.localization.ITranslationService;
 import io.github.tavstaldev.yggra.api.logger.YggraLogger;
+import io.github.tavstaldev.yggra.bukkit.services.IChatService;
 import io.github.tavstaldev.yggra.bukkit.utils.AdventureUtils;
 import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
@@ -12,11 +13,12 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.intellij.lang.annotations.RegExp;
+import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
 import java.util.Set;
 
-public class ChatService_1_8_8 {
+public class ChatService_1_8_8 implements IChatService {
     private final IYggraPlugin plugin;
     private final YggraLogger logger;
     private final ITranslationService translator;
@@ -51,11 +53,11 @@ public class ChatService_1_8_8 {
         return result.decoration(TextDecoration.ITALIC, false);
     }
 
-    public void sendRichMsg(Player player, String message) {
+    public void sendRichMsg(@NonNull Player player, @NonNull String message) {
         adventure.player(player).sendMessage(AdventureUtils.parse(plugin.replacePlaceholders(message), true));
     }
 
-    public void sendRichMsg(Player player, String message, Map<String, Object> parameters) {
+    public void sendRichMsg(@NonNull Player player, @NonNull String message, Map<String, Object> parameters) {
         String rawMessage = message;
 
         // Get the keys
@@ -72,17 +74,17 @@ public class ChatService_1_8_8 {
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
-    public void sendLocalizedMsg(Player player, String key) {
+    public void sendLocalizedMsg(Player player, @NonNull String key) {
         String rawMessage = translator.localize(player.getUniqueId(), key);
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
-    public void sendLocalizedMsg(Player player, String key, Map<String, Object> parameters) {
+    public void sendLocalizedMsg(Player player, @NonNull String key, @NonNull Map<String, Object> parameters) {
         String rawMessage = translator.localize(player.getUniqueId(), key, parameters);
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
-    public void sendCommandReply(CommandSender sender, String key) {
+    public void sendCommandReply(CommandSender sender, @NonNull String key) {
         if (sender instanceof Player) {
             Player player = (Player)sender;
             // Send a localized message to the player
@@ -93,7 +95,7 @@ public class ChatService_1_8_8 {
         logger.info(translator.localize(key).replace('&', '§'));
     }
 
-    public void sendCommandReply(CommandSender sender, String key, Map<String, Object> parameters) {
+    public void sendCommandReply(CommandSender sender, @NonNull String key, Map<String, Object> parameters) {
         if (sender instanceof Player) {
             Player player = (Player)sender;
             // Send a localized message with parameters to the player
