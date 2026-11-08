@@ -51,6 +51,7 @@ tasks.jar {
 // Configure the Shadow JAR task
 var shadeGroup = "io.github.tavstaldev.yggraLib.shadow"
 tasks.shadowJar {
+    archiveBaseName.set("yggraLib")
     archiveClassifier.set("") // Set the classifier for the JAR
     manifest {
         attributes["paperweight-mappings-namespace"] = "spigot" // Add custom manifest attributes
