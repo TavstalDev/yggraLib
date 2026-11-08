@@ -4,6 +4,7 @@ import io.github.tavstaldev.yggraLib.api.IPlatform;
 import io.github.tavstaldev.yggraLib.api.IYggraConfig;
 import io.github.tavstaldev.yggraLib.api.IYggraPlugin;
 import io.github.tavstaldev.yggraLib.api.logger.YggraLogger;
+import io.github.tavstaldev.yggraLib.bootstrap.models.LibraryInfo;
 import io.github.tavstaldev.yggraLib.bukkit.utils.VersionUtils;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
@@ -71,7 +72,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
         return this.getCommand(name);
     }
 
-    public YggraPlugin(@Nullable Integer pluginId, @Nullable String[] repositories, @Nullable Library[] libraries) {
+    public YggraPlugin(@Nullable Integer pluginId, @Nullable String[] repositories, @Nullable LibraryInfo[] libraries) {
         _pluginId = pluginId;
         _logger = new YggraLogger(this);
         this.libraryManager = new BukkitLibraryManager(this);
@@ -87,18 +88,25 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
             }
         }
         if (libraries != null) {
-            for (Library library : libraries) {
+            for (LibraryInfo library : libraries) {
                 if (library == null)
                     continue;
 
                 try {
-                    libraryManager.loadLibrary(library);
+                    Library.Builder builder = Library.builder()
+                            .groupId(library.groupId)
+                            .artifactId(library.artifactId)
+                            .version(library.version);
+                    if (library.relocationInfo != null) {
+                        builder.relocate(library.relocationInfo.pattern, library.relocationInfo.relocatedPattern);
+                    }
+                    libraryManager.loadLibrary(builder.build());
                 }
                 catch (Exception ex) {
                     _logger.error(String.format("Failed to load %s.%s v%s",
-                            library.getGroupId(),
-                            library.getArtifactId(),
-                            library.getVersion()
+                            library.groupId,
+                            library.artifactId,
+                            library.version
                             ), ex);
                 }
             }
@@ -106,7 +114,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
     }
 
     @SuppressWarnings("unused")
-    public YggraPlugin(@Nullable Integer pluginId, @Nullable Library[] libraries) {
+    public YggraPlugin(@Nullable Integer pluginId, @Nullable LibraryInfo[] libraries) {
         this(pluginId, null, libraries);
     }
 
