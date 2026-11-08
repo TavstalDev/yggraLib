@@ -9,7 +9,6 @@ public class ExamplePlugin extends YggraPlugin<ExampleConfig> {
     public void onPrePluginEnable() {
         instance = this;
         logger().info(String.format("Loading %s...", getName()));
-        loadDependencies();
         _config = new ExampleConfig(this);
         _config.load();
     }

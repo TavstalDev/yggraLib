@@ -217,6 +217,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
 
     @Override
     public final void onEnable() {
+        loadDependencies();
         onPrePluginEnable();
         try {
             String implClassName = getImplClassName();
