@@ -8,6 +8,8 @@ import java.util.UUID;
 
 public interface ITranslationService {
 
+    boolean refresh();
+
     @NotNull String localize(@NotNull String key);
 
     @NotNull String localize(@NotNull String key, @NotNull Map<String, Object> args);
