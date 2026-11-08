@@ -3,7 +3,7 @@ plugins {
 }
 
 allprojects {
-    group = "io.github.tavstaldev.yggra"
+    group = "io.github.tavstaldev.yggraLib"
     version = "1.0.0"
 }
 

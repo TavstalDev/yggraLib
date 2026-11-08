@@ -1,4 +1,4 @@
-rootProject.name = "yggra"
+rootProject.name = "yggraLib"
 
 include(
     "yggra-api",
@@ -8,7 +8,7 @@ include(
     "yggra-impl_1.20.4",
     "yggra-impl_1.21",
     "yggra-impl_1.21.5",
-    "yggra-core",
+    "yggra-bootstrap",
     "yggra-test-plugin"
 )
 
