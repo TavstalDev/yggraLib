@@ -1,6 +1,6 @@
 package com.example.plugin;
 
-import io.github.tavstaldev.yggra.core.YggraConfig;
+import io.github.tavstaldev.yggraLib.bootstrap.YggraConfig;
 
 public class ExampleConfig extends YggraConfig {
     public String locale;

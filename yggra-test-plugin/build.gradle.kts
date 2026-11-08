@@ -20,10 +20,10 @@ val libbyVersion = project.property("libbyVersion") as String
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
-    //compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
     compileOnly("org.yaml:snakeyaml:${snakeYamlVersion}")
     compileOnly("dev.triumphteam:triumph-gui:${triumphGuiVersion}")
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
+    compileOnly("net.byteflux:libby-bukkit:${libbyVersion}")
 
     compileOnly("net.kyori:adventure-api:${adventureApiVersion}")
     compileOnly("net.kyori:adventure-text-serializer-legacy:${adventureApiVersion}")
@@ -31,9 +31,11 @@ dependencies {
     compileOnly("net.kyori:adventure-text-serializer-plain:${adventureApiVersion}")
     compileOnly("net.kyori:adventure-text-serializer-gson:${adventureApiVersion}")
 
-    implementation(project(":yggra-core"))
-    implementation("net.byteflux:libby-bukkit:${libbyVersion}")
-    implementation("org.bspfsystems:yamlconfiguration:${yamlConfigVersion}")
+    compileOnly(project(":yggra-api"))
+    compileOnly(project(":yggra-bukkit"))
+    implementation(project(":yggra-bootstrap")) {
+        isTransitive = false
+    }
 }
 
 configurations.runtimeClasspath {
@@ -46,36 +48,22 @@ tasks.jar {
 }
 
 tasks.compileJava {
-    dependsOn(":yggra-core:shadowJar")
+    dependsOn(":yggra-bootstrap:shadowJar")
 }
 
 // Configure the Shadow JAR task
 tasks.shadowJar {
-    dependsOn(":yggra-core:shadowJar")
+    dependsOn(":yggra-bootstrap:shadowJar")
     archiveClassifier.set("") // Set the classifier for the JAR
     manifest {
         attributes["paperweight-mappings-namespace"] = "spigot" // Add custom manifest attributes
     }
-
-    exclude("com/google/**")
-    exclude("org/jspecify/**")
-    exclude("org/slf4j/**")
-    exclude("net/kyori/**")
-    exclude("org/bstats/**")
-    exclude("org/yaml/**")
-
-    relocate("net.byteflux", "${project.group}.shadow.libby")
-    relocate("org.yaml", "com.example.plugin.shadow.yaml")
-    relocate("org.bspfsystems", "com.example.plugin.shadow.bspfsystems")
 }
 
 // Ensure the Shadow JAR task runs during the build process
 tasks.build {
     dependsOn(tasks.shadowJar)
 }
-
-
-val projectName = project.name
 val buildDir = layout.buildDirectory
 
 listOf(

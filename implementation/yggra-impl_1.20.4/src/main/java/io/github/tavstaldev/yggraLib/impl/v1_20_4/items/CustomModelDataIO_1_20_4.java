@@ -1,0 +1,29 @@
+package io.github.tavstaldev.yggraLib.impl.v1_20_4.items;
+
+import io.github.tavstaldev.yggraLib.bukkit.items.ICustomModelDataIO;
+import org.bukkit.inventory.meta.ItemMeta;
+
+import java.util.Map;
+
+/**
+ * {@inheritDoc}
+ */
+public class CustomModelDataIO_1_20_4 implements ICustomModelDataIO {
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void serialize(ItemMeta meta, Map<String, Object> itemData) {
+        if (meta.hasCustomModelData())
+            itemData.put("customModelData", meta.getCustomModelData());
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void deserialize(ItemMeta meta, Map<String, Object> itemData) {
+        if (itemData.containsKey("customModelData"))
+            meta.setCustomModelData((int)itemData.get("customModelData"));
+    }
+}
