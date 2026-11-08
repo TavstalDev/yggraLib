@@ -20,6 +20,7 @@ import java.util.*;
  * Base class for plugin commands. Automatically registers as executor and tab completer.
  * Supports subcommands with paginated help menus and permission checks.
  */
+@SuppressWarnings("unused")
 public abstract class CommandBase implements CommandExecutor, TabCompleter {
     /** The plugin instance. */
     private final IYggraPlugin plugin;

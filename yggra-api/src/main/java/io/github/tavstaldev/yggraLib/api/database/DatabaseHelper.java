@@ -11,6 +11,7 @@ import java.util.UUID;
 /**
  * Utility methods for mapping Java fields to SQL column types and safely setting field values.
  */
+@SuppressWarnings("unused")
 public class DatabaseHelper {
 
     /**

@@ -22,6 +22,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.Map;
 import java.util.logging.Logger;
 
+@SuppressWarnings("unused")
 public class Platform implements IPlatform {
     @SneakyThrows
     public void setup(IYggraPlugin plugin, Map<Class<?>, Object> serviceCollection) {
@@ -32,7 +33,7 @@ public class Platform implements IPlatform {
         serviceCollection.put(IActionBarService.class, new ActionBarService_modern(plugin, translationService));
         serviceCollection.put(IChatService.class, new ChatService_modern(plugin, translationService));
         serviceCollection.put(IBossBarService.class, new BossBarService_modern());
-        serviceCollection.put(ITitleService.class, new TitleService_modern(plugin, translationService));
+        serviceCollection.put(ITitleService.class, new TitleService_modern(translationService));
         serviceCollection.put(IScoreboardService.class, new ScoreboardService_modern());
         serviceCollection.put(ISoundService.class, new SoundService_modern());
         if (VersionUtils.isFolia()) {

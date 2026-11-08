@@ -105,10 +105,12 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
         }
     }
 
+    @SuppressWarnings("unused")
     public YggraPlugin(@Nullable Integer pluginId, @Nullable Library[] libraries) {
         this(pluginId, null, libraries);
     }
 
+    @SuppressWarnings("unused")
     public YggraPlugin(@Nullable Integer pluginId) {
         this(pluginId, null, null);
     }
@@ -223,7 +225,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
             platform.setup(this, _serviceCollection);
 
             if (_pluginId != null) {
-                Metrics metrics = new Metrics(this, _pluginId);
+                @SuppressWarnings("unused") Metrics metrics = new Metrics(this, _pluginId);
             }
         }
         catch (Exception ex) {
@@ -253,7 +255,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
     }
 
     @Override
-    public @NonNull String replacePlaceholders(String message) {
+    public @NonNull String replacePlaceholders(@NonNull String message) {
         return message.replace("%prefix%", Objects.requireNonNull(config().get("general.prefix", "")));
     }
 

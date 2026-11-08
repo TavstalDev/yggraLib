@@ -8,6 +8,7 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public interface IChatService {
 
     Component buildWithButtons(String message, Map<String, Component> parameters);

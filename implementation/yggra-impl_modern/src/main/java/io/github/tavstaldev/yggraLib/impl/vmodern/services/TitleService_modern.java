@@ -1,6 +1,5 @@
 package io.github.tavstaldev.yggraLib.impl.vmodern.services;
 
-import io.github.tavstaldev.yggraLib.api.IYggraPlugin;
 import io.github.tavstaldev.yggraLib.api.localization.ITranslationService;
 import io.github.tavstaldev.yggraLib.bukkit.services.ITitleService;
 import io.github.tavstaldev.yggraLib.bukkit.utils.AdventureUtils;
@@ -11,11 +10,9 @@ import java.time.Duration;
 import java.util.Map;
 
 public class TitleService_modern implements ITitleService {
-    private final IYggraPlugin plugin;
     private final ITranslationService translationService;
 
-    public TitleService_modern(IYggraPlugin plugin, ITranslationService translationService) {
-        this.plugin = plugin;
+    public TitleService_modern(ITranslationService translationService) {
         this.translationService = translationService;
     }
 

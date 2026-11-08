@@ -12,6 +12,7 @@ import redis.clients.jedis.params.SetParams;
  * Redis-backed cache implementation. Values are serialized to JSON via Gson and stored
  * with TTL-based expiration using Redis' EX command.
  */
+@SuppressWarnings("unused")
 public class RedisCache implements ICache {
     private final RedisClient redisClient;
     private final Gson gson = new Gson();

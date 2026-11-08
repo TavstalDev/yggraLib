@@ -57,7 +57,7 @@ public class ChatService_1_8_8 implements IChatService {
         adventure.player(player).sendMessage(AdventureUtils.parse(plugin.replacePlaceholders(message), true));
     }
 
-    public void sendRichMsg(@NonNull Player player, @NonNull String message, Map<String, Object> parameters) {
+    public void sendRichMsg(@NonNull Player player, @NonNull String message, @NonNull Map<String, Object> parameters) {
         String rawMessage = message;
 
         // Get the keys
@@ -74,12 +74,12 @@ public class ChatService_1_8_8 implements IChatService {
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
-    public void sendLocalizedMsg(Player player, @NonNull String key) {
+    public void sendLocalizedMsg(@NonNull Player player, @NonNull String key) {
         String rawMessage = translator.localize(player.getUniqueId(), key);
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
-    public void sendLocalizedMsg(Player player, @NonNull String key, @NonNull Map<String, Object> parameters) {
+    public void sendLocalizedMsg(@NonNull Player player, @NonNull String key, @NonNull Map<String, Object> parameters) {
         String rawMessage = translator.localize(player.getUniqueId(), key, parameters);
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }

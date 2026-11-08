@@ -181,7 +181,7 @@ public class ItemSerializer_modern extends ItemSerializerBase {
                 // customModelData
                 customModelDataIO.deserialize(meta, itemMap);
 
-                item.setItemMeta(meta);  // Set the meta data to the item
+                item.setItemMeta(meta);  // Set the metadata to the item
                 itemResult = item;
             }
         } catch (Exception ex) {

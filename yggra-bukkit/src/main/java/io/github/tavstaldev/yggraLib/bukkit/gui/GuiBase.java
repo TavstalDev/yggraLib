@@ -137,6 +137,7 @@ public abstract class GuiBase extends FileConfiguration {
      * @param player The player who opened the menu.
      * @param args Optional contextual arguments
      */
+    @SuppressWarnings("unused")
     public void onOpen(Player player, Object... args) {
         // optional
     }
@@ -146,6 +147,7 @@ public abstract class GuiBase extends FileConfiguration {
      *
      * @param player The player who closed the menu.
      */
+    @SuppressWarnings("unused")
     public void onClose(Player player) {
         // optional
     }

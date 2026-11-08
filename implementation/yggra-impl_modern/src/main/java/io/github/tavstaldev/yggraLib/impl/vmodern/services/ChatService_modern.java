@@ -49,11 +49,11 @@ public class ChatService_modern implements IChatService {
         return result.decoration(TextDecoration.ITALIC, false);
     }
 
-    public void sendRichMsg(Player player, @NotNull String message) {
+    public void sendRichMsg(@NotNull Player player, @NotNull String message) {
         player.sendMessage(AdventureUtils.parse(plugin.replacePlaceholders(message), true));
     }
 
-    public void sendRichMsg(@NotNull Player player, @NotNull String message, Map<String, Object> parameters) {
+    public void sendRichMsg(@NotNull Player player, @NotNull String message, @NotNull Map<String, Object> parameters) {
         String rawMessage = message;
 
         // Get the keys
@@ -70,12 +70,12 @@ public class ChatService_modern implements IChatService {
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
-    public void sendLocalizedMsg(Player player, @NotNull String key) {
+    public void sendLocalizedMsg(@NotNull Player player, @NotNull String key) {
         String rawMessage = translator.localize(player.getUniqueId(), key);
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
-    public void sendLocalizedMsg(Player player, @NotNull String key, @NotNull Map<String, Object> parameters) {
+    public void sendLocalizedMsg(@NotNull Player player, @NotNull String key, @NotNull Map<String, Object> parameters) {
         String rawMessage = translator.localize(player.getUniqueId(), key, parameters);
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }

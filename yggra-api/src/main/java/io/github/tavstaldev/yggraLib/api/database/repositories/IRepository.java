@@ -11,6 +11,7 @@ import java.util.List;
  * @param <ID> The type of the entity's identifier.
  * @param <T>  The entity type.
  */
+@SuppressWarnings("unused")
 public interface IRepository<ID, T> {
 
     /**

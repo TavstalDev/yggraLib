@@ -19,6 +19,7 @@ import java.util.regex.Pattern;
  * Provides conversion from legacy Minecraft color codes (&amp;/&sect;) to MiniMessage
  * format, and translation of color-coded strings into Adventure {@link Component} objects.
  */
+@SuppressWarnings("unused")
 public final class AdventureUtils {
 
     public static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
