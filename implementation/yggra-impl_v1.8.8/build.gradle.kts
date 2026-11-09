@@ -1,0 +1,26 @@
+val fastboardVersion = project.property("fastboardVersion") as String
+val snakeYamlVersion = project.property("snakeYamlVersion") as String
+val adventureApiVersion = project.property("adventureApiVersion") as String
+val triumphGuiVersion = project.property("triumphGuiVersion") as String
+
+dependencies {
+    compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
+    compileOnly(project(":yggra-api"))
+    compileOnly(project(":yggra-bukkit"))
+    compileOnly(project(":yggra-impl_legacy"))
+    compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
+    compileOnly("net.kyori:adventure-api:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-text-serializer-legacy:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-text-minimessage:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-text-serializer-plain:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-text-serializer-gson:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-platform-bukkit:4.4.1")
+    compileOnly("org.yaml:snakeyaml:${snakeYamlVersion}")
+    compileOnly("dev.triumphteam:triumph-gui:${triumphGuiVersion}")
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}

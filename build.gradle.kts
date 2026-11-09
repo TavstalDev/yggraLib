@@ -7,14 +7,13 @@ allprojects {
     version = "1.0.0"
 }
 
-val javaVersion = project.property("javaVersion") as String
 val jetbrainsAnnotationsVersion = project.property("jetbrainsAnnotationsVersion") as String
 val lombokVersion = project.property("lombokVersion") as String
 java {
     toolchain {
-        languageVersion = JavaLanguageVersion.of(javaVersion)
-        sourceCompatibility = JavaVersion.toVersion(javaVersion)
-        targetCompatibility = JavaVersion.toVersion(javaVersion)
+        languageVersion = JavaLanguageVersion.of(25)
+        sourceCompatibility = JavaVersion.toVersion(25)
+        targetCompatibility = JavaVersion.toVersion(25)
     }
 }
 
@@ -37,7 +36,7 @@ subprojects {
 
     configurations.configureEach {
         if (name.endsWith("RuntimeClasspath") || name.endsWith("TestRuntimeClasspath")) {
-            attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 21)
+            attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
         }
     }
 }

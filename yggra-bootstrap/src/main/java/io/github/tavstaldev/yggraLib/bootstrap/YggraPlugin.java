@@ -271,12 +271,20 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
     private static @NonNull String getImplClassName() {
         String implClassName;
 
-        if (VersionUtils.isAtLeast(1, 21, 5))
+        if (VersionUtils.isAtLeast(26, 2))
+            implClassName = "io.github.tavstaldev.yggraLib.impl.v26_2.Platform";
+        else if (VersionUtils.isAtLeast(1, 21, 5))
             implClassName = "io.github.tavstaldev.yggraLib.impl.v1_21_5.Platform";
         else if (VersionUtils.isAtLeast(1, 21))
             implClassName = "io.github.tavstaldev.yggraLib.impl.v1_21.Platform";
         else if (VersionUtils.isAtLeast(1, 20))
             implClassName = "io.github.tavstaldev.yggraLib.impl.v1_20_4.Platform";
+        else if (VersionUtils.isAtLeast(1, 14))
+            implClassName = "io.github.tavstaldev.yggraLib.impl.v1_14.Platform";
+        else if (VersionUtils.isAtLeast(1, 13))
+            implClassName = "io.github.tavstaldev.yggraLib.impl.v1_13.Platform";
+        else if (VersionUtils.isAtLeast(1, 12))
+            implClassName = "io.github.tavstaldev.yggraLib.impl.v1_12.Platform";
         else if (VersionUtils.isAtLeast(1, 8))
             implClassName = "io.github.tavstaldev.yggraLib.impl.v1_8_8.Platform";
         else

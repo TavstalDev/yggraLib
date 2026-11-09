@@ -33,13 +33,13 @@ dependencies {
 
     compileOnly(project(":yggra-api"))
     compileOnly(project(":yggra-bukkit"))
-    implementation(project(":yggra-bootstrap")) {
+    implementation(project(path = ":yggra-bootstrap", configuration = "shadow")) {
         isTransitive = false
     }
 }
 
 configurations.runtimeClasspath {
-    attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 21)
+    attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
 }
 
 // Disable the default JAR task

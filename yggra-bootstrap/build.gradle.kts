@@ -27,10 +27,13 @@ dependencies {
     implementation("org.bspfsystems:yamlconfiguration:${yamlConfigVersion}")
     implementation(project(":yggra-api"))
     implementation(project(":yggra-bukkit"))
-    runtimeOnly(project(":yggra-impl_1.8.8"))
-    runtimeOnly(project(":yggra-impl_1.20.4"))
-    runtimeOnly(project(":yggra-impl_1.21"))
-    runtimeOnly(project(":yggra-impl_1.21.5"))
+    runtimeOnly(project(":yggra-impl_v1.8.8"))
+    runtimeOnly(project(":yggra-impl_v1.12"))
+    runtimeOnly(project(":yggra-impl_v1.13"))
+    runtimeOnly(project(":yggra-impl_v1.14"))
+    runtimeOnly(project(":yggra-impl_v1.20.4"))
+    runtimeOnly(project(":yggra-impl_v1.21"))
+    runtimeOnly(project(":yggra-impl_v1.21.5"))
 }
 
 java {
@@ -40,7 +43,7 @@ java {
 }
 
 configurations.runtimeClasspath {
-    attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 21)
+    attributes.attribute(TargetJvmVersion.TARGET_JVM_VERSION_ATTRIBUTE, 25)
 }
 
 // Disable the default JAR task
