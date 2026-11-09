@@ -10,8 +10,8 @@ import io.github.tavstaldev.yggraLib.bukkit.items.ItemSerializerBase;
 import io.github.tavstaldev.yggraLib.bukkit.utils.AdventureUtils;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
-import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.configuration.file.FileConfiguration;
+import org.bspfsystems.yamlconfiguration.configuration.ConfigurationSection;
+import org.bspfsystems.yamlconfiguration.file.YamlConfiguration;
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
 
@@ -24,8 +24,9 @@ import java.util.*;
  * Abstract base class for all GUI menus. Handles menu creation, button resolution,
  * dynamic slot parsing, and configuration persistence.
  */
-public abstract class GuiBase extends FileConfiguration {
+public abstract class GuiBase {
     protected final File file;
+    protected final YamlConfiguration yaml;
     protected final IYggraPlugin plugin;
     protected final YggraLogger logger;
     protected final ITranslationService translator;
@@ -53,6 +54,7 @@ public abstract class GuiBase extends FileConfiguration {
     @SneakyThrows
     public GuiBase(String id, IYggraPlugin plugin, String fileName, String title, boolean isTitleTranslated, int size, HashMap<String, List<String>> defaultDynamicSlots,
                    HashSet<GuiButton> defaultButtons) {
+        yaml = new YamlConfiguration();
         Path filePath = Paths.get(plugin.dataFolder().getPath(), "menus", fileName);
         file = filePath.toFile();
         try {
@@ -66,7 +68,7 @@ public abstract class GuiBase extends FileConfiguration {
                 file.createNewFile();
             }
             else {
-                this.load(file);
+                yaml.load(file);
             }
         }
         catch (Exception ignored) {}
@@ -78,15 +80,15 @@ public abstract class GuiBase extends FileConfiguration {
         this.guiRenderer = plugin.getRequiredService(IGuiRenderer.class);
         this.itemSerializer = plugin.getRequiredService(ItemSerializerBase.class);
 
-        this.menuTitle = this.getString("title", title);
-        this.isTitleTranslated = this.getBoolean("title-translated", isTitleTranslated);
+        this.menuTitle = yaml.getString("title", title);
+        this.isTitleTranslated = yaml.getBoolean("title-translated", isTitleTranslated);
         if (size > 6 || size < 1)
             size = 6;
-        this.menuSize = this.getInt("size", size);
+        this.menuSize = yaml.getInt("size", size);
         this.dynamicSlots = resolveDynamicSlots(defaultDynamicSlots);
         this.buttons = resolveButtons(defaultButtons);
         try {
-            this.save(file);
+            yaml.save(file);
         }
         catch (Exception ignored) { }
     }
@@ -154,16 +156,16 @@ public abstract class GuiBase extends FileConfiguration {
     private HashMap<String, List<Integer>> resolveDynamicSlots(HashMap<String, List<String>> defaultDynamicSlots) {
         HashMap<String, List<Integer>> dynamicSlots = new HashMap<>();
 
-        ConfigurationSection section = this.getConfigurationSection("dynamic-slots");
+        ConfigurationSection section = yaml.getConfigurationSection("dynamic-slots");
         if (section == null || section.getKeys(false).isEmpty()) {
-            this.set("dynamic-slots", defaultDynamicSlots);
+            yaml.set("dynamic-slots", defaultDynamicSlots);
             for (String key : defaultDynamicSlots.keySet()) {
                 dynamicSlots.put(key, SlotParser.parse(defaultDynamicSlots.get(key)));
             }
             return dynamicSlots;
         }
         for (String key : section.getKeys(false)) {
-            List<String> rawSlotList = this.getStringList("dynamic-slots." + key);
+            List<String> rawSlotList = yaml.getStringList("dynamic-slots." + key);
             dynamicSlots.put(key, SlotParser.parse(rawSlotList));
         }
         return dynamicSlots;
@@ -178,13 +180,13 @@ public abstract class GuiBase extends FileConfiguration {
     private HashSet<GuiButton> resolveButtons(HashSet<GuiButton> defaultButtons) {
         HashSet<GuiButton> buttons = new LinkedHashSet<>();
 
-        List<Map<?, ?>> buttonMap = this.getMapList("buttons");
+        List<Map<?, ?>> buttonMap = yaml.getMapList("buttons");
         if (buttonMap.isEmpty()) {
             List<Map<String, Object>> defaultList = new ArrayList<>();
             for (GuiButton button : defaultButtons) {
                 defaultList.add(button.toMap(itemSerializer));
             }
-            this.set("buttons", defaultList);
+            yaml.set("buttons", defaultList);
             return defaultButtons;
         }
         for (Map<?, ?> btnElem : buttonMap) {
