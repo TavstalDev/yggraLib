@@ -3,6 +3,7 @@ package io.github.tavstaldev.yggraLib.api.utils;
 import java.util.HashMap;
 import java.util.Map;
 
+@SuppressWarnings("unused")
 public class MapUtil {
     public static <K, V> Map<K, V> of(K key1, V value1) {
         Map<K, V> result = new HashMap<>();
