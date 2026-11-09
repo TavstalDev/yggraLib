@@ -1,9 +1,7 @@
 package io.github.tavstaldev.yggraLib.impl.v1_8_8.items;
 
 import io.github.tavstaldev.yggraLib.api.utils.TypeUtils;
-import io.github.tavstaldev.yggraLib.bukkit.items.EHandlerType;
-import io.github.tavstaldev.yggraLib.bukkit.items.IMetaHandler;
-import io.github.tavstaldev.yggraLib.bukkit.items.ItemSerializerBase;
+import io.github.tavstaldev.yggraLib.bukkit.items.*;
 import io.github.tavstaldev.yggraLib.impl.v1_8_8.items.meta.*;
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
@@ -23,9 +21,9 @@ public class ItemSerializer_1_8_8 extends ItemSerializerBase {
     /**
      * {@inheritDoc}
      */
-    public ItemSerializer_1_8_8(Logger logger) {
+    public ItemSerializer_1_8_8(Logger logger, IRegistryAccessor registryAccessor) {
         super(logger,
-                new RegistryAccessor_1_8_8(),
+                registryAccessor,
                 null,
                 new PotionNameHandler_1_8_8(),
                 createHandlerMap()

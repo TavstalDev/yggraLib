@@ -7,9 +7,13 @@ import io.github.tavstaldev.yggraLib.api.localization.ITranslationService;
 import io.github.tavstaldev.yggraLib.api.localization.TranslationService;
 import io.github.tavstaldev.yggraLib.api.scheduler.IScheduler;
 import io.github.tavstaldev.yggraLib.bukkit.gui.IGuiRenderer;
+import io.github.tavstaldev.yggraLib.bukkit.items.IItemStackAccessor;
+import io.github.tavstaldev.yggraLib.bukkit.items.IRegistryAccessor;
 import io.github.tavstaldev.yggraLib.bukkit.items.ItemSerializerBase;
 import io.github.tavstaldev.yggraLib.bukkit.services.*;
 import io.github.tavstaldev.yggraLib.impl.v1_8_8.items.ItemSerializer_1_8_8;
+import io.github.tavstaldev.yggraLib.impl.v1_8_8.items.ItemStackAccessor_1_8_8;
+import io.github.tavstaldev.yggraLib.impl.v1_8_8.items.RegistryAccessor_1_8_8;
 import io.github.tavstaldev.yggraLib.impl.v1_8_8.scheduler.PaperScheduler_1_8_8;
 import io.github.tavstaldev.yggraLib.impl.v1_8_8.services.*;
 import lombok.SneakyThrows;
@@ -33,7 +37,14 @@ public class Platform implements IPlatform {
         serviceCollection.put(IScoreboardService.class, new ScoreboardService_1_8_8());
         serviceCollection.put(ISoundService.class, new SoundService_1_8_8(plugin));
         serviceCollection.put(IScheduler.class, new PaperScheduler_1_8_8((JavaPlugin)plugin));
-        serviceCollection.put(ItemSerializerBase.class, new ItemSerializer_1_8_8(Logger.getLogger("ItemSerializer")));
+
+        IRegistryAccessor registryAccessor = new RegistryAccessor_1_8_8();
+        serviceCollection.put(IRegistryAccessor.class, registryAccessor);
+
+        serviceCollection.put(ItemSerializerBase.class, new ItemSerializer_1_8_8(Logger.getLogger("ItemSerializer"),
+                registryAccessor));
+        serviceCollection.put(IItemStackAccessor.class, new ItemStackAccessor_1_8_8(registryAccessor));
+
         serviceCollection.put(IGuiRenderer.class, new GuiRenderer_1_8_8());
     }
 }
