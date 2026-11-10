@@ -11,12 +11,14 @@ import io.github.tavstaldev.yggraLib.bukkit.items.ICustomModelDataIO;
 import io.github.tavstaldev.yggraLib.bukkit.items.IItemStackAccessor;
 import io.github.tavstaldev.yggraLib.bukkit.items.IRegistryAccessor;
 import io.github.tavstaldev.yggraLib.bukkit.items.ItemSerializerBase;
+import io.github.tavstaldev.yggraLib.bukkit.items.metaAccessors.ISkullMetaAccessor;
 import io.github.tavstaldev.yggraLib.bukkit.services.*;
 import io.github.tavstaldev.yggraLib.bukkit.utils.VersionUtils;
 import io.github.tavstaldev.yggraLib.impl.v1_21.items.CustomModelDataIO_1_21;
 import io.github.tavstaldev.yggraLib.impl.v1_21.items.ItemStackAccessor_1_21;
 import io.github.tavstaldev.yggraLib.impl.v1_21.items.RegistryAccessor_1_21;
 import io.github.tavstaldev.yggraLib.impl.vmodern.items.ItemSerializer_modern;
+import io.github.tavstaldev.yggraLib.impl.vmodern.items.metaAccessor.SkullMetaAccessor_modern;
 import io.github.tavstaldev.yggraLib.impl.vmodern.scheduler.FoliaScheduler_modern;
 import io.github.tavstaldev.yggraLib.impl.vmodern.scheduler.PaperScheduler_modern;
 import io.github.tavstaldev.yggraLib.impl.vmodern.services.*;
@@ -54,6 +56,8 @@ public class Platform implements IPlatform {
         serviceCollection.put(ItemSerializerBase.class, new ItemSerializer_modern(Logger.getLogger("ItemSerializer"),
                 registryAccessor, customModelDataIO));
         serviceCollection.put(IItemStackAccessor.class, new ItemStackAccessor_1_21(registryAccessor));
+
+        serviceCollection.put(ISkullMetaAccessor.class, new SkullMetaAccessor_modern());
 
         serviceCollection.put(IGuiRenderer.class, new GuiRenderer_modern());
     }
