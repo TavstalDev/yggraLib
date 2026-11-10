@@ -13,6 +13,8 @@ public interface IChatService {
 
     Component buildWithButtons(String message, Map<String, Component> parameters);
 
+    void send(@NotNull Player player, Component component);
+
     void sendRichMsg(@NotNull Player player, @NotNull String message);
 
     void sendRichMsg(@NotNull Player player, @NotNull String message, @NotNull Map<String, Object> parameters);
@@ -24,4 +26,6 @@ public interface IChatService {
     void sendCommandReply(@Nullable CommandSender sender, @NotNull String key);
 
     void sendCommandReply(@Nullable CommandSender sender, @NotNull String key, Map<String, Object> parameters);
+
+    void sendCommandReply(@NotNull CommandSender sender, Component component);
 }

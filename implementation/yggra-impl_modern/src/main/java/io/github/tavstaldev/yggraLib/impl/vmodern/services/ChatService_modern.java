@@ -49,6 +49,11 @@ public class ChatService_modern implements IChatService {
         return result.decoration(TextDecoration.ITALIC, false);
     }
 
+    @Override
+    public void send(@NotNull Player player, Component component) {
+        player.sendMessage(component);
+    }
+
     public void sendRichMsg(@NotNull Player player, @NotNull String message) {
         player.sendMessage(AdventureUtils.parse(plugin.replacePlaceholders(message), true));
     }
@@ -98,5 +103,10 @@ public class ChatService_modern implements IChatService {
         }
         // Log the localized message with parameters to the console or other non-player sender
         logger.info(translator.localize(key, parameters).replace('&', '§'));
+    }
+
+    @Override
+    public void sendCommandReply(@NotNull CommandSender sender, Component component) {
+        sender.sendMessage(component);
     }
 }

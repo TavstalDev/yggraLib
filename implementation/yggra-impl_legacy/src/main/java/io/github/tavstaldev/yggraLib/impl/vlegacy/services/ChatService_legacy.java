@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.intellij.lang.annotations.RegExp;
+import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
 
 import java.util.Map;
@@ -51,6 +52,11 @@ public class ChatService_legacy implements IChatService {
                     .build());
         }
         return result.decoration(TextDecoration.ITALIC, false);
+    }
+
+    @Override
+    public void send(@NotNull Player player, Component component) {
+        adventure.player(player).sendMessage(component);
     }
 
     public void sendRichMsg(@NonNull Player player, @NonNull String message) {
@@ -104,5 +110,10 @@ public class ChatService_legacy implements IChatService {
         }
         // Log the localized message with parameters to the console or other non-player sender
         logger.info(translator.localize(key, parameters).replace('&', '§'));
+    }
+
+    @Override
+    public void sendCommandReply(@NotNull CommandSender sender, Component component) {
+        adventure.sender(sender).sendMessage(component);
     }
 }
