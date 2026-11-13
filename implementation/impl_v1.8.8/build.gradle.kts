@@ -5,9 +5,9 @@ val triumphGuiVersion = project.property("triumphGuiVersion") as String
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
-    compileOnly(project(":yggra-api"))
-    compileOnly(project(":yggra-bukkit"))
-    compileOnly(project(":yggra-impl_legacy"))
+    compileOnly(project(":api"))
+    compileOnly(project(":bukkit"))
+    compileOnly(project(":impl_legacy"))
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
     compileOnly("net.kyori:adventure-api:${adventureApiVersion}")
     compileOnly("net.kyori:adventure-text-serializer-legacy:${adventureApiVersion}")

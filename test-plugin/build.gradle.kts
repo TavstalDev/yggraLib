@@ -31,9 +31,9 @@ dependencies {
     compileOnly("net.kyori:adventure-text-serializer-plain:${adventureApiVersion}")
     compileOnly("net.kyori:adventure-text-serializer-gson:${adventureApiVersion}")
 
-    compileOnly(project(":yggra-api"))
-    compileOnly(project(":yggra-bukkit"))
-    implementation(project(path = ":yggra-bootstrap", configuration = "shadow")) {
+    compileOnly(project(":api"))
+    compileOnly(project(":bukkit"))
+    implementation(project(path = ":bootstrap", configuration = "shadow")) {
         isTransitive = false
     }
 }
@@ -48,12 +48,12 @@ tasks.jar {
 }
 
 tasks.compileJava {
-    dependsOn(":yggra-bootstrap:shadowJar")
+    dependsOn(":bootstrap:shadowJar")
 }
 
 // Configure the Shadow JAR task
 tasks.shadowJar {
-    dependsOn(":yggra-bootstrap:shadowJar")
+    dependsOn(":bootstrap:shadowJar")
     archiveClassifier.set("") // Set the classifier for the JAR
     manifest {
         attributes["paperweight-mappings-namespace"] = "spigot" // Add custom manifest attributes
