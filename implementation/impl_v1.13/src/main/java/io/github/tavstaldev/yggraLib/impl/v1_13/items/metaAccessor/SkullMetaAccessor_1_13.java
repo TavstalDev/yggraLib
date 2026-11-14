@@ -4,15 +4,17 @@ import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import io.github.tavstaldev.yggraLib.bukkit.items.metaAccessors.ISkullMetaAccessor;
 import org.bukkit.Bukkit;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.SkullMeta;
 
 import java.util.UUID;
 
 public class SkullMetaAccessor_1_13 implements ISkullMetaAccessor {
     @Override
-    public void setOwner(SkullMeta skullMeta, String owner) {
+    public void setTexture(ItemStack item, String texture) {
+        SkullMeta skullMeta = (SkullMeta)item.getItemMeta();
         PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
-        profile.setProperty(new ProfileProperty("textures", owner));
+        profile.setProperty(new ProfileProperty("textures", texture));
         skullMeta.setPlayerProfile(profile);
     }
 }
