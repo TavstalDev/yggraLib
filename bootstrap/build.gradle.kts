@@ -12,6 +12,9 @@ val triumphGuiVersion = project.property("triumphGuiVersion") as String
 val bstatsVersion = project.property("bstatsVersion") as String
 val fastboardVersion = project.property("fastboardVersion") as String
 val libbyVersion = project.property("libbyVersion") as String
+val actionBarVersion = project.property("actionBarVersion") as String
+val bossBarVersion = project.property("bossBarVersion") as String
+val titleVersion = project.property("titleVersion") as String
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
@@ -34,6 +37,9 @@ dependencies {
     runtimeOnly(project(":impl_v1.20.4"))
     runtimeOnly(project(":impl_v1.21"))
     runtimeOnly(project(":impl_v1.21.5"))
+    implementation(files("../libs/yggraActionBar-$actionBarVersion.jar"))
+    implementation(files("../libs/yggraBossBar-$bossBarVersion.jar"))
+    implementation(files("../libs/yggraTitle-$titleVersion.jar"))
 }
 
 java {
@@ -71,6 +77,9 @@ tasks.shadowJar {
     relocate("net.byteflux", "${shadeGroup}.libby")
     relocate("org.yaml", "${shadeGroup}.yaml") // Required by yamlconfiguration
     relocate("org.bspfsystems", "${shadeGroup}.bspfsystems")
+    relocate("io.github.tavstaldev.yggraActionBar", "${shadeGroup}.yggraActionBar")
+    relocate("io.github.tavstaldev.yggraBossBar", "${shadeGroup}.yggraBossBar")
+    relocate("io.github.tavstaldev.yggraTitle", "${shadeGroup}.yggraTitle")
 }
 
 // Ensure the Shadow JAR task runs during the build process

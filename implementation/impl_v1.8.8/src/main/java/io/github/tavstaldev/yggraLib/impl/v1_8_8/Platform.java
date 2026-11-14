@@ -1,5 +1,9 @@
 package io.github.tavstaldev.yggraLib.impl.v1_8_8;
 
+import io.github.tavstaldev.yggraActionBar.api.IActionBar;
+import io.github.tavstaldev.yggraActionBar.bootstrap.YggraActionBar;
+import io.github.tavstaldev.yggraBossBar.api.IBossBar;
+import io.github.tavstaldev.yggraBossBar.bootstrap.YggraBossBar;
 import io.github.tavstaldev.yggraLib.api.IPlatform;
 import io.github.tavstaldev.yggraLib.api.IYggraPlugin;
 import io.github.tavstaldev.yggraLib.api.localization.ILanguageService;
@@ -19,6 +23,8 @@ import io.github.tavstaldev.yggraLib.impl.v1_8_8.services.LanguageService_1_8_8;
 import io.github.tavstaldev.yggraLib.impl.vlegacy.items.ItemStackAccessor_legacy;
 import io.github.tavstaldev.yggraLib.impl.vlegacy.scheduler.PaperScheduler_legacy;
 import io.github.tavstaldev.yggraLib.impl.vlegacy.services.*;
+import io.github.tavstaldev.yggraTitle.api.ITitle;
+import io.github.tavstaldev.yggraTitle.bootstrap.YggraTitle;
 import lombok.SneakyThrows;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -33,13 +39,14 @@ public class Platform implements IPlatform {
         ITranslationService translationService = new TranslationService(plugin);
         serviceCollection.put(ITranslationService.class, translationService);
 
-        serviceCollection.put(IActionBarService.class, new ActionBarService_legacy(plugin, translationService));
+        JavaPlugin javaPlugin = (JavaPlugin)plugin;
+        serviceCollection.put(IActionBar.class, new YggraActionBar(javaPlugin));
         serviceCollection.put(IChatService.class, new ChatService_legacy(plugin, translationService));
-        serviceCollection.put(IBossBarService.class, new BossBarService_legacy(plugin));
-        serviceCollection.put(ITitleService.class, new TitleService_legacy(plugin, translationService));
+        serviceCollection.put(IBossBar.class, new YggraBossBar(javaPlugin));
+        serviceCollection.put(ITitle.class, new YggraTitle(javaPlugin));
         serviceCollection.put(IScoreboardService.class, new ScoreboardService_legacy());
         serviceCollection.put(ISoundService.class, new SoundService_legacy(plugin));
-        serviceCollection.put(IScheduler.class, new PaperScheduler_legacy((JavaPlugin)plugin));
+        serviceCollection.put(IScheduler.class, new PaperScheduler_legacy(javaPlugin));
 
         IRegistryAccessor registryAccessor = new RegistryAccessor_1_8_8();
         serviceCollection.put(IRegistryAccessor.class, registryAccessor);

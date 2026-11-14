@@ -26,6 +26,7 @@ subprojects {
         maven("https://repo.papermc.io/repository/maven-public/")
         maven("https://jitpack.io")
         maven("https://repo.alessiodp.com/releases")
+        maven("https://libraries.minecraft.net/")
     }
 
     dependencies {

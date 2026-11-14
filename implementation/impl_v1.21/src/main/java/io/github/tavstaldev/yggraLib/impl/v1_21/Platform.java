@@ -1,5 +1,9 @@
 package io.github.tavstaldev.yggraLib.impl.v1_21;
 
+import io.github.tavstaldev.yggraActionBar.api.IActionBar;
+import io.github.tavstaldev.yggraActionBar.bootstrap.YggraActionBar;
+import io.github.tavstaldev.yggraBossBar.api.IBossBar;
+import io.github.tavstaldev.yggraBossBar.bootstrap.YggraBossBar;
 import io.github.tavstaldev.yggraLib.api.IPlatform;
 import io.github.tavstaldev.yggraLib.api.IYggraPlugin;
 import io.github.tavstaldev.yggraLib.api.localization.ILanguageService;
@@ -22,6 +26,8 @@ import io.github.tavstaldev.yggraLib.impl.vmodern.items.metaAccessor.SkullMetaAc
 import io.github.tavstaldev.yggraLib.impl.vmodern.scheduler.FoliaScheduler_modern;
 import io.github.tavstaldev.yggraLib.impl.vmodern.scheduler.PaperScheduler_modern;
 import io.github.tavstaldev.yggraLib.impl.vmodern.services.*;
+import io.github.tavstaldev.yggraTitle.api.ITitle;
+import io.github.tavstaldev.yggraTitle.bootstrap.YggraTitle;
 import lombok.SneakyThrows;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -36,17 +42,18 @@ public class Platform implements IPlatform {
         ITranslationService translationService = new TranslationService(plugin);
         serviceCollection.put(ITranslationService.class, translationService);
 
-        serviceCollection.put(IActionBarService.class, new ActionBarService_modern(plugin, translationService));
+        JavaPlugin javaPlugin = (JavaPlugin)plugin;
+        serviceCollection.put(IActionBar.class, new YggraActionBar(javaPlugin));
         serviceCollection.put(IChatService.class, new ChatService_modern(plugin, translationService));
-        serviceCollection.put(IBossBarService.class, new BossBarService_modern());
-        serviceCollection.put(ITitleService.class, new TitleService_modern(translationService));
+        serviceCollection.put(IBossBar.class, new YggraBossBar(javaPlugin));
+        serviceCollection.put(ITitle.class, new YggraTitle(javaPlugin));
         serviceCollection.put(IScoreboardService.class, new ScoreboardService_modern());
         serviceCollection.put(ISoundService.class, new SoundService_modern());
         if (VersionUtils.isFolia()) {
-            serviceCollection.put(IScheduler.class, new FoliaScheduler_modern((JavaPlugin) plugin));
+            serviceCollection.put(IScheduler.class, new FoliaScheduler_modern(javaPlugin));
         }
         else {
-            serviceCollection.put(IScheduler.class, new PaperScheduler_modern((JavaPlugin) plugin));
+            serviceCollection.put(IScheduler.class, new PaperScheduler_modern(javaPlugin));
         }
 
         IRegistryAccessor registryAccessor = new RegistryAccessor_1_21();
