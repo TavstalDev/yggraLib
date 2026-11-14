@@ -168,6 +168,6 @@ public abstract class CommandBase implements CommandExecutor, TabCompleter {
             bottomParams.put("next_btn", AdventureUtils.parse(nextBtn, true));
 
         Component bottomComp = chatService.buildWithButtons(bottomMsg, bottomParams);
-        sender.sendMessage(AdventureUtils.PLAIN_TEXT.serialize(bottomComp));
+        chatService.sendCommandReply(sender, bottomComp);
     }
 }
