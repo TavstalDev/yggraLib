@@ -23,13 +23,11 @@ public class ChatService_legacy implements IChatService {
     private final IYggraPlugin plugin;
     private final YggraLogger logger;
     private final ITranslationService translator;
-    private final BukkitAudiences adventure;
 
     public ChatService_legacy(IYggraPlugin plugin, ITranslationService translationService) {
         this.plugin = plugin;
         logger = plugin.logger().withModule(ChatService_legacy.class);
         translator = translationService;
-        adventure = BukkitAudiences.create((JavaPlugin)plugin);
     }
 
     public Component buildWithButtons(String message, Map<String, Component> parameters) {
@@ -56,11 +54,11 @@ public class ChatService_legacy implements IChatService {
 
     @Override
     public void send(@NotNull Player player, Component component) {
-        adventure.player(player).sendMessage(component);
+        sendRichMsg(player, AdventureUtils.toLegacy(component));
     }
 
     public void sendRichMsg(@NonNull Player player, @NonNull String message) {
-        adventure.player(player).sendMessage(AdventureUtils.parse(plugin.replacePlaceholders(message), true));
+        player.sendMessage(AdventureUtils.toLegacy(AdventureUtils.parse(this.plugin.replacePlaceholders(message))));
     }
 
     public void sendRichMsg(@NonNull Player player, @NonNull String message, @NonNull Map<String, Object> parameters) {
@@ -98,7 +96,7 @@ public class ChatService_legacy implements IChatService {
             return;
         }
         // Log the localized message to the console or other non-player sender
-        logger.info(translator.localize(key).replace('&', '§'));
+        logger.info(translator.localize(key).replace('&', ' '));
     }
 
     public void sendCommandReply(CommandSender sender, @NonNull String key, Map<String, Object> parameters) {
@@ -109,11 +107,18 @@ public class ChatService_legacy implements IChatService {
             return;
         }
         // Log the localized message with parameters to the console or other non-player sender
-        logger.info(translator.localize(key, parameters).replace('&', '§'));
+        logger.info(translator.localize(key, parameters).replace('&', ' '));
     }
 
     @Override
     public void sendCommandReply(@NotNull CommandSender sender, Component component) {
-        adventure.sender(sender).sendMessage(component);
+        if (sender instanceof Player)
+        {
+            Player player = (Player)sender;
+            send(player, component);
+            return;
+        }
+
+        logger.info(AdventureUtils.toLegacy(component).replace('&', ' '));
     }
 }
