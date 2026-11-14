@@ -56,7 +56,7 @@ public class ItemSerializer_1_12 extends ItemSerializerBase {
         logger.fine("Serializing item: " + item.getType().name());
         itemData.put("material", item.getType().toString());  // Store the material (type) of the item
         itemData.put("amount", item.getAmount());  // Store the amount of the item
-
+        itemData.put("durability", item.getDurability());
 
         if (item.hasItemMeta()) {
             ItemMeta meta = item.getItemMeta();
@@ -69,11 +69,6 @@ public class ItemSerializer_1_12 extends ItemSerializerBase {
                 List<String> metaLore = meta.getLore();
                 if (metaLore != null) {
                     itemData.put("lore", metaLore);
-                }
-
-                // Add durability
-                if (item.getType().getMaxDurability() > 0) {
-                    itemData.put("durability", item.getDurability());
                 }
 
                 for (Map.Entry<EHandlerType, IMetaHandler> handler : metaHandlers.entrySet()) {
@@ -126,9 +121,10 @@ public class ItemSerializer_1_12 extends ItemSerializerBase {
                 // Durability
                 if (itemMap.containsKey("durability")) {
                     short durability = 0;
-                    try {
-                        durability = (short) itemMap.get("durability");  // Get the durability of the item
-                    } catch (ClassCastException ignored){}
+                    Object durabilityObj = itemMap.get("durability");
+                    if (durabilityObj instanceof Number) {
+                        durability = ((Number)durabilityObj).shortValue();
+                    }
                     item.setDurability(durability);
                 }
 

@@ -46,31 +46,31 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
 
     @Override
     public void setDisplayName(ItemStack itemStack, String displayName) {
-        if (!itemStack.hasItemMeta())
-            return;
-
         ItemMeta meta = itemStack.getItemMeta();
         meta.setDisplayName(displayName);
+        itemStack.setItemMeta(meta);
     }
 
     @Override
     public void setDisplayName(ItemStack itemStack, Component displayName) {
-        if (!itemStack.hasItemMeta())
-            return;
-
         ItemMeta meta = itemStack.getItemMeta();
+        if (displayName == null) {
+            meta.setDisplayName(null);
+            itemStack.setItemMeta(meta);
+            return;
+        }
         String rawName = AdventureUtils.toLegacy(displayName);
         meta.setDisplayName(rawName);
+        itemStack.setItemMeta(meta);
     }
 
     @Override
     public List<String> getLore(ItemStack itemStack) {
         if (!itemStack.hasItemMeta())
             return null;
-
         ItemMeta meta = itemStack.getItemMeta();
         if (!meta.hasLore())
-            return Collections.emptyList();
+            return null;
         return meta.getLore();
     }
 
@@ -78,42 +78,31 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
     public List<Component> getLoreComp(ItemStack itemStack) {
         if (!itemStack.hasItemMeta())
             return null;
-
         ItemMeta meta = itemStack.getItemMeta();
         if (!meta.hasLore())
-            return Collections.emptyList();
+            return null;
         List<Component> result = new ArrayList<>();
         for (String line : meta.getLore())
             result.add(AdventureUtils.parse(line, true));
-
         return result;
     }
 
     @Override
     public void setLore(ItemStack itemStack, List<String> lore) {
-        if (!itemStack.hasItemMeta())
-            return;
-
         ItemMeta meta = itemStack.getItemMeta();
-        if (!meta.hasLore())
-            return;
-
         meta.setLore(lore);
+        itemStack.setItemMeta(meta);
     }
 
     @Override
     public void setLoreComp(ItemStack itemStack, List<Component> lore) {
-        if (!itemStack.hasItemMeta())
-            return;
-
         ItemMeta meta = itemStack.getItemMeta();
-        if (!meta.hasLore())
-            return;
-
-        List<String> result = new ArrayList<>();
-        for (Component line : lore)
+        ArrayList<String> result = new ArrayList<String>();
+        for (Component line : lore) {
             result.add(AdventureUtils.toLegacy(line));
+        }
         meta.setLore(result);
+        itemStack.setItemMeta(meta);
     }
 
     @Override
@@ -142,16 +131,12 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
     public Set<ItemFlag> getHiddenFlags(ItemStack itemStack) {
         if (!itemStack.hasItemMeta())
             return Collections.emptySet();
-
         ItemMeta meta = itemStack.getItemMeta();
         return meta.getItemFlags();
     }
 
     @Override
     public void hideAllFlags(ItemStack itemStack) {
-        if (!itemStack.hasItemMeta())
-            return;
-
         ItemMeta meta = itemStack.getItemMeta();
         meta.addItemFlags(
                 ItemFlag.HIDE_ATTRIBUTES,
@@ -161,15 +146,14 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
                 ItemFlag.HIDE_POTION_EFFECTS,
                 ItemFlag.HIDE_UNBREAKABLE
         );
+        itemStack.setItemMeta(meta);
     }
 
     @Override
     public void hide(ItemStack itemStack, ItemFlag... flags) {
-        if (!itemStack.hasItemMeta())
-            return;
-
         ItemMeta meta = itemStack.getItemMeta();
         meta.addItemFlags(flags);
+        itemStack.setItemMeta(meta);
     }
 
     @Override
