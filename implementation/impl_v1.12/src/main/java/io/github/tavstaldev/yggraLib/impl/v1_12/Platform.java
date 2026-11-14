@@ -20,6 +20,7 @@ import io.github.tavstaldev.yggraLib.impl.v1_12.items.ItemSerializer_1_12;
 import io.github.tavstaldev.yggraLib.impl.v1_12.items.RegistryAccessor_1_12;
 import io.github.tavstaldev.yggraLib.impl.v1_12.items.metaAccessor.SkullMetaAccessor_1_12;
 import io.github.tavstaldev.yggraLib.impl.v1_12.services.LanguageService_1_12;
+import io.github.tavstaldev.yggraLib.impl.v1_12.services.SoundService_1_12;
 import io.github.tavstaldev.yggraLib.impl.vlegacy.items.ItemStackAccessor_legacy;
 import io.github.tavstaldev.yggraLib.impl.vlegacy.scheduler.PaperScheduler_legacy;
 import io.github.tavstaldev.yggraLib.impl.vlegacy.services.*;
@@ -45,7 +46,7 @@ public class Platform implements IPlatform {
         serviceCollection.put(IBossBar.class, new YggraBossBar(javaPlugin));
         serviceCollection.put(ITitle.class, new YggraTitle(javaPlugin));
         serviceCollection.put(IScoreboardService.class, new ScoreboardService_legacy());
-        serviceCollection.put(ISoundService.class, new SoundService_legacy(plugin));
+        serviceCollection.put(ISoundService.class, new SoundService_1_12());
         serviceCollection.put(IScheduler.class, new PaperScheduler_legacy(javaPlugin));
 
         IRegistryAccessor registryAccessor = new RegistryAccessor_1_12();

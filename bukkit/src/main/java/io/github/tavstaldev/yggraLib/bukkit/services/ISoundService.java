@@ -1,6 +1,5 @@
 package io.github.tavstaldev.yggraLib.bukkit.services;
 
-import net.kyori.adventure.sound.Sound;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -9,21 +8,15 @@ import java.util.List;
 import java.util.Optional;
 
 public interface ISoundService {
-    Optional<Sound> get(@NotNull String name, Sound.Source source, float volume, float pitch);
+    Optional<org.bukkit.Sound> get(@NotNull String name);
 
-    Optional<Sound> get(@NotNull String name, Sound.Source source);
+    void play(Player player, org.bukkit.Sound sound, float volume, float pitch);
 
-    Optional<Sound> get(@NotNull String name);
+    void play(List<Player> players, org.bukkit.Sound sound, float volume, float pitch);
 
-    Optional<Sound> get(@NotNull String name, float volume, float pitch);
+    void stop(Player player, org.bukkit.Sound sound);
 
-    void play(Player player, Sound sound);
+    void stop(List<Player> players, org.bukkit.Sound sound);
 
-    void stop(Player player, Sound sound);
-
-    void play(List<Player> players, Sound sound);
-
-    void stop(List<Player> players, Sound sound);
-
-    void playAt(Location location, Sound sound);
+    void playAt(Location location, org.bukkit.Sound sound, float volume, float pitch);
 }

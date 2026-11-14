@@ -1,8 +1,6 @@
 package io.github.tavstaldev.yggraLib.impl.vmodern.services;
 
 import io.github.tavstaldev.yggraLib.bukkit.services.ISoundService;
-import net.kyori.adventure.key.Key;
-import net.kyori.adventure.sound.Sound;
 import org.bukkit.Location;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.NotNull;
@@ -13,64 +11,43 @@ import java.util.Optional;
 
 public class SoundService_modern implements ISoundService {
 
-    public Optional<Sound> get(@NotNull String name, Sound.Source source, float volume, float pitch) {
-        @SuppressWarnings("PatternValidation")
+    public Optional<org.bukkit.Sound> get(@NotNull String name) {
         String key = name.toLowerCase(Locale.ROOT);
         try {
             if ("none".equalsIgnoreCase(key))
                 return Optional.empty();
 
-            @SuppressWarnings("PatternValidation")
-            Key soundKey = Key.key(key);
-
-            return Optional.of(Sound.sound(
-                    soundKey,
-                    source,
-                    volume,
-                    pitch
-            ));
+            return Optional.of(org.bukkit.Sound.valueOf(name));
         } catch (Exception ex) {
             return Optional.empty();
         }
     }
 
-    public Optional<Sound> get(@NotNull String name, Sound.Source source) {
-        return get(name, source, 1.0f, 1.0f);
-    }
-
-    public Optional<Sound> get(@NotNull String name) {
-        return get(name, Sound.Source.MASTER, 1.0f, 1.0f);
-    }
-
-    public Optional<Sound> get(@NotNull String name, float volume, float pitch) {
-        return get(name, Sound.Source.MASTER, volume, pitch);
-    }
-
-    public void play(Player player, Sound sound) {
+    public void play(Player player, org.bukkit.Sound sound, float volume, float pitch) {
         if (sound == null)
             return;
-        player.playSound(sound);
+        player.playSound(player.getLocation(), sound, volume, pitch);
     }
 
-    public void stop(Player player, Sound sound) {
+    public void play(List<Player> players, org.bukkit.Sound sound, float volume, float pitch) {
+        if (sound == null)
+            return;
+        players.forEach(x -> x.playSound(x.getLocation(), sound, volume, pitch));
+    }
+
+    public void stop(Player player, org.bukkit.Sound sound) {
         if (sound == null)
             return;
         player.stopSound(sound);
     }
 
-    public void play(List<Player> players, Sound sound) {
-        if (sound == null)
-            return;
-        players.forEach(x -> x.playSound(sound));
-    }
-
-    public void stop(List<Player> players, Sound sound) {
+    public void stop(List<Player> players, org.bukkit.Sound sound) {
         if (sound == null)
             return;
         players.forEach(x -> x.stopSound(sound));
     }
 
-    public void playAt(Location location, Sound sound) {
-        location.getWorld().playSound(sound, location.getX(), location.getY(), location.getZ());
+    public void playAt(Location location, org.bukkit.Sound sound, float volume, float pitch) {
+        location.getWorld().playSound( location, sound, volume, pitch);
     }
 }
