@@ -14,7 +14,7 @@ dependencies {
     compileOnly("net.kyori:adventure-text-minimessage:${adventureApiVersion}")
     compileOnly("net.kyori:adventure-text-serializer-plain:${adventureApiVersion}")
     compileOnly("net.kyori:adventure-text-serializer-gson:${adventureApiVersion}")
-    compileOnly("dev.triumphteam:triumph-gui:${triumphGuiVersion}")
+    compileOnly("com.github.lidanthedev.triumph-gui:triumph-gui:${triumphGuiVersion}")
 }
 
 java {

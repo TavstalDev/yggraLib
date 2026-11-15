@@ -150,18 +150,23 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .build());
 
         // dev.triumphteam:triumph-gui - Required for GUI support
-        libraryManager.loadLibrary(Library.builder()
+        /*libraryManager.loadLibrary(Library.builder()
                 .groupId("dev{}triumphteam")
                 .artifactId("triumph-gui")
                 .version("3.1.13")
                 //.relocate("dev{}triumphteam", packageGroup + ".triumphteam")
+                .build());*/
+        libraryManager.loadLibrary(Library.builder()
+                .groupId("com{}github{}lidanthedev{}triumph-gui")
+                .artifactId("triumph-gui")
+                .version("3.1.14")
                 .build());
 
         // fr.mrmicky:fastboard - Required for scoreboard support
         libraryManager.loadLibrary(Library.builder()
                 .groupId("fr{}mrmicky")
                 .artifactId("fastboard")
-                .version("2.2.0")
+                .version("2.2.2")
                 //.relocate("fr{}mrmicky", packageGroup + ".mrmicky")
                 .build());
 
@@ -359,9 +364,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
     private static @NonNull String getImplClassName() {
         String implClassName;
 
-        if (VersionUtils.isAtLeast(26, 2))
-            implClassName = "io.github.tavstaldev.yggraLib.impl.v26_2.Platform";
-        else if (VersionUtils.isAtLeast(1, 21, 5))
+        if (VersionUtils.isAtLeast(1, 21, 5))
             implClassName = "io.github.tavstaldev.yggraLib.impl.v1_21_5.Platform";
         else if (VersionUtils.isAtLeast(1, 21))
             implClassName = "io.github.tavstaldev.yggraLib.impl.v1_21.Platform";

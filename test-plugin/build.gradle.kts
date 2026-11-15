@@ -21,7 +21,7 @@ val libbyVersion = project.property("libbyVersion") as String
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
     compileOnly("org.yaml:snakeyaml:${snakeYamlVersion}")
-    compileOnly("dev.triumphteam:triumph-gui:${triumphGuiVersion}")
+    compileOnly("com.github.lidanthedev.triumph-gui:triumph-gui:${triumphGuiVersion}")
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
     compileOnly("net.byteflux:libby-bukkit:${libbyVersion}")
 

@@ -22,7 +22,7 @@ dependencies {
     compileOnly("com.github.ben-manes.caffeine:caffeine:${caffeineVersion}")
     compileOnly("redis.clients:jedis:${redisVersion}")
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
-    compileOnly("dev.triumphteam:triumph-gui:${triumphGuiVersion}")
+    compileOnly("com.github.lidanthedev.triumph-gui:triumph-gui:${triumphGuiVersion}")
 
 
     implementation("org.bstats:bstats-bukkit:${bstatsVersion}")

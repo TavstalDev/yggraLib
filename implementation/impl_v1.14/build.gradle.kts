@@ -16,7 +16,7 @@ dependencies {
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
     compileOnly("net.kyori:adventure-platform-bukkit:4.4.1")
     compileOnly("org.yaml:snakeyaml:${snakeYamlVersion}")
-    compileOnly("dev.triumphteam:triumph-gui:${triumphGuiVersion}")
+    compileOnly("com.github.lidanthedev.triumph-gui:triumph-gui:${triumphGuiVersion}")
 }
 
 java {

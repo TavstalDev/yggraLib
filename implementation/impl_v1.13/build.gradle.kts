@@ -16,7 +16,7 @@ dependencies {
     compileOnly(files("../../libs/yggraTitle-$titleVersion.jar"))
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
     compileOnly("org.yaml:snakeyaml:${snakeYamlVersion}")
-    compileOnly("dev.triumphteam:triumph-gui:${triumphGuiVersion}")
+    compileOnly("com.github.lidanthedev.triumph-gui:triumph-gui:${triumphGuiVersion}")
 }
 
 java {
