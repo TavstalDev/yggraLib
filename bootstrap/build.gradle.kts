@@ -30,6 +30,8 @@ dependencies {
     implementation("org.bspfsystems:yamlconfiguration:${yamlConfigVersion}")
     implementation(project(":api"))
     implementation(project(":bukkit"))
+    runtimeOnly(project(":impl_legacy"))
+    runtimeOnly(project(":impl_modern"))
     runtimeOnly(project(":impl_v1.8.8"))
     runtimeOnly(project(":impl_v1.12"))
     runtimeOnly(project(":impl_v1.13"))

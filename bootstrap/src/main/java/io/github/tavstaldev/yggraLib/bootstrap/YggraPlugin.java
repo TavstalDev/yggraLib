@@ -143,7 +143,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .groupId("dev{}triumphteam")
                 .artifactId("triumph-gui")
                 .version("3.1.13")
-                .relocate("dev{}triumphteam", packageGroup + ".triumphteam")
+                //.relocate("dev{}triumphteam", packageGroup + ".triumphteam")
                 .build());
 
         // fr.mrmicky:fastboard - Required for scoreboard support
@@ -151,8 +151,17 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .groupId("fr{}mrmicky")
                 .artifactId("fastboard")
                 .version("2.2.0")
-                .relocate("fr{}mrmicky", packageGroup + ".mrmicky")
+                //.relocate("fr{}mrmicky", packageGroup + ".mrmicky")
                 .build());
+
+        // com.github.ben-manes.caffeine - Required for caching
+        libraryManager.loadLibrary(Library.builder()
+                .groupId("com{}github{}ben-manes{}caffeine")
+                .artifactId("caffeine")
+                .version("2.9.3")
+                //.relocate("com{}github{}ben-manes{}caffeine", packageGroup + ".yaml")
+                .build());
+
 
         //#region Adventure-API
 
