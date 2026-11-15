@@ -1,5 +1,8 @@
 package io.github.tavstaldev.yggraLib.bootstrap;
 
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import io.github.tavstaldev.yggraLib.api.IPlatform;
 import io.github.tavstaldev.yggraLib.api.IYggraConfig;
 import io.github.tavstaldev.yggraLib.api.IYggraPlugin;
@@ -14,10 +17,15 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.HttpURLConnection;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlugin implements IYggraPlugin {
 
@@ -31,6 +39,9 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
     public String name() {
         return this.getName();
     }
+
+    @Override
+    public String version() { return this.getDescription().getVersion(); }
 
     @Override
     public TConfig config() { return _config; }
@@ -275,6 +286,74 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
     @Override
     public @NonNull String replacePlaceholders(@NonNull String message) {
         return message.replace("%prefix%", Objects.requireNonNull(config().get("general.prefix", "")));
+    }
+
+    @Override
+    public CompletableFuture<@Nullable Boolean> isUpToDate() {
+        return CompletableFuture.supplyAsync(() -> {
+            _logger.debug("Checking for updates...");
+            String downloadUrl = downloadUrl();
+            URL url;
+            try
+            {
+                url = new URL(downloadUrl);
+            }
+            catch (Exception ex) {
+                _logger.error("Failed to get downloadURL.", ex);
+                return null;
+            }
+
+            HttpURLConnection connection = null;
+            try {
+                connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.setConnectTimeout(5000); // 5 seconds timeout
+                connection.setReadTimeout(5000);
+
+                int responseCode = connection.getResponseCode();
+                if (responseCode != 200) {
+                    _logger.error("Up to date check failed with " + responseCode + " status code.");
+                    return null;
+                }
+
+                String rawResponse;
+                try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
+                    StringBuilder response = new StringBuilder();
+                    String line;
+                    while ((line = reader.readLine()) != null) {
+                        response.append(line);
+                    }
+                    rawResponse  = response.toString();
+                }
+
+                JsonElement jsonElement = JsonParser.parseString(rawResponse);
+                if (jsonElement == null) {
+                    _logger.warn("Failed to retrieve the latest version information from " + downloadUrl);
+                    return null; // Treat as not up-to-date or an error occurred
+                }
+
+                if (!jsonElement.isJsonObject()) {
+                    _logger.warn("Expected a JSON object from " + downloadUrl + ", but got: " + jsonElement);
+                    return null; // Treat as not up-to-date or an error occurred
+                }
+
+                JsonObject jsonObject = jsonElement.getAsJsonObject();
+                String latestVersion = jsonObject.get("tag_name").getAsString();
+                String currentVersion = version();
+                _logger.debug("Current version: " + currentVersion);
+                _logger.debug("Latest version: " + latestVersion);
+
+                return currentVersion.equalsIgnoreCase(latestVersion) || ("v" + currentVersion).equalsIgnoreCase(latestVersion);
+            }
+            catch (Exception ex) {
+                _logger.error("Failed to send up to date check.", ex);
+                return null;
+            }
+            finally {
+                if (connection != null)
+                    connection.disconnect();
+            }
+        });
     }
 
     private static @NonNull String getImplClassName() {

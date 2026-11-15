@@ -22,4 +22,9 @@ public class ExamplePlugin extends YggraPlugin<ExampleConfig> {
     public void onPluginDisable() {
         logger().info(String.format("%s has been successfully unloaded.", getName()));
     }
+
+    @Override
+    public String downloadUrl() {
+        return "";
+    }
 }
