@@ -6,6 +6,7 @@ import io.github.tavstaldev.yggraLib.api.IYggraPlugin;
 import io.github.tavstaldev.yggraLib.api.gui.SlotParser;
 import io.github.tavstaldev.yggraLib.api.localization.ITranslationService;
 import io.github.tavstaldev.yggraLib.api.logger.YggraLogger;
+import io.github.tavstaldev.yggraLib.bukkit.items.IItemStackAccessor;
 import io.github.tavstaldev.yggraLib.bukkit.items.ItemSerializerBase;
 import io.github.tavstaldev.yggraLib.bukkit.utils.AdventureUtils;
 import lombok.SneakyThrows;
@@ -31,6 +32,7 @@ public abstract class GuiBase {
     protected final YggraLogger logger;
     protected final ITranslationService translator;
     protected final IGuiRenderer guiRenderer;
+    protected final IItemStackAccessor itemStackAccessor;
     protected final ItemSerializerBase itemSerializer;
     public final String id;
     protected String menuTitle;
@@ -78,6 +80,7 @@ public abstract class GuiBase {
         this.logger = plugin.logger().withModule(GuiBase.class);
         this.translator = plugin.getRequiredService(ITranslationService.class);
         this.guiRenderer = plugin.getRequiredService(IGuiRenderer.class);
+        this.itemStackAccessor = plugin.getRequiredService(IItemStackAccessor.class);
         this.itemSerializer = plugin.getRequiredService(ItemSerializerBase.class);
 
         this.menuTitle = yaml.getString("title", title);
@@ -111,7 +114,7 @@ public abstract class GuiBase {
         gui.setDefaultClickAction(event -> event.setCancelled(true));
 
         for (GuiButton button : buttons) {
-            button.apply(player, translator, guiRenderer, gui, this);
+            button.apply(player, translator, itemStackAccessor, guiRenderer, gui, this);
         }
         return gui;
     }

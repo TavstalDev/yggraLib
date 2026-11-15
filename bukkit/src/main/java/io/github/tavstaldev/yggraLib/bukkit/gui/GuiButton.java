@@ -6,6 +6,7 @@ import io.github.tavstaldev.yggraLib.api.gui.SlotParser;
 import io.github.tavstaldev.yggraLib.api.localization.ITranslationService;
 import io.github.tavstaldev.yggraLib.api.logger.YggraLogger;
 import io.github.tavstaldev.yggraLib.api.utils.TypeUtils;
+import io.github.tavstaldev.yggraLib.bukkit.items.IItemStackAccessor;
 import io.github.tavstaldev.yggraLib.bukkit.items.ItemSerializerBase;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -96,13 +97,13 @@ public class GuiButton {
      * @param gui        The GUI base for action execution.
      */
     public void apply(@NotNull final Player player, @NotNull final ITranslationService translator,
-                      @NotNull final IGuiRenderer guiRenderer,
+                      @NotNull final IItemStackAccessor itemStackAccessor, @NotNull final IGuiRenderer guiRenderer,
                       @NotNull BaseGui baseGui, @NotNull GuiBase gui) {
         List<Integer> slots = getSlots();
         if (slots.isEmpty())
             return;
 
-        ItemStack itemStack = guiRenderer.render(this, player, translator);
+        ItemStack itemStack = guiRenderer.render(this, player, translator, itemStackAccessor);
 
         GuiItem btn = new GuiItem(itemStack, event -> {
             if (action == null)

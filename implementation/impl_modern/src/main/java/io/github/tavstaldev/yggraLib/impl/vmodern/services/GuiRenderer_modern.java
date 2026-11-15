@@ -3,6 +3,7 @@ package io.github.tavstaldev.yggraLib.impl.vmodern.services;
 import io.github.tavstaldev.yggraLib.api.localization.ITranslationService;
 import io.github.tavstaldev.yggraLib.bukkit.gui.GuiButton;
 import io.github.tavstaldev.yggraLib.bukkit.gui.IGuiRenderer;
+import io.github.tavstaldev.yggraLib.bukkit.items.IItemStackAccessor;
 import io.github.tavstaldev.yggraLib.bukkit.utils.AdventureUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
@@ -14,10 +15,7 @@ import java.util.List;
 
 public class GuiRenderer_modern implements IGuiRenderer {
     @Override
-    public ItemStack render(GuiButton button,
-                            Player player,
-                            ITranslationService translator) {
-
+    public ItemStack render(GuiButton button, Player player, ITranslationService translator, IItemStackAccessor itemStackAccessor) {
         ItemStack itemStack = button.getDisplayItem();
         ItemMeta meta = itemStack.getItemMeta();
         String buttonTitle = button.getTitle();
@@ -28,9 +26,8 @@ public class GuiRenderer_modern implements IGuiRenderer {
                 meta.displayName(AdventureUtils.parse(buttonTitle, true));
             }
         }
-
-        List<Component> lore = new ArrayList<>();
-        var buttonLore = button.getLore();
+        ArrayList<Component> lore = new ArrayList<Component>();
+        List<String> buttonLore = button.getLore();
         if (buttonLore != null) {
             if (button.shouldTranslateLore() && !buttonLore.isEmpty()) {
                 String loreKey = buttonLore.get(0);
@@ -40,15 +37,12 @@ public class GuiRenderer_modern implements IGuiRenderer {
                 }
             } else {
                 for (String line : buttonLore) {
-                    if (line == null)
-                        continue;
+                    if (line == null) continue;
                     lore.add(AdventureUtils.parse(line, true));
                 }
             }
         }
         meta.lore(lore);
-
-        //meta.getPersistentDataContainer().set(GuiDupeDetector.getDupeProtectedKey(), PersistentDataType.BOOLEAN, true);
         itemStack.setItemMeta(meta);
         return itemStack;
     }
