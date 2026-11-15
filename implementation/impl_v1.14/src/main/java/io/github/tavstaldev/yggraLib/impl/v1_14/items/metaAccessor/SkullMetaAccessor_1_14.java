@@ -16,5 +16,6 @@ public class SkullMetaAccessor_1_14 implements ISkullMetaAccessor {
         PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
         profile.setProperty(new ProfileProperty("textures", texture));
         skullMeta.setPlayerProfile(profile);
+        item.setItemMeta(skullMeta);
     }
 }

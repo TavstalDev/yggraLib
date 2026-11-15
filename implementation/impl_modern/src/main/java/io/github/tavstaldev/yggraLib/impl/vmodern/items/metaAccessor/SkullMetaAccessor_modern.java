@@ -13,8 +13,9 @@ public class SkullMetaAccessor_modern implements ISkullMetaAccessor {
     @Override
     public void setTexture(ItemStack item, String texture) {
         SkullMeta skullMeta = (SkullMeta)item.getItemMeta();
-        PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID());
+        PlayerProfile profile = Bukkit.createProfile(UUID.randomUUID(), "");
         profile.setProperty(new ProfileProperty("textures", texture));
         skullMeta.setPlayerProfile(profile);
+        item.setItemMeta(skullMeta);
     }
 }

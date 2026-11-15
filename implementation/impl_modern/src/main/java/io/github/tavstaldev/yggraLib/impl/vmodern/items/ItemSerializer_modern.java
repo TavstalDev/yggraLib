@@ -54,7 +54,7 @@ public class ItemSerializer_modern extends ItemSerializerBase {
     public Map<String, Object> serializeItemStack(@NotNull ItemStack item) {
         Map<String, Object> itemData = new HashMap<>();
         logger.fine("Serializing item: " + item.getType().name());
-        itemData.put("material", item.getType().toString());  // Store the material (type) of the item
+        itemData.put("material", item.getType().name());  // Store the material (type) of the item
         itemData.put("amount", item.getAmount());  // Store the amount of the item
 
 

@@ -50,26 +50,21 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
 
     @Override
     public void setDisplayName(ItemStack itemStack, String displayName) {
-        if (!itemStack.hasItemMeta())
-            return;
-
         ItemMeta meta = itemStack.getItemMeta();
         if (displayName == null)
         {
             meta.displayName(null);
             return;
         }
-
         meta.displayName(AdventureUtils.parse(displayName, true));
+        itemStack.setItemMeta(meta);
     }
 
     @Override
     public void setDisplayName(ItemStack itemStack, Component displayName) {
-        if (!itemStack.hasItemMeta())
-            return;
-
         ItemMeta meta = itemStack.getItemMeta();
         meta.displayName(displayName);
+        itemStack.setItemMeta(meta);
     }
 
     @Override
@@ -104,29 +99,20 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
 
     @Override
     public void setLore(ItemStack itemStack, List<String> lore) {
-        if (!itemStack.hasItemMeta())
-            return;
-
         ItemMeta meta = itemStack.getItemMeta();
-        if (!meta.hasLore())
-            return;
         List<Component> loreList = new ArrayList<>();
         for (String line : lore) {
             loreList.add(AdventureUtils.parse(line, true));
         }
         meta.lore(loreList);
+        itemStack.setItemMeta(meta);
     }
 
     @Override
     public void setLoreComp(ItemStack itemStack, List<Component> lore) {
-        if (!itemStack.hasItemMeta())
-            return;
-
         ItemMeta meta = itemStack.getItemMeta();
-        if (!meta.hasLore())
-            return;
-
         meta.lore(lore);
+        itemStack.setItemMeta(meta);
     }
 
     @Override
@@ -162,9 +148,6 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
 
     @Override
     public void hideAllFlags(ItemStack itemStack) {
-        if (!itemStack.hasItemMeta())
-            return;
-
         ItemMeta meta = itemStack.getItemMeta();
         meta.addItemFlags(
                 ItemFlag.HIDE_ATTRIBUTES,
@@ -176,15 +159,14 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
                 ItemFlag.HIDE_ARMOR_TRIM,
                 ItemFlag.HIDE_DYE
         );
+        itemStack.setItemMeta(meta);
     }
 
     @Override
     public void hide(ItemStack itemStack, ItemFlag... flags) {
-        if (!itemStack.hasItemMeta())
-            return;
-
         ItemMeta meta = itemStack.getItemMeta();
         meta.addItemFlags(flags);
+        itemStack.setItemMeta(meta);
     }
 
     @Override
@@ -208,10 +190,8 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
 
     @Override
     public void setCustomModelData(ItemStack itemStack, int customModelData) {
-        if (!itemStack.hasItemMeta())
-            return;
-
         ItemMeta meta = itemStack.getItemMeta();
         meta.setCustomModelData(customModelData);
+        itemStack.setItemMeta(meta);
     }
 }
