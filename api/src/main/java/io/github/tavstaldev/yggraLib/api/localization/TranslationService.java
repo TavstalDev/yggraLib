@@ -53,6 +53,7 @@ public class TranslationService implements ITranslationService {
         Constructor constructor = new Constructor(loaderOptions);
         Representer representer = new Representer(dumperOptions);
         this._yaml = new Yaml(constructor, representer);
+        load();
     }
 
     /**
