@@ -4,7 +4,7 @@ plugins {
 
 allprojects {
     group = "io.github.tavstaldev.yggraLib"
-    version = "1.0.0"
+    version = "0.1.0"
 }
 
 val jetbrainsAnnotationsVersion = project.property("jetbrainsAnnotationsVersion") as String
