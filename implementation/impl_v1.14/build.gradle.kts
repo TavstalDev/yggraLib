@@ -4,6 +4,7 @@ val triumphGuiVersion = project.property("triumphGuiVersion") as String
 val actionBarVersion = project.property("actionBarVersion") as String
 val bossBarVersion = project.property("bossBarVersion") as String
 val titleVersion = project.property("titleVersion") as String
+val particleVersion = project.property("particleVersion") as String
 
 dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:1.14-R0.1-SNAPSHOT")
@@ -13,6 +14,7 @@ dependencies {
     compileOnly(files("../../libs/yggraActionBar-$actionBarVersion.jar"))
     compileOnly(files("../../libs/yggraBossBar-$bossBarVersion.jar"))
     compileOnly(files("../../libs/yggraTitle-$titleVersion.jar"))
+    compileOnly(files("../../libs/yggraParticle-$particleVersion.jar"))
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
     compileOnly("net.kyori:adventure-platform-bukkit:4.4.1")
     compileOnly("org.yaml:snakeyaml:${snakeYamlVersion}")

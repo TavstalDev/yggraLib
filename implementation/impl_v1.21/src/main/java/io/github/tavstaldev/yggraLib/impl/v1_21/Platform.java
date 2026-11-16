@@ -26,6 +26,8 @@ import io.github.tavstaldev.yggraLib.impl.vmodern.items.metaAccessor.SkullMetaAc
 import io.github.tavstaldev.yggraLib.impl.vmodern.scheduler.FoliaScheduler_modern;
 import io.github.tavstaldev.yggraLib.impl.vmodern.scheduler.PaperScheduler_modern;
 import io.github.tavstaldev.yggraLib.impl.vmodern.services.*;
+import io.github.tavstaldev.yggraParticle.api.IParticle;
+import io.github.tavstaldev.yggraParticle.bootstrap.YggraParticle;
 import io.github.tavstaldev.yggraTitle.api.ITitle;
 import io.github.tavstaldev.yggraTitle.bootstrap.YggraTitle;
 import lombok.SneakyThrows;
@@ -49,6 +51,8 @@ public class Platform implements IPlatform {
         serviceCollection.put(ITitle.class, new YggraTitle(javaPlugin));
         serviceCollection.put(IScoreboardService.class, new ScoreboardService_modern());
         serviceCollection.put(ISoundService.class, new SoundService_modern());
+        serviceCollection.put(IParticle.class, new YggraParticle(javaPlugin));
+
         if (VersionUtils.isFolia()) {
             serviceCollection.put(IScheduler.class, new FoliaScheduler_modern(javaPlugin));
         }

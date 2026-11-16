@@ -15,6 +15,7 @@ val libbyVersion = project.property("libbyVersion") as String
 val actionBarVersion = project.property("actionBarVersion") as String
 val bossBarVersion = project.property("bossBarVersion") as String
 val titleVersion = project.property("titleVersion") as String
+val particleVersion = project.property("particleVersion") as String
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
@@ -42,6 +43,7 @@ dependencies {
     implementation(files("../libs/yggraActionBar-$actionBarVersion.jar"))
     implementation(files("../libs/yggraBossBar-$bossBarVersion.jar"))
     implementation(files("../libs/yggraTitle-$titleVersion.jar"))
+    implementation(files("../libs/yggraParticle-$particleVersion.jar"))
 }
 
 java {

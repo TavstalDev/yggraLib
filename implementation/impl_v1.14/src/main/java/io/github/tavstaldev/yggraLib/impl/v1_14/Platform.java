@@ -24,6 +24,8 @@ import io.github.tavstaldev.yggraLib.impl.v1_14.services.SoundService_1_14;
 import io.github.tavstaldev.yggraLib.impl.vlegacy.items.ItemStackAccessor_legacy;
 import io.github.tavstaldev.yggraLib.impl.vlegacy.scheduler.PaperScheduler_legacy;
 import io.github.tavstaldev.yggraLib.impl.vlegacy.services.*;
+import io.github.tavstaldev.yggraParticle.api.IParticle;
+import io.github.tavstaldev.yggraParticle.bootstrap.YggraParticle;
 import io.github.tavstaldev.yggraTitle.api.ITitle;
 import io.github.tavstaldev.yggraTitle.bootstrap.YggraTitle;
 import lombok.SneakyThrows;
@@ -47,6 +49,7 @@ public class Platform implements IPlatform {
         serviceCollection.put(ITitle.class, new YggraTitle(javaPlugin));
         serviceCollection.put(IScoreboardService.class, new ScoreboardService_legacy());
         serviceCollection.put(ISoundService.class, new SoundService_1_14());
+        serviceCollection.put(IParticle.class, new YggraParticle(javaPlugin));
         serviceCollection.put(IScheduler.class, new PaperScheduler_legacy(javaPlugin));
 
         IRegistryAccessor registryAccessor = new RegistryAccessor_1_14();
