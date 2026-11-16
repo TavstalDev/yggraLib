@@ -32,7 +32,7 @@ public class YggraLogger {
      */
     public YggraLogger(IYggraPlugin plugin) {
         _plugin = plugin;
-        _module = plugin.name();
+        _module = null;
         _logger = Logger.getLogger(plugin.name());
     }
 
