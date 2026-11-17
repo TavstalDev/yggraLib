@@ -10,10 +10,10 @@ dependencies {
     compileOnly(project(":api"))
     compileOnly(project(":bukkit"))
     compileOnly(project(":impl_modern"))
-    compileOnly(files("../../libs/yggraActionBar-$actionBarVersion.jar"))
-    compileOnly(files("../../libs/yggraBossBar-$bossBarVersion.jar"))
-    compileOnly(files("../../libs/yggraTitle-$titleVersion.jar"))
-    compileOnly(files("../../libs/yggraParticle-$particleVersion.jar"))
+    compileOnly("com.github.TavstalDev:yggraActionBar:v$actionBarVersion")
+    compileOnly("com.github.TavstalDev:yggraBossBar:v$bossBarVersion")
+    compileOnly("com.github.TavstalDev:yggraTitle:v$titleVersion")
+    compileOnly("com.github.TavstalDev:yggraParticle:v$particleVersion")
 }
 
 java {

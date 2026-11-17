@@ -1,6 +1,6 @@
 package com.example.plugin;
 
-import io.github.tavstaldev.yggraLib.bootstrap.YggraConfig;
+import com.github.TavstalDev.yggraLib.bootstrap.YggraConfig;
 
 /**
  * Example configuration implementation for the test plugin.

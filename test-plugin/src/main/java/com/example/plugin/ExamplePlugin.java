@@ -1,6 +1,6 @@
 package com.example.plugin;
 
-import io.github.tavstaldev.yggraLib.bootstrap.YggraPlugin;
+import com.github.TavstalDev.yggraLib.bootstrap.YggraPlugin;
 
 /**
  * Example plugin implementation used for testing the bootstrap module.

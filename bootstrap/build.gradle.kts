@@ -1,5 +1,6 @@
 plugins {
     id("com.gradleup.shadow") version "9.3.1"
+    id("maven-publish")
 }
 
 val snakeYamlVersion = project.property("snakeYamlVersion") as String
@@ -40,10 +41,10 @@ dependencies {
     runtimeOnly(project(":impl_v1.20.4"))
     runtimeOnly(project(":impl_v1.21"))
     runtimeOnly(project(":impl_v1.21.5"))
-    implementation(files("../libs/yggraActionBar-$actionBarVersion.jar"))
-    implementation(files("../libs/yggraBossBar-$bossBarVersion.jar"))
-    implementation(files("../libs/yggraTitle-$titleVersion.jar"))
-    implementation(files("../libs/yggraParticle-$particleVersion.jar"))
+    implementation("com.github.TavstalDev:yggraActionBar:v$actionBarVersion")
+    implementation("com.github.TavstalDev:yggraBossBar:v$bossBarVersion")
+    implementation("com.github.TavstalDev:yggraTitle:v$titleVersion")
+    implementation("com.github.TavstalDev:yggraParticle:v$particleVersion")
 }
 
 java {
@@ -62,7 +63,7 @@ tasks.jar {
 }
 
 // Configure the Shadow JAR task
-var shadeGroup = "io.github.tavstaldev.yggraLib.shadow"
+var shadeGroup = "com.github.TavstalDev.yggraLib.shadow"
 tasks.shadowJar {
     archiveBaseName.set("yggraLib")
     archiveClassifier.set("") // Set the classifier for the JAR
@@ -81,12 +82,22 @@ tasks.shadowJar {
     relocate("net.byteflux", "${shadeGroup}.libby")
     relocate("org.yaml", "${shadeGroup}.yaml") // Required by yamlconfiguration
     relocate("org.bspfsystems", "${shadeGroup}.bspfsystems")
-    relocate("io.github.tavstaldev.yggraActionBar", "${shadeGroup}.yggraActionBar")
-    relocate("io.github.tavstaldev.yggraBossBar", "${shadeGroup}.yggraBossBar")
-    relocate("io.github.tavstaldev.yggraTitle", "${shadeGroup}.yggraTitle")
+    relocate("com.github.TavstalDev.yggraActionBar", "${shadeGroup}.yggraActionBar")
+    relocate("com.github.TavstalDev.yggraBossBar", "${shadeGroup}.yggraBossBar")
+    relocate("com.github.TavstalDev.yggraTitle", "${shadeGroup}.yggraTitle")
 }
 
 // Ensure the Shadow JAR task runs during the build process
 tasks.build {
     dependsOn(tasks.shadowJar)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "com.github.TavstalDev"
+            artifactId = "yggraLib"
+            artifact(tasks.shadowJar)
+        }
+    }
 }
