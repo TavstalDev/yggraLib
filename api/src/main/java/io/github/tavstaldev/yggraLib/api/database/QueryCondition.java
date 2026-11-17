@@ -2,11 +2,24 @@ package io.github.tavstaldev.yggraLib.api.database;
 
 import io.github.tavstaldev.yggraLib.api.database.enums.EQueryOperator;
 
+/**
+ * Represents one condition used in a database query.
+ */
 public class QueryCondition {
+    /** The name of the database column. */
     public String columnName;
+    /** The comparison operator to use. */
     public EQueryOperator operator;
+    /** The value to compare with the column. */
     public Object value;
 
+    /**
+     * Creates a new query condition.
+     *
+     * @param columnName the name of the database column
+     * @param operator   the comparison operator to use
+     * @param value      the value to compare with the column
+     */
     public QueryCondition(String columnName, EQueryOperator operator, Object value) {
         this.columnName = columnName;
         this.operator = operator;

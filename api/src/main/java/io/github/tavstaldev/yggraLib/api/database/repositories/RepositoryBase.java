@@ -20,29 +20,67 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+/**
+ * Base implementation of {@link IRepository} for annotation-based entities.
+ * It provides shared CRUD logic, caching, and SQL statement handling.
+ *
+ * @param <ID> the entity identifier type
+ * @param <T>  the entity type
+ */
 public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
+    /** The cache used for entity lookups. */
     protected final ICache cache;
+    /** The logger used by this repository. */
     protected final YggraLogger logger;
+    /** The data source used for database connections. */
     protected final HikariDataSource dataSource;
+    /** The name of the database table. */
     protected final String tableName;
+    /** The cache duration in seconds. */
     protected final long cacheDuration;
+    /** The field that stores the entity identifier. */
     protected final Field idField;
+    /** The database column name for the entity identifier. */
     protected final String idColumn;
+    /** The entity class handled by this repository. */
     protected final Class<T> entityClass;
+    /** A map from column names to entity fields. */
     protected final Map<String, Field> columnToFieldMap = new LinkedHashMap<>();
+    /** Cache keys created for criteria-based queries. */
     protected final Set<String> criteriaCacheKeys = ConcurrentHashMap.newKeySet();
+    /** {@code true} if caching is enabled for this repository. */
     protected final boolean cacheEnabled;
 
+    /** SQL statement used to create the table. */
     protected String createTableStatement;
+    /** SQL statement used to insert an entity. */
     protected String addSqlStatement;
+    /** SQL statement used to find an entity by ID. */
     protected String findByIdSqlStatement;
+    /** SQL statement used to find all entities. */
     protected String findAllSqlStatement;
+    /** SQL statement used to update an entity by ID. */
     protected String updateByIdSqlStatement;
+    /** SQL statement used to delete an entity by ID. */
     protected String deleteByIdSqlStatement;
+    /** SQL statement used to count entities. */
     protected String countSqlStatement;
+    /** SQL statement used to check if an entity exists by ID. */
     protected String existsByIdSqlStatement;
+    /** Column definitions used when creating the table. */
     protected final List<String> createColumnDefinitions = new ArrayList<>();
 
+    /**
+     * Creates a new repository base for the given entity class.
+     *
+     * @param cache         the cache to use, or {@code null} if not available
+     * @param logger        the logger to use
+     * @param entityClass   the entity class handled by this repository
+     * @param dataSource    the database data source
+     * @param cacheDuration the cache duration in seconds; values below or equal to 0 disable caching
+     * @param tablePrefix   an optional table name prefix
+     * @throws IllegalArgumentException if the entity class is missing the {@link Table} annotation
+     */
     public RepositoryBase(ICache cache, YggraLogger logger, Class<T> entityClass, HikariDataSource dataSource, long cacheDuration, @Nullable String tablePrefix) {
         this.cache = cache;
         this.logger = logger;
@@ -96,14 +134,51 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
         this.idColumn = tempIdColumn;
     }
 
+    /**
+     * Resolves the SQL column type for a field.
+     *
+     * @param field        the entity field
+     * @param columnLength the configured column length
+     * @param columnKind   the column kind
+     * @return the SQL type name
+     */
     protected abstract String resolveSqlType(Field field, int columnLength, EColumnKind columnKind);
 
+    /**
+     * Returns the SQL fragment used for auto-increment columns.
+     *
+     * @return the auto-increment SQL fragment, or an empty string if not needed
+     */
     protected abstract String getAutoIncrementText();
 
+    /**
+     * Reads the result of an "exists by ID" query.
+     *
+     * @param resultSet the query result set
+     * @return {@code true} if the entity exists, otherwise {@code false}
+     * @throws SQLException if reading from the result set fails
+     */
     protected abstract boolean getExistsByIdResult(ResultSet resultSet) throws SQLException;
 
+    /**
+     * Sets a parameter value on a prepared statement.
+     *
+     * @param statement the prepared statement
+     * @param pos       the parameter position
+     * @param value     the value to set
+     * @throws SQLException if setting the parameter fails
+     */
     protected abstract void setStatementParameter(PreparedStatement statement, int pos, Object value) throws SQLException;
 
+    /**
+     * Deletes entities that match the given criteria.
+     *
+     * @param connection  the active database connection
+     * @param whereClause the SQL WHERE clause without the {@code WHERE} keyword
+     * @param args        the parameter values for the WHERE clause
+     * @return {@code true} if the operation completed successfully, otherwise {@code false}
+     * @throws SQLException if the delete operation fails
+     */
     protected abstract boolean performDeleteByCriteria(Connection connection, String whereClause, Object[] args) throws SQLException;
 
     //#region IRepository implementations
@@ -432,6 +507,13 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
         }
     }
 
+    /**
+     * Runs a custom SQL query and maps the result to entities.
+     *
+     * @param sql  the SQL query to execute
+     * @param args the query parameter values
+     * @return a list of mapped entities; the list may be empty if no rows are found or an error occurs
+     */
     public List<T> query(String sql, Object... args) {
         List<T> results = new ArrayList<>();
 
@@ -469,6 +551,15 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
         return results;
     }
 
+    /**
+     * Deletes entities by criteria and uses a {@code RETURNING} clause to collect deleted IDs.
+     *
+     * @param connection  the active database connection
+     * @param whereClause the SQL WHERE clause without the {@code WHERE} keyword
+     * @param args        the parameter values for the WHERE clause
+     * @return {@code true} if the operation completed successfully, otherwise {@code false}
+     * @throws SQLException if the delete operation fails
+     */
     protected boolean deleteByCriteriaWithReturning(Connection connection, String whereClause, Object[] args) throws SQLException {
         String dynamicSql = "DELETE FROM " + tableName + " WHERE " + whereClause + " RETURNING " + idColumn + ";";
 
@@ -492,6 +583,16 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
         }
     }
 
+    /**
+     * Deletes entities by criteria without using a {@code RETURNING} clause.
+     * This method selects matching IDs first so it can clear related cache entries.
+     *
+     * @param connection  the active database connection
+     * @param whereClause the SQL WHERE clause without the {@code WHERE} keyword
+     * @param args        the parameter values for the WHERE clause
+     * @return {@code true} if the operation completed successfully, otherwise {@code false}
+     * @throws SQLException if the delete operation fails
+     */
     protected boolean deleteByCriteriaWithoutReturning(Connection connection, String whereClause, Object[] args) throws SQLException {
 
         String selectSql = "SELECT " + idColumn +
@@ -536,6 +637,11 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
     }
     //#endregion
 
+    /**
+     * Clears cached entries related to this repository.
+     *
+     * @param id the entity ID to evict, or {@code null} to skip the single-entity cache entry
+     */
     protected void evictAllCaches(@Nullable ID id) {
         if (id != null)
             cache.evict("db:" + tableName + ":" + id);

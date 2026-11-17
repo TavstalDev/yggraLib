@@ -5,9 +5,20 @@ import java.nio.file.DirectoryStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 
+/**
+ * Utility methods for basic file and directory operations.
+ */
 @SuppressWarnings("unused")
 public class IOUtil {
-    public static boolean isDirectoryEmpty(Path dirPath){
+
+    /**
+     * Checks whether a directory is empty.
+     *
+     * @param dirPath the directory path to check
+     * @return {@code true} if the directory does not exist or has no entries;
+     *         {@code false} if it contains entries or cannot be read
+     */
+    public static boolean isDirectoryEmpty(Path dirPath) {
         if (Files.notExists(dirPath)) {
             return true;
         }

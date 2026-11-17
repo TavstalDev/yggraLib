@@ -16,26 +16,48 @@ import java.util.Set;
  * Base class for a subcommand within a parent {@link CommandBase}.
  */
 public class SubCommand {
-    /** The subcommand name (used after the base command). */
+    /** The subcommand name used after the base command. */
     private final String command;
+
+    /**
+     * Gets the name of this subcommand.
+     *
+     * @return the subcommand name
+     */
     public final String getCommand() {
         return command;
     }
-    /** Optional permission node; null or blank allows all. */
+
+    /** The permission required for this subcommand, or {@code null} if none is required. */
     private final String permission;
+
+    /**
+     * Gets the permission required for this subcommand.
+     *
+     * @return the permission node, or {@code null} if none is required
+     */
     public final String getPermission() {
         return permission;
     }
-    /** Extra arguments passed to the help translation. Keys are placeholder names, values are localized strings. */
+
+    /** Extra arguments used in the help message. */
     private final Map<String, Object> arguments;
+
+    /**
+     * Gets the help arguments for this subcommand.
+     *
+     * @return an unmodifiable map of help arguments
+     */
     public final Map<String, Object> getArguments() {
         return Collections.unmodifiableMap(arguments);
     }
 
     /**
-     * @param command    The subcommand name.
-     * @param permission Required permission, or null/blank for none.
-     * @param arguments  Help template arguments (can be null).
+     * Creates a new subcommand.
+     *
+     * @param command    the subcommand name
+     * @param permission the required permission, or {@code null} if none is required
+     * @param arguments  the help template arguments, or {@code null} if none are needed
      */
     public SubCommand(String command, String permission, Map<String, Object> arguments) {
         this.command = command;

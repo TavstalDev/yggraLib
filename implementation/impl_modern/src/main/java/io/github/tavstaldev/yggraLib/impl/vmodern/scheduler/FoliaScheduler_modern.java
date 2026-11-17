@@ -16,13 +16,25 @@ import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Supplier;
 
+/**
+ * Modern implementation of FoliaScheduler for newer Minecraft versions.
+ */
 public class FoliaScheduler_modern implements IScheduler {
 
     private final JavaPlugin plugin;
 
+    /**
+     * Creates a new FoliaScheduler_modern instance.
+     * @param plugin the plugin value
+     */
     public FoliaScheduler_modern(JavaPlugin plugin) {
         this.plugin = plugin;
     }
+    /**
+     * Schedules work using the run operation.
+     * @param runnable the runnable value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask run(Runnable runnable) {
@@ -36,6 +48,12 @@ public class FoliaScheduler_modern implements IScheduler {
         }
         return simpleTask(scheduledTask);
     }
+    /**
+     * Schedules work using the runLater operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runLater(Runnable runnable, long delay) {
@@ -49,6 +67,13 @@ public class FoliaScheduler_modern implements IScheduler {
         }
         return simpleTask(scheduledTask);
     }
+    /**
+     * Schedules work using the runRepeating operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @param period the period value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runRepeating(Runnable runnable, long delay, long period) {
@@ -63,6 +88,12 @@ public class FoliaScheduler_modern implements IScheduler {
         }
         return simpleTask(scheduledTask);
     }
+    /**
+     * Schedules work using the run operation.
+     * @param runnable the runnable value
+     * @param context the context value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask run(Runnable runnable, YggraLocation context) {
@@ -78,6 +109,13 @@ public class FoliaScheduler_modern implements IScheduler {
         }
         return simpleTask(scheduledTask);
     }
+    /**
+     * Schedules work using the runLater operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @param context the context value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runLater(Runnable runnable, long delay, YggraLocation context) {
@@ -93,6 +131,14 @@ public class FoliaScheduler_modern implements IScheduler {
         }
         return simpleTask(scheduledTask);
     }
+    /**
+     * Schedules work using the runRepeating operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @param period the period value
+     * @param context the context value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runRepeating(Runnable runnable, long delay, long period, YggraLocation context) {
@@ -109,6 +155,12 @@ public class FoliaScheduler_modern implements IScheduler {
         }
         return simpleTask(scheduledTask);
     }
+    /**
+     * Schedules work using the run operation.
+     * @param runnable the runnable value
+     * @param context the context value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask run(Runnable runnable, YggraEntity context) {
@@ -125,6 +177,13 @@ public class FoliaScheduler_modern implements IScheduler {
         }
         return simpleTask(scheduledTask);
     }
+    /**
+     * Schedules work using the runLater operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @param context the context value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runLater(Runnable runnable, long delay, YggraEntity context) {
@@ -141,6 +200,14 @@ public class FoliaScheduler_modern implements IScheduler {
         }
         return simpleTask(scheduledTask);
     }
+    /**
+     * Schedules work using the runRepeating operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @param period the period value
+     * @param context the context value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runRepeating(Runnable runnable, long delay, long period, YggraEntity context) {
@@ -158,6 +225,11 @@ public class FoliaScheduler_modern implements IScheduler {
         }
         return simpleTask(scheduledTask);
     }
+    /**
+     * Schedules work using the runAsync operation.
+     * @param runnable the runnable value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runAsync(Runnable runnable) {
@@ -171,6 +243,12 @@ public class FoliaScheduler_modern implements IScheduler {
         }
         return simpleTask(scheduledTask);
     }
+    /**
+     * Schedules work using the runLaterAsync operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runLaterAsync(Runnable runnable, long delay) {
@@ -185,6 +263,13 @@ public class FoliaScheduler_modern implements IScheduler {
         }
         return simpleTask(scheduledTask);
     }
+    /**
+     * Schedules work using the runRepeatingAsync operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @param period the period value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runRepeatingAsync(Runnable runnable, long delay, long period) {
@@ -200,6 +285,11 @@ public class FoliaScheduler_modern implements IScheduler {
         }
         return simpleTask(scheduledTask);
     }
+    /**
+     * Schedules work using the async operation.
+     * @param task the task value
+     * @return the scheduled task or future
+     */
 
     @Override
     public <T> CompletableFuture<T> async(Supplier<T> task) {

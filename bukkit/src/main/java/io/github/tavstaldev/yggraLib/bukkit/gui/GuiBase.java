@@ -26,32 +26,46 @@ import java.util.*;
  * dynamic slot parsing, and configuration persistence.
  */
 public abstract class GuiBase {
+    /** The configuration file used by this menu. */
     protected final File file;
+    /** The YAML configuration loaded from the menu file. */
     protected final YamlConfiguration yaml;
+    /** The plugin instance that owns this menu. */
     protected final IYggraPlugin plugin;
+    /** Logger used by this menu. */
     protected final YggraLogger logger;
+    /** Translation service used for localized text. */
     protected final ITranslationService translator;
+    /** Renderer used to create button items. */
     protected final IGuiRenderer guiRenderer;
+    /** Accessor used to modify item stack properties. */
     protected final IItemStackAccessor itemStackAccessor;
+    /** Serializer used for menu item data. */
     protected final ItemSerializerBase itemSerializer;
+    /** The unique identifier of this menu. */
     public final String id;
+    /** The configured menu title. */
     protected String menuTitle;
+    /** Whether the menu title should be localized. */
     protected boolean isTitleTranslated;
+    /** The number of rows in the menu. */
     protected int menuSize;
+    /** Parsed dynamic slot groups for this menu. */
     protected HashMap<String, List<Integer>> dynamicSlots;
+    /** The buttons configured for this menu. */
     protected HashSet<GuiButton> buttons;
 
     /**
-     * Constructs a new GUI menu from configuration or defaults.
+     * Creates a GUI menu from configuration values or defaults.
      *
-     * @param id                  The unique identifier for this menu.
-     * @param plugin              The plugin instance.
-     * @param fileName            The configuration file name (under menus/).
-     * @param title               The default menu title.
-     * @param isTitleTranslated   Whether the title should be localized.
-     * @param size                The number of rows (1-6).
-     * @param defaultDynamicSlots Default dynamic slot definitions.
-     * @param defaultButtons      Default button definitions.
+     * @param id                  the unique menu identifier
+     * @param plugin              the plugin instance
+     * @param fileName            the configuration file name inside the {@code menus} folder
+     * @param title               the default menu title
+     * @param isTitleTranslated   whether the title should be localized
+     * @param size                the number of rows, from 1 to 6
+     * @param defaultDynamicSlots the default dynamic slot definitions
+     * @param defaultButtons      the default button definitions
      */
     @SneakyThrows
     public GuiBase(String id, IYggraPlugin plugin, String fileName, String title, boolean isTitleTranslated, int size, HashMap<String, List<String>> defaultDynamicSlots,

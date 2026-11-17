@@ -34,14 +34,15 @@ public class GuiButton {
     private List<Integer> slotCache = null;
 
     /**
-     * Constructs a new GuiButton.
+     * Creates a new GUI button.
      *
-     * @param action         The action identifier for click handling.
-     * @param title          Optional display title.
-     * @param translateTitle Whether the title should be localized.
-     * @param lore           Optional lore lines.
-     * @param translateLore  Whether the lore should be localized.
-     * @param slots          The slot definitions (e.g. "0-4", "5").
+     * @param action         the action identifier used for click handling
+     * @param title          the optional display title
+     * @param translateTitle whether the title should be localized
+     * @param lore           the optional lore lines
+     * @param translateLore  whether the lore should be localized
+     * @param slots          the slot definitions, for example {@code "0-4"} or {@code "5"}
+     * @param displayItem    the item shown for this button
      */
     public GuiButton(@Nullable String action,
             @Nullable String title,
@@ -59,27 +60,61 @@ public class GuiButton {
         this.displayItem = displayItem;
     }
 
-    /** @return The action of the button. */
+    /**
+     * Gets the action identifier for this button.
+     *
+     * @return the action identifier, or {@code null} if none is set
+     */
     public @Nullable String getAction() {return action;}
 
+    /**
+     * Gets a copy of the display item for this button.
+     *
+     * @return a cloned display item
+     */
     public ItemStack getDisplayItem() {
         return displayItem.clone();
     }
-    /** @return The optional display title. */
+
+    /**
+     * Gets the configured title for this button.
+     *
+     * @return the title, or {@code null} if none is set
+     */
     public @Nullable String getTitle() { return title; }
-    /** @return Whether the title should be localized. */
+
+    /**
+     * Checks whether the title should be localized.
+     *
+     * @return {@code true} if the title should be translated
+     */
     public boolean shouldTranslateTitle() { return translateTitle; }
-    /** @return The optional lore lines. */
+
+    /**
+     * Gets the configured lore lines for this button.
+     *
+     * @return the lore lines, or {@code null} if none are set
+     */
     public @Nullable List<String> getLore() { return lore; }
-    /** @return Whether the lore should be localized. */
+
+    /**
+     * Checks whether the lore should be localized.
+     *
+     * @return {@code true} if the lore should be translated
+     */
     public boolean shouldTranslateLore() { return  translateLore; }
-    /** @return The raw slot definitions. */
+
+    /**
+     * Gets the raw slot definitions from configuration.
+     *
+     * @return the raw slot definitions
+     */
     public List<String> getSlotList() { return slots; }
 
     /**
-     * Returns the parsed slot numbers, caching the result.
+     * Gets the parsed slot indices for this button.
      *
-     * @return The list of resolved slot indices.
+     * @return the resolved slot indices
      */
     public List<Integer> getSlots() {
         if (slotCache != null)
@@ -89,12 +124,14 @@ public class GuiButton {
     }
 
     /**
-     * Applies this button to the given menu at its resolved slots, attaching the click listener.
+     * Applies this button to the given menu at its resolved slots.
      *
-     * @param player     The player viewing the menu.
-     * @param translator The translation service.
-     * @param baseGui    The menu to place the button in.
-     * @param gui        The GUI base for action execution.
+     * @param player            the player viewing the menu
+     * @param translator        the translation service
+     * @param itemStackAccessor the item stack accessor
+     * @param guiRenderer       the renderer used to create the display item
+     * @param baseGui           the menu to place the button in
+     * @param gui               the parent GUI used for action handling
      */
     public void apply(@NotNull final Player player, @NotNull final ITranslationService translator,
                       @NotNull final IItemStackAccessor itemStackAccessor, @NotNull final IGuiRenderer guiRenderer,
@@ -118,7 +155,8 @@ public class GuiButton {
     /**
      * Serializes this button into a configuration-friendly map.
      *
-     * @return The map representation of this button.
+     * @param itemSerializer the serializer used for the display item
+     * @return the map representation of this button
      */
     public Map<String, Object> toMap(ItemSerializerBase itemSerializer) {
         Map<String, Object> map = new LinkedHashMap<>();
@@ -149,10 +187,12 @@ public class GuiButton {
     }
 
     /**
-     * Deserializes a GuiButton from a configuration map.
+     * Creates a {@code GuiButton} from a configuration map.
      *
-     * @param map The map containing button data.
-     * @return The deserialized GuiButton, or null on failure.
+     * @param map            the map containing button data
+     * @param itemSerializer the serializer used for the display item
+     * @param logger         the logger used for error messages, or {@code null} to disable logging
+     * @return the created button, or {@code null} if deserialization fails
      */
     public static @Nullable GuiButton fromMap(Map<?, ?> map, ItemSerializerBase itemSerializer, @Nullable YggraLogger logger) {
         if (map == null) return null;

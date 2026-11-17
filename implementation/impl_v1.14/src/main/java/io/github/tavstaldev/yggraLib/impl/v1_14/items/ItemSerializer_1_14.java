@@ -24,13 +24,15 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * {@inheritDoc}
+
+ * Implementation of ItemSerializer_1 for Minecraft 1.14.
+
  */
 public class ItemSerializer_1_14 extends ItemSerializerBase {
     /**
-     * {@inheritDoc}
-     */
-    public ItemSerializer_1_14(Logger logger, IRegistryAccessor registryAccessor) {
+     * Creates a new ItemSerializer_1_14 instance.
+ */
+Logger logger, IRegistryAccessor registryAccessor) {
         super(logger,
                 registryAccessor,
                 null,
@@ -52,6 +54,11 @@ public class ItemSerializer_1_14 extends ItemSerializerBase {
         map.put(EHandlerType.SKULL, new SkullMetaHandler_1_14());
         return map;
     }
+    /**
+     * Handles the serializeItemStack operation.
+     * @param item the item value
+     * @return the result
+     */
 
     @Override
     public Map<String, Object> serializeItemStack(@NotNull ItemStack item) {

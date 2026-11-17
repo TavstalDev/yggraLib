@@ -13,7 +13,18 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Modern implementation of GuiRenderer for newer Minecraft versions.
+ */
 public class GuiRenderer_modern implements IGuiRenderer {
+    /**
+     * Handles the render operation.
+     * @param button the button value
+     * @param player the player value
+     * @param translator the translator value
+     * @param itemStackAccessor the itemStackAccessor value
+     * @return the result
+     */
     @Override
     public ItemStack render(GuiButton button, Player player, ITranslationService translator, IItemStackAccessor itemStackAccessor) {
         ItemStack itemStack = button.getDisplayItem();

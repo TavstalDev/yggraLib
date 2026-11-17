@@ -17,19 +17,25 @@ import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 
+/**
+ * Base class for serializing and deserializing Bukkit item stacks.
+ * <p>
+ * It supports conversion to maps, YAML, and byte arrays, and it delegates
+ * metadata handling to registered handlers.
+ */
 @SuppressWarnings("unused")
 public abstract class ItemSerializerBase {
-    /** Logger for serialization/deserialization messages. */
+    /** Logger used for serialization and deserialization messages. */
     protected final Logger logger;
-    /** SnakeYAML parser configured with block flow style and 2-space indent. */
+    /** YAML parser used for item serialization. */
     protected final Yaml yamlParser;
-    /** Version-independent registry accessor. */
+    /** Registry accessor used to resolve version-specific values. */
     public final IRegistryAccessor registryAccessor;
-    /** Custom model data component serializer. */
+    /** Handler for custom model data. */
     public final ICustomModelDataIO customModelDataIO;
-    /** Potion name handler (version-abstracted). */
+    /** Handler for potion names. */
     public final IPotionNameHandler potionNameHandler;
-    /** Map of metadata handlers keyed by handler type. */
+    /** Metadata handlers grouped by handler type. */
     protected final HashMap<EHandlerType, IMetaHandler> metaHandlers;
 
     /**

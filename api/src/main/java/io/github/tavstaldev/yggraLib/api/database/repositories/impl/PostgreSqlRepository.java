@@ -19,8 +19,23 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Repository implementation for PostgreSQL databases.
+ *
+ * @param <ID> the entity identifier type
+ * @param <T>  the entity type
+ */
 public class PostgreSqlRepository<ID, T> extends RepositoryBase<ID, T> {
 
+    /**
+     * Creates a new PostgreSQL repository.
+     *
+     * @param plugin        the plugin instance used to access services and logging
+     * @param entityClass   the entity class handled by this repository
+     * @param dataSource    the database data source
+     * @param cacheDuration the cache duration in seconds
+     * @param tablePrefix   an optional table name prefix
+     */
     public PostgreSqlRepository(IYggraPlugin plugin, Class<T> entityClass, HikariDataSource dataSource, long cacheDuration, @Nullable String tablePrefix) {
         super(plugin.getService(ICache.class), plugin.logger().withModule(PostgreSqlRepository.class), entityClass, dataSource, cacheDuration, tablePrefix);
 
@@ -47,6 +62,9 @@ public class PostgreSqlRepository<ID, T> extends RepositoryBase<ID, T> {
         createColumnDefinitions.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void checkSchema() {
         try (Connection connection = dataSource.getConnection()) {

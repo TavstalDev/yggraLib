@@ -11,6 +11,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Implementation of EnchantmentStorageMetaHandler for Minecraft 1.8.8.
+ */
 public class EnchantmentStorageMetaHandler_1_8_8 implements IMetaHandler {
     /**
      * {@inheritDoc}

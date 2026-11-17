@@ -4,7 +4,9 @@ import io.github.tavstaldev.yggraLib.bukkit.items.IPotionNameHandler;
 import org.bukkit.inventory.meta.PotionMeta;
 
 /**
- * {@inheritDoc}
+
+ * Legacy implementation of PotionNameHandler for older Minecraft versions.
+
  */
 public class PotionNameHandler_legacy implements IPotionNameHandler {
     /**

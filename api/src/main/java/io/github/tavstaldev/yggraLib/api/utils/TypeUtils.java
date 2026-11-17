@@ -8,6 +8,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Utility methods for safe type casting and conversion.
+ */
 @SuppressWarnings("unused")
 public final class TypeUtils {
 

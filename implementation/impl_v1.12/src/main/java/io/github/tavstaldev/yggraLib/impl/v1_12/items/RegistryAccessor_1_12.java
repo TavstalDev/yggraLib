@@ -7,7 +7,9 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
 
 /**
- * {@inheritDoc}
+
+ * Implementation of RegistryAccessor_1 for Minecraft 1.12.
+
  */
 public class RegistryAccessor_1_12 implements IRegistryAccessor {
     /**

@@ -35,8 +35,19 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 @SuppressWarnings("unused")
+/**
+ * Platform implementation for Minecraft 1.14.
+ * <p>
+ * Registers version-specific services and helpers in the service collection.
+ */
 public class Platform implements IPlatform {
     @SneakyThrows
+    /**
+     * Sets up and registers platform services.
+     * 
+     * @param plugin the plugin instance using this platform
+     * @param serviceCollection the map used to store service instances
+     */
     public void setup(IYggraPlugin plugin, Map<Class<?>, Object> serviceCollection) {
         serviceCollection.put(ILanguageService.class, new LanguageService_1_14());
         ITranslationService translationService = new TranslationService(plugin);

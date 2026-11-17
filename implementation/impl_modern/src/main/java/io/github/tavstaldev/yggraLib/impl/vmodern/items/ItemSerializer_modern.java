@@ -23,15 +23,18 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 /**
- * {@inheritDoc}
+
+ * Modern implementation of ItemSerializer for newer Minecraft versions.
+
  */
 public class ItemSerializer_modern extends ItemSerializerBase {
     private final PersistentDataProvider_modern persistentDataProvider = new PersistentDataProvider_modern();
 
     /**
-     * {@inheritDoc}
-     */
-    public ItemSerializer_modern(Logger logger, IRegistryAccessor registryAccessor, ICustomModelDataIO customModelDataIO) {
+
+     * Creates a new ItemSerializer_modern instance.
+ */
+Logger logger, IRegistryAccessor registryAccessor, ICustomModelDataIO customModelDataIO) {
         super(logger,
                 registryAccessor,
                 customModelDataIO,
@@ -49,6 +52,11 @@ public class ItemSerializer_modern extends ItemSerializerBase {
             put(EHandlerType.SPAWN_EGG, new SpawnEggMetaHandler_modern());
         }});
     }
+    /**
+     * Handles the serializeItemStack operation.
+     * @param item the item value
+     * @return the result
+     */
 
     @Override
     public Map<String, Object> serializeItemStack(@NotNull ItemStack item) {

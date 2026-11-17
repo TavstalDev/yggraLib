@@ -12,13 +12,25 @@ import org.bukkit.scheduler.BukkitTask;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Supplier;
 
+/**
+ * Modern implementation of PaperScheduler for newer Minecraft versions.
+ */
 public class PaperScheduler_modern implements IScheduler {
 
     private final JavaPlugin plugin;
 
+    /**
+     * Creates a new PaperScheduler_modern instance.
+     * @param plugin the plugin value
+     */
     public PaperScheduler_modern(JavaPlugin plugin) {
         this.plugin = plugin;
     }
+    /**
+     * Schedules work using the run operation.
+     * @param runnable the runnable value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask run(Runnable runnable) {
@@ -32,6 +44,12 @@ public class PaperScheduler_modern implements IScheduler {
         }
         return wrap(task);
     }
+    /**
+     * Schedules work using the runLater operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runLater(Runnable runnable, long delay) {
@@ -45,6 +63,13 @@ public class PaperScheduler_modern implements IScheduler {
         }
         return wrap(task);
     }
+    /**
+     * Schedules work using the runRepeating operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @param period the period value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runRepeating(Runnable runnable, long delay, long period) {
@@ -58,6 +83,11 @@ public class PaperScheduler_modern implements IScheduler {
         }
         return wrap(task);
     }
+    /**
+     * Schedules work using the runAsync operation.
+     * @param runnable the runnable value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runAsync(Runnable runnable) {
@@ -71,6 +101,12 @@ public class PaperScheduler_modern implements IScheduler {
         }
         return wrap(task);
     }
+    /**
+     * Schedules work using the runLaterAsync operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runLaterAsync(Runnable runnable, long delay) {
@@ -84,6 +120,13 @@ public class PaperScheduler_modern implements IScheduler {
         }
         return wrap(task);
     }
+    /**
+     * Schedules work using the runRepeatingAsync operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @param period the period value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runRepeatingAsync(Runnable runnable, long delay, long period) {
@@ -97,6 +140,11 @@ public class PaperScheduler_modern implements IScheduler {
         }
         return wrap(task);
     }
+    /**
+     * Schedules work using the async operation.
+     * @param task the task value
+     * @return the scheduled task or future
+     */
 
     @Override
     public <T> CompletableFuture<T> async(Supplier<T> task) {
@@ -112,31 +160,73 @@ public class PaperScheduler_modern implements IScheduler {
 
         return future;
     }
+    /**
+     * Schedules work using the run operation.
+     * @param runnable the runnable value
+     * @param context the context value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask run(Runnable runnable, YggraLocation context) {
         return run(runnable);
     }
+    /**
+     * Schedules work using the runLater operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @param context the context value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runLater(Runnable runnable, long delay, YggraLocation context) {
         return runLater(runnable, delay);
     }
+    /**
+     * Schedules work using the runRepeating operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @param period the period value
+     * @param context the context value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runRepeating(Runnable runnable, long delay, long period, YggraLocation context) {
         return runRepeating(runnable, delay, period);
     }
+    /**
+     * Schedules work using the run operation.
+     * @param runnable the runnable value
+     * @param context the context value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask run(Runnable runnable, YggraEntity context) {
         return run(runnable);
     }
+    /**
+     * Schedules work using the runLater operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @param context the context value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runLater(Runnable runnable, long delay, YggraEntity context) {
         return runLater(runnable, delay);
     }
+    /**
+     * Schedules work using the runRepeating operation.
+     * @param runnable the runnable value
+     * @param delay the delay value
+     * @param period the period value
+     * @param context the context value
+     * @return the scheduled task or future
+     */
 
     @Override
     public ITask runRepeating(Runnable runnable, long delay, long period, YggraEntity context) {
@@ -145,10 +235,17 @@ public class PaperScheduler_modern implements IScheduler {
 
     private ITask wrap(BukkitTask task) {
         return new ITask() {
+            /**
+             * Handles the cancel operation.
+             */
             @Override
             public void cancel() {
                 task.cancel();
             }
+            /**
+             * Returns the value for isCancelled.
+             * @return the result
+             */
 
             @Override
             public boolean isCancelled() {

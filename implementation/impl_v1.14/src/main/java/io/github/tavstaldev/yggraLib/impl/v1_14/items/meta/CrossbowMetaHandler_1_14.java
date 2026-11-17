@@ -9,6 +9,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Implementation of CrossbowMetaHandler for Minecraft 1.14.
+ */
 public class CrossbowMetaHandler_1_14 implements IMetaHandler {
 
     /**

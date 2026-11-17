@@ -24,9 +24,10 @@ public class GuiService {
     private final HashMap<UUID, String> _playersWithOpenMenus = new HashMap<>();
 
     /**
-     * Constructs a new GuiService.
+     * Creates a new GUI service.
      *
-     * @param plugin The plugin instance.
+     * @param plugin the plugin instance
+     * @param cache  the cache used to store player menus
      */
     public GuiService(IYggraPlugin plugin, ICache cache) {
         this.cache = cache;
@@ -63,11 +64,11 @@ public class GuiService {
     }
 
     /**
-     * Opens a menu for a player, restoring from cache if available.
+     * Opens a menu for a player, reusing a cached menu if available.
      *
-     * @param player The player to open the menu for.
-     * @param menuId The menu ID.
-     * @param args Args passed to the opened menu
+     * @param player the player to open the menu for
+     * @param menuId the menu ID
+     * @param args   optional arguments passed to the menu
      */
     public void open(Player player, String menuId, @Nullable Object... args) {
         String cacheKey = getPlayerCacheKey(player);

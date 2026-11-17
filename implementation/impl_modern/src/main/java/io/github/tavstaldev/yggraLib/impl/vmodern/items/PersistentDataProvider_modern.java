@@ -10,6 +10,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 
+/**
+ * Modern implementation of PersistentDataProvider for newer Minecraft versions.
+ */
 public class PersistentDataProvider_modern {
     public @Nullable PersistentDataContainer getContainer(ItemStack item) {
         return item.getItemMeta().getPersistentDataContainer();

@@ -6,7 +6,9 @@ import org.bukkit.inventory.meta.ItemMeta;
 import java.util.Map;
 
 /**
- * {@inheritDoc}
+
+ * Implementation of CustomModelDataIO_1_20 for Minecraft 1.20.4.
+
  */
 public class CustomModelDataIO_1_20_4 implements ICustomModelDataIO {
     /**

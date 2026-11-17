@@ -20,9 +20,8 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Handles loading, caching, and retrieving localized strings from YAML locale files.
- * Supports fallback chains, player-specific locales, and automatic migration of
- * the default locale file when a newer version is bundled with the plugin.
+ * Loads and manages translated messages from YAML locale files.
+ * It supports fallback locales, player-specific locales, and updates for the default locale file.
  */
 public class TranslationService implements ITranslationService {
     private final Yaml _yaml;
@@ -203,21 +202,21 @@ public class TranslationService implements ITranslationService {
     }
 
     /**
-     * Retrieves a localized string for the default locale.
+     * Gets a translated message for the default locale.
      *
-     * @param key The key for the localization string.
-     * @return The localized string.
+     * @param key the translation key
+     * @return the translated message
      */
     public @NotNull String localize(@NotNull String key) {
         return getLocalization(_preferredLocale, key);
     }
 
     /**
-     * Retrieves a localized string for the default locale and replaces placeholders with arguments.
+     * Gets a translated message for the default locale and replaces placeholders.
      *
-     * @param key The key for the localization string.
-     * @param args The arguments to replace placeholders in the string.
-     * @return The localized string with placeholders replaced.
+     * @param key  the translation key
+     * @param args the placeholder values to insert
+     * @return the translated message with placeholders replaced
      */
     public @NotNull String localize(@NotNull String key, @NotNull Map<String, Object> args) {
         String result = getLocalization(_preferredLocale, key);
@@ -227,11 +226,11 @@ public class TranslationService implements ITranslationService {
     }
 
     /**
-     * Retrieves a localized string for a specific player.
+     * Gets a translated message for a specific player.
      *
-     * @param player The player whose locale is used.
-     * @param key The key for the localization string.
-     * @return The localized string.
+     * @param player the player whose locale should be used
+     * @param key    the translation key
+     * @return the translated message
      */
     public @NotNull String localize(@NotNull UUID player, @NotNull String key) {
         String locale = getPlayerLocale(player);
@@ -239,12 +238,12 @@ public class TranslationService implements ITranslationService {
     }
 
     /**
-     * Retrieves a localized string for a specific player and replaces placeholders with arguments.
+     * Gets a translated message for a specific player and replaces placeholders.
      *
-     * @param player The player whose locale is used.
-     * @param key The key for the localization string.
-     * @param args The arguments to replace placeholders in the string.
-     * @return The localized string with placeholders replaced.
+     * @param player the player whose locale should be used
+     * @param key    the translation key
+     * @param args   the placeholder values to insert
+     * @return the translated message with placeholders replaced
      */
     public @NotNull String localize(@NotNull UUID player, @NotNull String key, @NotNull Map<String, Object> args) {
         String result = localize(player, key);
@@ -254,21 +253,21 @@ public class TranslationService implements ITranslationService {
     }
 
     /**
-     * Retrieves a localized list of strings for the default locale.
+     * Gets a translated list of messages for the default locale.
      *
-     * @param key The key for the localization list.
-     * @return The localized list of strings.
+     * @param key the translation key
+     * @return the translated message list
      */
     public @NotNull List<String> localizeList(@NotNull String key) {
         return getLocalizationList(_preferredLocale, key);
     }
 
     /**
-     * Retrieves a localized list of strings for the default locale and replaces placeholders with arguments.
+     * Gets a translated list of messages for the default locale and replaces placeholders.
      *
-     * @param key The key for the localization list.
-     * @param args The arguments to replace placeholders in the list.
-     * @return The localized list of strings with placeholders replaced.
+     * @param key  the translation key
+     * @param args the placeholder values to insert
+     * @return the translated message list with placeholders replaced
      */
     public @NotNull List<String> localizeList(@NotNull String key, @NotNull Map<String, Object> args) {
         List<String> resultList = getLocalizationList(_preferredLocale, key);
@@ -278,11 +277,11 @@ public class TranslationService implements ITranslationService {
     }
 
     /**
-     * Retrieves a localized list of strings for a specific player.
+     * Gets a translated list of messages for a specific player.
      *
-     * @param player The player whose locale is used.
-     * @param key The key for the localization list.
-     * @return The localized list of strings.
+     * @param player the player whose locale should be used
+     * @param key    the translation key
+     * @return the translated message list
      */
     public @NotNull List<String> localizeList(@NotNull UUID player, @NotNull String key) {
 
@@ -291,12 +290,12 @@ public class TranslationService implements ITranslationService {
     }
 
     /**
-     * Retrieves a localized list of strings for a specific player and replaces placeholders with arguments.
+     * Gets a translated list of messages for a specific player and replaces placeholders.
      *
-     * @param player The player whose locale is used.
-     * @param key The key for the localization list.
-     * @param args The arguments to replace placeholders in the list.
-     * @return The localized list of strings with placeholders replaced.
+     * @param player the player whose locale should be used
+     * @param key    the translation key
+     * @param args   the placeholder values to insert
+     * @return the translated message list with placeholders replaced
      */
     public @NotNull List<String> localizeList(@NotNull UUID player, @NotNull String key, @NotNull Map<String, Object> args) {
         List<String> resultList = localizeList(player, key);

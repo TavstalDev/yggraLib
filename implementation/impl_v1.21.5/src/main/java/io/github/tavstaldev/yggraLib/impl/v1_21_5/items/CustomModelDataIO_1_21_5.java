@@ -11,7 +11,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * {@inheritDoc}
+
+ * Implementation of CustomModelDataIO_1_21 for Minecraft 1.21.5.
+
  */
 @SuppressWarnings("UnstableApiUsage")
 public class CustomModelDataIO_1_21_5 implements ICustomModelDataIO {

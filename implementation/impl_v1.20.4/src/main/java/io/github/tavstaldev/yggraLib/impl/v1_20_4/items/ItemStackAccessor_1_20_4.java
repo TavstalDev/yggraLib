@@ -12,10 +12,17 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.*;
 
+/**
+ * Implementation of ItemStackAccessor for Minecraft 1.20.4.
+ */
 public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
 
     private final IRegistryAccessor registryAccessor;
 
+    /**
+     * Creates a new ItemStackAccessor_1_20_4 instance.
+     * @param registryAccessor the registryAccessor value
+     */
     public ItemStackAccessor_1_20_4(IRegistryAccessor registryAccessor) {
         this.registryAccessor = registryAccessor;
     }
@@ -47,6 +54,11 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
 
         return meta.displayName();
     }
+    /**
+     * Sets the value for setDisplayName.
+     * @param itemStack the itemStack value
+     * @param displayName the displayName value
+     */
 
     @Override
     public void setDisplayName(ItemStack itemStack, String displayName) {
@@ -59,6 +71,11 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
         meta.displayName(AdventureUtils.parse(displayName, true));
         itemStack.setItemMeta(meta);
     }
+    /**
+     * Sets the value for setDisplayName.
+     * @param itemStack the itemStack value
+     * @param displayName the displayName value
+     */
 
     @Override
     public void setDisplayName(ItemStack itemStack, Component displayName) {
@@ -66,6 +83,11 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
         meta.displayName(displayName);
         itemStack.setItemMeta(meta);
     }
+    /**
+     * Returns the value for getLore.
+     * @param itemStack the itemStack value
+     * @return the result
+     */
 
     @Override
     public List<String> getLore(ItemStack itemStack) {
@@ -85,6 +107,11 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
             lore.add(AdventureUtils.toLegacy(line));
         return lore;
     }
+    /**
+     * Returns the value for getLoreComp.
+     * @param itemStack the itemStack value
+     * @return the result
+     */
 
     @Override
     public List<Component> getLoreComp(ItemStack itemStack) {
@@ -96,6 +123,11 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
             return Collections.emptyList();
         return meta.lore();
     }
+    /**
+     * Sets the value for setLore.
+     * @param itemStack the itemStack value
+     * @param lore the lore value
+     */
 
     @Override
     public void setLore(ItemStack itemStack, List<String> lore) {
@@ -107,6 +139,11 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
         meta.lore(loreList);
         itemStack.setItemMeta(meta);
     }
+    /**
+     * Sets the value for setLoreComp.
+     * @param itemStack the itemStack value
+     * @param lore the lore value
+     */
 
     @Override
     public void setLoreComp(ItemStack itemStack, List<Component> lore) {
@@ -114,6 +151,11 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
         meta.lore(lore);
         itemStack.setItemMeta(meta);
     }
+    /**
+     * Returns the value for getEnchants.
+     * @param itemStack the itemStack value
+     * @return the result
+     */
 
     @Override
     public Map<String, Integer> getEnchants(ItemStack itemStack) {
@@ -122,6 +164,12 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
             enchantments.put(entry.getKey().getKey().asString(), entry.getValue());
         return enchantments;
     }
+    /**
+     * Handles the addEnchant operation.
+     * @param itemStack the itemStack value
+     * @param name the name value
+     * @param level the level value
+     */
 
     @Override
     public void addEnchant(ItemStack itemStack, String name, int level) {
@@ -130,12 +178,21 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
             return;
         itemStack.addEnchantment(enchantment, level);
     }
+    /**
+     * Handles the clearEnchants operation.
+     * @param itemStack the itemStack value
+     */
 
     @Override
     public void clearEnchants(ItemStack itemStack) {
         for (Map.Entry<Enchantment, Integer> entry : itemStack.getEnchantments().entrySet())
             itemStack.removeEnchantment(entry.getKey());
     }
+    /**
+     * Returns the value for getHiddenFlags.
+     * @param itemStack the itemStack value
+     * @return the result
+     */
 
     @Override
     public Set<ItemFlag> getHiddenFlags(ItemStack itemStack) {
@@ -145,6 +202,10 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
         ItemMeta meta = itemStack.getItemMeta();
         return meta.getItemFlags();
     }
+    /**
+     * Handles the hideAllFlags operation.
+     * @param itemStack the itemStack value
+     */
 
     @Override
     public void hideAllFlags(ItemStack itemStack) {
@@ -161,6 +222,11 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
         );
         itemStack.setItemMeta(meta);
     }
+    /**
+     * Handles the hide operation.
+     * @param itemStack the itemStack value
+     * @param flags the flags value
+     */
 
     @Override
     public void hide(ItemStack itemStack, ItemFlag... flags) {
@@ -168,16 +234,31 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
         meta.addItemFlags(flags);
         itemStack.setItemMeta(meta);
     }
+    /**
+     * Returns the value for getAmount.
+     * @param itemStack the itemStack value
+     * @return the result
+     */
 
     @Override
     public Integer getAmount(ItemStack itemStack) {
         return itemStack.getAmount();
     }
+    /**
+     * Sets the value for setAmount.
+     * @param itemStack the itemStack value
+     * @param amount the amount value
+     */
 
     @Override
     public void setAmount(ItemStack itemStack, int amount) {
         itemStack.setAmount(amount);
     }
+    /**
+     * Returns the value for getCustomModelData.
+     * @param itemStack the itemStack value
+     * @return the result
+     */
 
     @Override
     public Integer getCustomModelData(ItemStack itemStack) {
@@ -187,6 +268,11 @@ public class ItemStackAccessor_1_20_4 implements IItemStackAccessor {
         ItemMeta meta = itemStack.getItemMeta();
         return meta.getCustomModelData();
     }
+    /**
+     * Sets the value for setCustomModelData.
+     * @param itemStack the itemStack value
+     * @param customModelData the customModelData value
+     */
 
     @Override
     public void setCustomModelData(ItemStack itemStack, int customModelData) {

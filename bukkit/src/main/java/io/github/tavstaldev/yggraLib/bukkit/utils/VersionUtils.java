@@ -81,6 +81,11 @@ public class VersionUtils {
         return !isAtLeast(1, 13); // Legacy if not at least 1.13
     }
 
+    /**
+     * Checks whether the server is running on Folia.
+     *
+     * @return {@code true} if Folia classes are available, otherwise {@code false}
+     */
     public static boolean isFolia() {
         try {
             Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
@@ -90,6 +95,11 @@ public class VersionUtils {
         }
     }
 
+    /**
+     * Checks whether the server is running on Paper or a Paper-based fork.
+     *
+     * @return {@code true} if Paper classes are available, otherwise {@code false}
+     */
     public static boolean isPaper() {
         try {
             // Modern Paper (1.20+) uses ServerBuildInfo

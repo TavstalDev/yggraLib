@@ -27,30 +27,84 @@ import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
+/**
+ * Base plugin class for plugins that use the Yggra library.
+ * <p>
+ * This class loads dependencies, prepares the platform implementation,
+ * and provides common plugin features.
+ *
+ * @param <TConfig> the configuration type used by the plugin
+ */
 public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlugin implements IYggraPlugin {
 
+    /**
+     * Stores registered services by their class type.
+     */
     protected final HashMap<Class<?>, Object> _serviceCollection = new HashMap<>();
+
+    /**
+     * The logger used by this plugin.
+     */
     protected final YggraLogger _logger;
+
+    /**
+     * The optional bStats plugin ID.
+     */
     protected final @Nullable Integer _pluginId;
+
+    /**
+     * The library manager used to load external dependencies at runtime.
+     */
     protected final BukkitLibraryManager libraryManager;
+
+    /**
+     * The plugin configuration instance.
+     */
     protected TConfig _config;
 
+    /**
+     * Returns the plugin name.
+     *
+     * @return the plugin name
+     */
     @Override
     public String name() {
         return this.getName();
     }
 
+    /**
+     * Returns the plugin version from the plugin description.
+     *
+     * @return the plugin version
+     */
     @Override
     public String version() { return this.getDescription().getVersion(); }
 
+    /**
+     * Returns the plugin configuration.
+     *
+     * @return the configuration instance
+     */
     @Override
     public TConfig config() { return _config; }
 
+    /**
+     * Returns the plugin logger.
+     *
+     * @return the logger instance
+     */
     @Override
     public YggraLogger logger() {
         return _logger;
     }
 
+    /**
+     * Returns a registered service by its class type.
+     *
+     * @param clazz the service class to look up
+     * @param <T> the service type
+     * @return the service instance, or {@code null} if no service is registered
+     */
     @Override
     public @org.jspecify.annotations.Nullable <T> T getService(Class<T> clazz) {
         Object obj = _serviceCollection.get(clazz);
@@ -59,6 +113,14 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
         return clazz.cast(obj);
     }
 
+    /**
+     * Returns a required service by its class type.
+     *
+     * @param clazz the service class to look up
+     * @param <T> the service type
+     * @return the registered service instance
+     * @throws Exception if the service is not registered
+     */
     @Override
     public <T> T getRequiredService(Class<T> clazz) throws Exception {
         Object obj = _serviceCollection.get(clazz);
@@ -68,21 +130,45 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
         return clazz.cast(obj);
     }
 
+    /**
+     * Returns the plugin data folder.
+     *
+     * @return the data folder
+     */
     @Override
     public File dataFolder() {
         return this.getDataFolder();
     }
 
+    /**
+     * Returns a resource from the plugin jar.
+     *
+     * @param path the resource path
+     * @return an input stream for the resource, or {@code null} if it does not exist
+     */
     @Override
     public InputStream resource(String path) {
         return this.getResource(path);
     }
 
+    /**
+     * Returns a command registered by the plugin.
+     *
+     * @param name the command name
+     * @return the command object, or {@code null} if it is not found
+     */
     @Override
     public Object command(String name) {
         return this.getCommand(name);
     }
 
+    /**
+     * Creates a new plugin instance and prepares runtime library loading.
+     *
+     * @param pluginId the optional bStats plugin ID
+     * @param repositories additional Maven repositories to register, or {@code null}
+     * @param libraries additional libraries to load, or {@code null}
+     */
     public YggraPlugin(@Nullable Integer pluginId, @Nullable String[] repositories, @Nullable LibraryInfo[] libraries) {
         _pluginId = pluginId;
         _logger = new YggraLogger(this);
@@ -124,20 +210,37 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
         }
     }
 
+    /**
+     * Creates a new plugin instance with additional libraries.
+     *
+     * @param pluginId the optional bStats plugin ID
+     * @param libraries additional libraries to load, or {@code null}
+     */
     @SuppressWarnings("unused")
     public YggraPlugin(@Nullable Integer pluginId, @Nullable LibraryInfo[] libraries) {
         this(pluginId, null, libraries);
     }
 
+    /**
+     * Creates a new plugin instance with an optional bStats plugin ID.
+     *
+     * @param pluginId the optional bStats plugin ID
+     */
     @SuppressWarnings("unused")
     public YggraPlugin(@Nullable Integer pluginId) {
         this(pluginId, null, null);
     }
 
+    /**
+     * Creates a new plugin instance with default settings.
+     */
     public YggraPlugin() {
         this(null, null, null);
     }
 
+    /**
+     * Loads the core libraries required by YggraLib.
+     */
     protected void loadDependencies() {
         String packageGroup = "io.github.tavstaldev.yggraLib.shadow";
 
@@ -248,6 +351,12 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
         //#endregion
     }
 
+    /**
+     * Enables the plugin.
+     * <p>
+     * This method loads dependencies, prepares the platform implementation,
+     * and then runs the plugin enable hooks.
+     */
     @Override
     public final void onEnable() {
         loadDependencies();
@@ -270,29 +379,61 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
         onPluginEnable();
     }
 
+    /**
+     * Runs before the platform setup is completed.
+     * <p>
+     * Subclasses can override this method to add custom startup logic.
+     */
     public void onPrePluginEnable() {
         // To be overridden by subclasses
     }
 
+    /**
+     * Runs after the platform setup is completed successfully.
+     * <p>
+     * Subclasses can override this method to add custom startup logic.
+     */
     public void onPluginEnable() {
         // To be overridden by subclasses
     }
 
+    /**
+     * Disables the plugin and clears registered services.
+     */
     @Override
     public final void onDisable() {
         _serviceCollection.clear();
         onPluginDisable();
     }
 
+    /**
+     * Runs when the plugin is being disabled.
+     * <p>
+     * Subclasses can override this method to add custom shutdown logic.
+     */
     public void onPluginDisable() {
         // To be overridden by subclasses
     }
 
+    /**
+     * Replaces supported placeholders in the given message.
+     *
+     * @param message the message to process
+     * @return the message with placeholders replaced
+     */
     @Override
     public @NonNull String replacePlaceholders(@NonNull String message) {
         return message.replace("%prefix%", Objects.requireNonNull(config().get("general.prefix", "")));
     }
 
+    /**
+     * Checks whether the current plugin version matches the latest available version.
+     * <p>
+     * The check is performed asynchronously using the configured download URL.
+     *
+     * @return a future that resolves to {@code true} if the plugin is up to date,
+     * {@code false} if it is not, or {@code null} if the check fails
+     */
     @Override
     public CompletableFuture<@Nullable Boolean> isUpToDate() {
         return CompletableFuture.supplyAsync(() -> {
@@ -361,6 +502,12 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
         });
     }
 
+    /**
+     * Returns the platform implementation class name for the current Minecraft version.
+     *
+     * @return the fully qualified platform implementation class name
+     * @throws RuntimeException if the current Minecraft version is not supported
+     */
     private static @NonNull String getImplClassName() {
         String implClassName;
 

@@ -10,8 +10,16 @@ import java.lang.reflect.Field;
 import java.util.UUID;
 
 @SuppressWarnings("CallToPrintStackTrace")
+/**
+ * Implementation of SkullMetaAccessor for Minecraft 1.8.8.
+ */
 public class SkullMetaAccessor_1_8_8 implements ISkullMetaAccessor {
     private static Field field;
+    /**
+     * Sets the value for setTexture.
+     * @param item the item value
+     * @param texture the texture value
+     */
 
     @Override
     public void setTexture(ItemStack item, String texture) {

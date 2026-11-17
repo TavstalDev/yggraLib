@@ -49,28 +49,28 @@ public class YggraLogger {
     }
 
     /**
-     * Creates a new PluginLogger instance with the specified module.
+     * Creates a new logger that uses the given module name.
      *
-     * @param module The module name to be used in log messages.
-     * @return A new PluginLogger instance with the specified module.
+     * @param module the module name to include in log messages
+     * @return a new logger instance with the specified module
      */
     public YggraLogger withModule(String module) {
         return new YggraLogger(_plugin, module);
     }
 
     /**
-     * Creates a new PluginLogger instance with the specified module.
+     * Creates a new logger that uses the simple name of the given class as module name.
      *
-     * @param module The class whose name will be used as the module name in log messages.
-     * @return A new PluginLogger instance with the specified module.
+     * @param module the class whose simple name will be used in log messages
+     * @return a new logger instance with the specified module
      */
     public YggraLogger withModule(@NotNull Class<?> module) {
-        return new YggraLogger(_plugin,module.getSimpleName());
+        return new YggraLogger(_plugin, module.getSimpleName());
     }
 
     /**
-     * Refreshes the debug enabled flag from the plugin configuration.
-     * Reads the "general.debug-mode" key from config.yml, defaulting to false.
+     * Updates the debug setting from the plugin configuration.
+     * It reads the {@code general.debug-mode} key and defaults to {@code false}.
      */
     public void refreshDebugEnabled() {
         _debugEnabled = _plugin.config().get("general.debug-mode", false);

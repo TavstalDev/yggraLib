@@ -16,9 +16,26 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
+/**
+ * Repository implementation for MySQL and MariaDB databases.
+ *
+ * @param <ID> the entity identifier type
+ * @param <T>  the entity type
+ */
 public class MySqlRepository<ID, T> extends RepositoryBase<ID, T> {
+    /** {@code true} if the connected database is MariaDB. */
     private final boolean isMariaDb;
 
+    /**
+     * Creates a new MySQL or MariaDB repository.
+     *
+     * @param plugin        the plugin instance used to access services and logging
+     * @param entityClass   the entity class handled by this repository
+     * @param dataSource    the database data source
+     * @param isMariaDb     {@code true} if the target database is MariaDB
+     * @param cacheDuration the cache duration in seconds
+     * @param tablePrefix   an optional table name prefix
+     */
     public MySqlRepository(IYggraPlugin plugin, Class<T> entityClass, HikariDataSource dataSource, boolean isMariaDb, long cacheDuration, @Nullable String tablePrefix) {
        super(plugin.getService(ICache.class), plugin.logger().withModule(MySqlRepository.class), entityClass, dataSource, cacheDuration, tablePrefix);
        this.isMariaDb = isMariaDb;
@@ -46,6 +63,9 @@ public class MySqlRepository<ID, T> extends RepositoryBase<ID, T> {
         createColumnDefinitions.clear();
     }
 
+    /**
+     * {@inheritDoc}
+     */
     @Override
     public void checkSchema() {
         try (Connection connection = dataSource.getConnection()) {

@@ -8,7 +8,9 @@ import org.bukkit.inventory.meta.PotionMeta;
 import java.util.Objects;
 
 /**
- * {@inheritDoc}
+
+ * Modern implementation of PotionNameHandler for newer Minecraft versions.
+
  */
 public class PotionNameHandler_modern implements IPotionNameHandler {
     /**

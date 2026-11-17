@@ -22,20 +22,40 @@ import java.util.*;
  */
 @SuppressWarnings("unused")
 public abstract class CommandBase implements CommandExecutor, TabCompleter {
-    /** The plugin instance. */
+    /** The plugin instance that owns this command. */
     private final IYggraPlugin plugin;
-    /** The command name (must be defined in plugin.yml). */
+    /** The command name as defined in {@code plugin.yml}. */
     private final String command;
+
+    /**
+     * Gets the name of this command.
+     *
+     * @return the command name
+     */
     public final String getCommand() {
         return command;
     }
-    /** Required permission node; null or blank allows all. */
+
+    /** The permission required to use this command, or {@code null} if none is required. */
     private final String permission;
+
+    /**
+     * Gets the permission required for this command.
+     *
+     * @return the permission node, or {@code null} if none is required
+     */
     public final String getPermission() {
         return permission;
     }
-    /** Registered subcommands. */
+
+    /** The subcommands registered for this command. */
     private final List<SubCommand> subCommands;
+
+    /**
+     * Gets an unmodifiable list of registered subcommands.
+     *
+     * @return the registered subcommands
+     */
     public final List<SubCommand> getSubCommands() {
         return Collections.unmodifiableList(subCommands);
     }

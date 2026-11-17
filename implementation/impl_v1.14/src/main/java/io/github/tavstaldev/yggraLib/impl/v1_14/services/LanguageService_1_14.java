@@ -7,6 +7,9 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.UUID;
 
+/**
+ * Implementation of LanguageService for Minecraft 1.14.
+ */
 public class LanguageService_1_14 implements ILanguageService {
     @Override
     public @Nullable String getLocale(UUID playerId) {
