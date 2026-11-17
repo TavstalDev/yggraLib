@@ -8,7 +8,7 @@ val titleVersion = project.property("titleVersion") as String
 val particleVersion = project.property("particleVersion") as String
 
 dependencies {
-    compileOnly("com.destroystokyo.paper:paper-api:1.13-R0.1-SNAPSHOT")
+    compileOnly("com.destroystokyo.paper:paper-api:1.16.5-R0.1-SNAPSHOT")
     compileOnly(project(":api"))
     compileOnly(project(":bukkit"))
     compileOnly(project(":impl_legacy"))

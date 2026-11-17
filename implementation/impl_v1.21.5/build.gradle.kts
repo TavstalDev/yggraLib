@@ -5,7 +5,7 @@ val titleVersion = project.property("titleVersion") as String
 val particleVersion = project.property("particleVersion") as String
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.21.5-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:26.3.build.252-stable")
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
     compileOnly(project(":api"))
     compileOnly(project(":bukkit"))
