@@ -14,6 +14,7 @@ import com.github.TavstalDev.yggraLib.bukkit.utils.VersionUtils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import dev.triumphteam.gui.TriumphGui;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import org.bstats.bukkit.Metrics;
@@ -263,7 +264,6 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .groupId("dev{}triumphteam")
                 .artifactId("triumph-gui")
                 .version("3.1.13")
-                //.relocate("dev{}triumphteam", packageGroup + ".triumphteam")
                 .build());*/
         libraryManager.loadLibrary(Library.builder()
                 .groupId("com{}github{}lidanthedev{}triumph-gui")
@@ -276,7 +276,6 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .groupId("fr{}mrmicky")
                 .artifactId("fastboard")
                 .version("2.2.2")
-                //.relocate("fr{}mrmicky", packageGroup + ".mrmicky")
                 .build());
 
         // com.github.ben-manes.caffeine - Required for caching
@@ -284,7 +283,13 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .groupId("com{}github{}ben-manes{}caffeine")
                 .artifactId("caffeine")
                 .version("2.9.3")
-                //.relocate("com{}github{}ben-manes{}caffeine", packageGroup + ".yaml")
+                .build());
+
+        // com.google.code.gson - Required for update checking
+        libraryManager.loadLibrary(Library.builder()
+                .groupId("com{}google{}code{}gson")
+                .artifactId("gson")
+                .version("2.15.0")
                 .build());
 
 
@@ -355,6 +360,8 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .build());
 
         //#endregion
+
+        TriumphGui.init(this);
     }
 
     /**
