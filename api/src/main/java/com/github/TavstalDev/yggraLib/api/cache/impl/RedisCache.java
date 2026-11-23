@@ -8,6 +8,8 @@ import redis.clients.jedis.HostAndPort;
 import redis.clients.jedis.RedisClient;
 import redis.clients.jedis.params.SetParams;
 
+import java.util.HashSet;
+
 /**
  * Redis-backed cache implementation. Values are serialized to JSON via Gson and stored
  * with TTL-based expiration using Redis' EX command.
@@ -16,6 +18,7 @@ import redis.clients.jedis.params.SetParams;
 public class RedisCache implements ICache {
     private final RedisClient redisClient;
     private final Gson gson = new Gson();
+    private HashSet<String> managedKeys = new HashSet<>();
 
     /**
      * Creates a RedisCache connecting to the specified Redis server.
@@ -44,9 +47,11 @@ public class RedisCache implements ICache {
     @Override
     public <T> @Nullable T get(String key, Class<T> clazz) {
         String json = redisClient.get(key);
-        if (json == null) return null;
+        if (json == null)
+            return null;
 
-        if (clazz == String.class) return clazz.cast(json);
+        if (clazz == String.class)
+            return clazz.cast(json);
         return gson.fromJson(json, clazz);
     }
 
@@ -63,6 +68,7 @@ public class RedisCache implements ICache {
 
         SetParams setParams = new SetParams().ex(ttlSeconds);
         redisClient.set(key, dataToStore, setParams);
+        managedKeys.add(key);
     }
 
     /**
@@ -70,6 +76,17 @@ public class RedisCache implements ICache {
      */
     @Override
     public void evict(String key) {
+
         redisClient.del(key);
+        managedKeys.remove(key);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void evictAll() {
+        redisClient.del(managedKeys.toArray(new String[0]));
+        managedKeys.clear();
     }
 }

@@ -33,4 +33,9 @@ public interface ICache {
      * @param key The cache key to evict.
      */
     void evict(String key);
+
+    /**
+     * Removes all values from the cache.
+     */
+    void evictAll();
 }

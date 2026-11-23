@@ -81,4 +81,12 @@ public class MemoryCache implements ICache {
     public void evict(String key) {
         cache.invalidate(key);
     }
+
+    /**
+     * {@inheritDoc}
+     */
+    @Override
+    public void evictAll() {
+        cache.invalidateAll();
+    }
 }
