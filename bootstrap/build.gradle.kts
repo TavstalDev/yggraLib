@@ -51,6 +51,8 @@ java {
     toolchain {
         languageVersion = JavaLanguageVersion.of(8)
     }
+    withJavadocJar()
+    withSourcesJar()
 }
 
 configurations.runtimeClasspath {
@@ -92,12 +94,44 @@ tasks.build {
     dependsOn(tasks.shadowJar)
 }
 
+val javadocProjects = listOf(
+    project(":api"),
+    project(":bukkit")
+)
+
+tasks.javadoc {
+    javadocProjects.forEach { p ->
+        val sourceSets = p.extensions.getByType<SourceSetContainer>()
+        source(sourceSets["main"].allJava)
+        classpath += sourceSets["main"].compileClasspath
+    }
+    (options as StandardJavadocDocletOptions).apply {
+        encoding = "UTF-8"
+        addStringOption("Xdoclint:none", "-quiet")
+    }
+    isFailOnError = false
+}
+
+tasks.named<Jar>("sourcesJar") {
+    archiveBaseName.set("yggraLib")
+    javadocProjects.forEach { p ->
+        from(p.extensions.getByType<SourceSetContainer>()["main"].allSource)
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.named<Jar>("javadocJar") {
+    archiveBaseName.set("yggraLib")
+}
+
 publishing {
     publications {
         create<MavenPublication>("maven") {
             groupId = "com.github.TavstalDev"
             artifactId = "yggraLib"
             artifact(tasks.shadowJar)
+            artifact(tasks.named("javadocJar"))
+            artifact(tasks.named("sourcesJar"))
         }
     }
 }
