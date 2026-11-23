@@ -17,11 +17,12 @@ public class ExamplePlugin extends YggraPlugin<ExampleConfig> {
      * This method stores the plugin instance and loads the configuration.
      */
     @Override
-    public void onPrePluginEnable() {
+    public boolean onPrePluginEnable() {
         instance = this;
         logger().info(String.format("Loading %s...", getName()));
         _config = new ExampleConfig(this);
         _config.load();
+        return true;
     }
 
     /**
