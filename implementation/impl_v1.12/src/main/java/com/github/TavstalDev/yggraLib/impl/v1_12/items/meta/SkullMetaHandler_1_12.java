@@ -23,7 +23,7 @@ public class SkullMetaHandler_1_12 implements IMetaHandler {
     private static Field field;
 
     /** {@inheritDoc} */
-    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) {
         if (!(meta instanceof SkullMeta))
             return;
 
@@ -58,7 +58,7 @@ public class SkullMetaHandler_1_12 implements IMetaHandler {
     }
 
     /** {@inheritDoc} */
-    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) {
         if (!(meta instanceof SkullMeta))
             return;
 

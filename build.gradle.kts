@@ -9,7 +9,7 @@ val jetbrainsAnnotationsVersion = project.property("jetbrainsAnnotationsVersion"
 val lombokVersion = project.property("lombokVersion") as String
 
 subprojects {
-    apply(plugin = "java")
+    pluginManager.apply("java")
 
     repositories {
         mavenCentral()

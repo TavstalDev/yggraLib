@@ -18,7 +18,7 @@ import java.util.HashSet;
 public class RedisCache implements ICache {
     private final RedisClient redisClient;
     private final Gson gson = new Gson();
-    private HashSet<String> managedKeys = new HashSet<>();
+    private final HashSet<String> managedKeys = new HashSet<>();
 
     /**
      * Creates a RedisCache connecting to the specified Redis server.

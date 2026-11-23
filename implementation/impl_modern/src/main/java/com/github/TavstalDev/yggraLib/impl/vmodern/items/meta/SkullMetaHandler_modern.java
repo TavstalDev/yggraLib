@@ -3,7 +3,6 @@ package com.github.TavstalDev.yggraLib.impl.vmodern.items.meta;
 import com.destroystokyo.paper.profile.ProfileProperty;
 import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
 import org.bukkit.Bukkit;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;

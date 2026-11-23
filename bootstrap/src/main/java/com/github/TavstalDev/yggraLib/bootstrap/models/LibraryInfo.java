@@ -6,6 +6,7 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Stores the information needed to load an external library.
  */
+@SuppressWarnings("unused")
 public class LibraryInfo {
     /**
      * The group ID of the library.

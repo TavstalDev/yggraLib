@@ -106,5 +106,6 @@ public interface IYggraPlugin {
      * @return a future with {@code true} if up to date, {@code false} if outdated,
      * or {@code null} if the check could not be completed
      */
+    @SuppressWarnings("unused")
     CompletableFuture<@Nullable Boolean> isUpToDate();
 }

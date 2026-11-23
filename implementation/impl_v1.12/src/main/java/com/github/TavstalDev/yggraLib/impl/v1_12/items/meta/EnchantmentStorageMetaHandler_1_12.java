@@ -16,7 +16,7 @@ import java.util.Map;
  */
 public class EnchantmentStorageMetaHandler_1_12 implements IMetaHandler {
     /** {@inheritDoc} */
-    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) {
         if (!(meta instanceof EnchantmentStorageMeta))
             return;
 
@@ -29,7 +29,7 @@ public class EnchantmentStorageMetaHandler_1_12 implements IMetaHandler {
     }
 
     /** {@inheritDoc} */
-    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) {
         if (!itemData.containsKey("enchantmentStorage"))
             return;
 

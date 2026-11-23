@@ -4,6 +4,7 @@ import dev.triumphteam.gui.guis.BaseGui;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+@SuppressWarnings("unused")
 public interface IGuiService {
     /**
      * Registers a menu, loading its configuration.

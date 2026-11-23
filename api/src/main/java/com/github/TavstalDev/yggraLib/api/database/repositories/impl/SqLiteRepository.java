@@ -21,6 +21,7 @@ import java.util.stream.Collectors;
  * @param <ID> the entity identifier type
  * @param <T>  the entity type
  */
+@SuppressWarnings("unused")
 public class SqLiteRepository<ID, T> extends RepositoryBase<ID, T> {
 
     /**

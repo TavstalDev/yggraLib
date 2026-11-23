@@ -3,7 +3,6 @@ package com.github.TavstalDev.yggraLib.impl.vmodern.items.meta;
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
 import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer;
 import org.bukkit.inventory.meta.BookMeta;

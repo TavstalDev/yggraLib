@@ -15,7 +15,7 @@ import java.util.Map;
 public class CrossbowMetaHandler_1_14 implements IMetaHandler {
 
     /** {@inheritDoc} */
-    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) {
         if (!(meta instanceof CrossbowMeta))
             return;
 

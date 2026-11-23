@@ -22,6 +22,7 @@ import java.util.stream.Collectors;
  * @param <ID> the entity identifier type
  * @param <T>  the entity type
  */
+@SuppressWarnings("unused")
 public class MySqlRepository<ID, T> extends RepositoryBase<ID, T> {
     /** {@code true} if the connected database is MariaDB. */
     private final boolean isMariaDb;

@@ -2,7 +2,6 @@ package com.github.TavstalDev.yggraLib.impl.vmodern.items.meta;
 
 import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.CrossbowMeta;
 import org.bukkit.inventory.meta.ItemMeta;

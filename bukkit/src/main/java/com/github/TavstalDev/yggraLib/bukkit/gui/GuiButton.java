@@ -23,6 +23,7 @@ import java.util.stream.Collectors;
  * Represents a single button in a GUI menu, with support for materials, head textures,
  * titles, lore, slot positioning, and click actions.
  */
+@SuppressWarnings("unused")
 public class GuiButton {
     private final @Nullable String action;
     private @Nullable final String title;

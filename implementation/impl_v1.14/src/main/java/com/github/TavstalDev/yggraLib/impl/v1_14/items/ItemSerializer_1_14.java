@@ -73,6 +73,7 @@ public class ItemSerializer_1_14 extends ItemSerializerBase {
 
                 // Add item metadata like display name, lore, etc. (Optional)
                 String displayName = meta.getDisplayName();
+                //noinspection ConstantValue
                 if (displayName != null)
                     itemData.put("name", displayName);
                 List<String> metaLore = meta.getLore();
