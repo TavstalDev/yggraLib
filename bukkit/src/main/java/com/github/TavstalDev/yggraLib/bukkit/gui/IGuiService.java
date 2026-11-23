@@ -27,6 +27,11 @@ public interface IGuiService {
     void unregister(GuiBase menuBase);
 
     /**
+     * Unregisters all menus.
+     */
+    void unregisterAll();
+
+    /**
      * Opens a menu for a player, reusing a cached menu if available.
      *
      * @param player the player to open the menu for

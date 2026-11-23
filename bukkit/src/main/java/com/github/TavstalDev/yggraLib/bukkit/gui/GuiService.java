@@ -47,6 +47,12 @@ public class GuiService implements IGuiService {
     }
 
     /** {@inheritDoc} */
+    public void unregisterAll() {
+       _registeredMenus.clear();
+       logger.debug("Unregistered all menus.");
+    }
+
+    /** {@inheritDoc} */
     public void open(Player player, String menuId, @Nullable Object... args) {
         String cacheKey = getPlayerCacheKey(player);
         GuiBase menuBase = _registeredMenus.get(menuId);
