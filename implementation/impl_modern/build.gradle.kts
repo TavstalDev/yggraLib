@@ -1,7 +1,7 @@
 val fastboardVersion = project.property("fastboardVersion") as String
 
 dependencies {
-    compileOnly("io.papermc.paper:paper-api:1.20.4-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:26.3.build.257-stable")
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
     compileOnly(project(":api"))
     compileOnly(project(":bukkit"))

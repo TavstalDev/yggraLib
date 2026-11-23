@@ -6,7 +6,7 @@ val triumphGuiVersion = project.property("triumphGuiVersion") as String
 dependencies {
     compileOnly(project(":api"))
 
-    compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
+    compileOnly("org.spigotmc:spigot-api:26.3-R0.1-SNAPSHOT")
     compileOnly("org.yaml:snakeyaml:${snakeYamlVersion}")
     compileOnly("org.bspfsystems:yamlconfiguration:${yamlConfigVersion}")
     compileOnly("net.kyori:adventure-api:${adventureApiVersion}")
