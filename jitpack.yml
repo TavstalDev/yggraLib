@@ -1,4 +1,7 @@
 jdk:
+  - openjdk8
+  - openjdk17
+  - openjdk21
   - openjdk25
 install:
   - ./gradlew :bootstrap:publishToMavenLocal
