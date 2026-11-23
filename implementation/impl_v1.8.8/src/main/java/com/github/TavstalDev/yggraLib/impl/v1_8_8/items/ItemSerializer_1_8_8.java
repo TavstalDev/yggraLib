@@ -141,16 +141,6 @@ public class ItemSerializer_1_8_8 extends ItemSerializerBase {
                     item.setDurability(durability);
                 }
 
-                // NBT Data
-                if (nbtAccessor != null && itemMap.containsKey("nbt")) {
-                    Map<String, Object> nbt = TypeUtils.castAsMap(itemMap.get("nbt"), null);
-                    if (nbt != null) {
-                        for (Map.Entry<String, Object> entry : nbt.entrySet()) {
-                            nbtAccessor.set(item, entry.getKey(), entry.getValue());
-                        }
-                    }
-                }
-
                 // Item Meta Handlers
                 for (Map.Entry<EHandlerType, IMetaHandler> handler : metaHandlers.entrySet()) {
                     try {
@@ -163,6 +153,17 @@ public class ItemSerializer_1_8_8 extends ItemSerializerBase {
                 }
 
                 item.setItemMeta(meta);  // Set the metadata to the item
+
+                // NBT Data
+                if (nbtAccessor != null && itemMap.containsKey("nbt")) {
+                    Map<String, Object> nbt = TypeUtils.castAsMap(itemMap.get("nbt"), null);
+                    if (nbt != null) {
+                        for (Map.Entry<String, Object> entry : nbt.entrySet()) {
+                            nbtAccessor.set(item, entry.getKey(), entry.getValue());
+                        }
+                    }
+                }
+
                 itemResult = item;
             }
         } catch (Exception ex) {
