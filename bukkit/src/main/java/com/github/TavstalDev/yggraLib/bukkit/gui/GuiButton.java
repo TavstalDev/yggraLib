@@ -1,13 +1,13 @@
 package com.github.TavstalDev.yggraLib.bukkit.gui;
 
-import dev.triumphteam.gui.guis.BaseGui;
-import dev.triumphteam.gui.guis.GuiItem;
 import com.github.TavstalDev.yggraLib.api.gui.SlotParser;
 import com.github.TavstalDev.yggraLib.api.localization.ITranslationService;
 import com.github.TavstalDev.yggraLib.api.logger.YggraLogger;
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
+import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IItemStackAccessor;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
+import dev.triumphteam.gui.guis.BaseGui;
+import dev.triumphteam.gui.guis.GuiItem;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.jetbrains.annotations.NotNull;
@@ -158,7 +158,7 @@ public class GuiButton {
      * @param itemSerializer the serializer used for the display item
      * @return the map representation of this button
      */
-    public Map<String, Object> toMap(ItemSerializerBase itemSerializer) {
+    public Map<String, Object> toMap(IItemSerializer itemSerializer) {
         Map<String, Object> map = new LinkedHashMap<>();
         if (action != null) {
             map.put("action", action);
@@ -194,7 +194,7 @@ public class GuiButton {
      * @param logger         the logger used for error messages, or {@code null} to disable logging
      * @return the created button, or {@code null} if deserialization fails
      */
-    public static @Nullable GuiButton fromMap(Map<?, ?> map, ItemSerializerBase itemSerializer, @Nullable YggraLogger logger) {
+    public static @Nullable GuiButton fromMap(Map<?, ?> map, IItemSerializer itemSerializer, @Nullable YggraLogger logger) {
         if (map == null) return null;
 
         try {

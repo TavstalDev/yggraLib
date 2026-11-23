@@ -1,14 +1,14 @@
 package com.github.TavstalDev.yggraLib.bukkit.gui;
 
-import dev.triumphteam.gui.guis.BaseGui;
-import dev.triumphteam.gui.guis.Gui;
 import com.github.TavstalDev.yggraLib.api.IYggraPlugin;
 import com.github.TavstalDev.yggraLib.api.gui.SlotParser;
 import com.github.TavstalDev.yggraLib.api.localization.ITranslationService;
 import com.github.TavstalDev.yggraLib.api.logger.YggraLogger;
+import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IItemStackAccessor;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
 import com.github.TavstalDev.yggraLib.bukkit.utils.AdventureUtils;
+import dev.triumphteam.gui.guis.BaseGui;
+import dev.triumphteam.gui.guis.Gui;
 import lombok.SneakyThrows;
 import net.kyori.adventure.text.Component;
 import org.bspfsystems.yamlconfiguration.configuration.ConfigurationSection;
@@ -41,7 +41,7 @@ public abstract class GuiBase {
     /** Accessor used to modify item stack properties. */
     protected final IItemStackAccessor itemStackAccessor;
     /** Serializer used for menu item data. */
-    protected final ItemSerializerBase itemSerializer;
+    protected final IItemSerializer itemSerializer;
     /** The unique identifier of this menu. */
     public final String id;
     /** The configured menu title. */
@@ -95,7 +95,7 @@ public abstract class GuiBase {
         this.translator = plugin.getRequiredService(ITranslationService.class);
         this.guiRenderer = plugin.getRequiredService(IGuiRenderer.class);
         this.itemStackAccessor = plugin.getRequiredService(IItemStackAccessor.class);
-        this.itemSerializer = plugin.getRequiredService(ItemSerializerBase.class);
+        this.itemSerializer = plugin.getRequiredService(IItemSerializer.class);
 
         this.menuTitle = yaml.getString("title", title);
         this.isTitleTranslated = yaml.getBoolean("title-translated", isTitleTranslated);

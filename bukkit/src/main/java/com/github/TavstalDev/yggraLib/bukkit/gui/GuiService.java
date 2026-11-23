@@ -15,7 +15,7 @@ import java.util.UUID;
 /**
  * Manages GUI menu registration, caching, opening, closing, and refresh for players.
  */
-public class GuiService {
+public class GuiService implements IGuiService {
     private final YggraLogger logger;
     private final ICache cache;
     @SuppressWarnings("FieldCanBeLocal")
@@ -23,53 +23,30 @@ public class GuiService {
     private final HashMap<String, GuiBase> _registeredMenus = new HashMap<>();
     private final HashMap<UUID, String> _playersWithOpenMenus = new HashMap<>();
 
-    /**
-     * Creates a new GUI service.
-     *
-     * @param plugin the plugin instance
-     * @param cache  the cache used to store player menus
-     */
+    /** {@inheritDoc} */
     public GuiService(IYggraPlugin plugin, ICache cache) {
         this.cache = cache;
         this.logger = plugin.logger().withModule(this.getClass());
     }
 
-    /**
-     * Registers a menu, loading its configuration.
-     *
-     * @param menuBase The menu to register.
-     */
+    /** {@inheritDoc} */
     public void register(GuiBase menuBase) {
         _registeredMenus.put(menuBase.id, menuBase);
         logger.debug("Registered menu with ID: " + menuBase.id);
     }
 
-    /**
-     * Unregisters a menu by its ID.
-     *
-     * @param id The menu ID.
-     */
+    /** {@inheritDoc} */
     public void unregister(String id) {
         _registeredMenus.remove(id);
         logger.debug("Unregistered menu with ID: " + id);
     }
 
-    /**
-     * Unregisters a menu.
-     *
-     * @param menuBase The menu to unregister.
-     */
+    /** {@inheritDoc} */
     public void unregister(GuiBase menuBase) {
         unregister(menuBase.id);
     }
 
-    /**
-     * Opens a menu for a player, reusing a cached menu if available.
-     *
-     * @param player the player to open the menu for
-     * @param menuId the menu ID
-     * @param args   optional arguments passed to the menu
-     */
+    /** {@inheritDoc} */
     public void open(Player player, String menuId, @Nullable Object... args) {
         String cacheKey = getPlayerCacheKey(player);
         GuiBase menuBase = _registeredMenus.get(menuId);
@@ -101,12 +78,7 @@ public class GuiService {
         _playersWithOpenMenus.put(player.getUniqueId(), menuId);
     }
 
-    /**
-     * Closes the currently open menu for a player.
-     *
-     * @param player             The player to close the menu for.
-     * @param openingAnotherMenu Whether another menu will be opened immediately afterward.
-     */
+    /** {@inheritDoc} */
     public void close(Player player, boolean openingAnotherMenu) {
         player.closeInventory();
         String openedId = _playersWithOpenMenus.get(player.getUniqueId());
@@ -122,9 +94,7 @@ public class GuiService {
         _playersWithOpenMenus.remove(player.getUniqueId());
     }
 
-    /**
-     * Closes all open menus for all online players.
-     */
+    /** {@inheritDoc} */
     public void closeAll() {
         for (UUID playerId : _playersWithOpenMenus.keySet()) {
             Player player = Bukkit.getServer().getPlayer(playerId);
@@ -134,31 +104,20 @@ public class GuiService {
         }
     }
 
-    /**
-     * Invalidates the cached menu data for a specific player.
-     *
-     * @param player The player whose cache to invalidate.
-     */
+    /** {@inheritDoc} */
     public void invalidateCache(Player player) {
         String cacheKey = getPlayerCacheKey(player);
         cache.evict(cacheKey);
     }
 
-    /**
-     * Invalidates cached menu data for all online players.
-     */
+    /** {@inheritDoc} */
     public void invalidateAllCaches() {
         for (Player player : Bukkit.getServer().getOnlinePlayers()) {
             invalidateCache(player);
         }
     }
 
-    /**
-     * Refreshes a cached menu for a player.
-     *
-     * @param player The player viewing the menu.
-     * @param menuId The menu ID to refresh.
-     */
+    /** {@inheritDoc} */
     public void refresh(Player player, String menuId) {
         String cacheKey = getPlayerCacheKey(player);
         @SuppressWarnings("unchecked")
@@ -174,13 +133,7 @@ public class GuiService {
         menuBase.refresh(player, menu);
     }
 
-    /**
-     * Retrieves a cached menu for a player, if available.
-     *
-     * @param player The player whose menu to retrieve.
-     * @param menuId The menu ID.
-     * @return The cached BaseGui, or null.
-     */
+    /** {@inheritDoc} */
     public @Nullable BaseGui getMenu(Player player, String menuId) {
         String cacheKey = getPlayerCacheKey(player);
         @SuppressWarnings("unchecked")
@@ -191,12 +144,7 @@ public class GuiService {
         return null;
     }
 
-    /**
-     * Checks whether a player currently has a menu open.
-     *
-     * @param player The player to check.
-     * @return True if the player has an open menu.
-     */
+    /** {@inheritDoc} */
     public boolean hasMenuOpen(Player player) {
         return _playersWithOpenMenus.containsKey(player.getUniqueId());
     }
