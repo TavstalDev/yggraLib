@@ -87,40 +87,13 @@ public interface INbtAccessor {
     @Nullable Boolean getBoolean(ItemStack item, String key);
 
     /**
-     * Gets a string array from the item's NBT data.
-     *
-     * @param item the item to read from
-     * @param key  the NBT key
-     * @return the array, or {@code null} if absent or not a string array
-     */
-    @Nullable String[] getStringArray(ItemStack item, String key);
-
-    /**
      * Gets an integer array from the item's NBT data.
      *
      * @param item the item to read from
      * @param key  the NBT key
      * @return the array, or {@code null} if absent or not an integer array
      */
-    @Nullable Integer[] getIntegerArray(ItemStack item, String key);
-
-    /**
-     * Gets a double array from the item's NBT data.
-     *
-     * @param item the item to read from
-     * @param key  the NBT key
-     * @return the array, or {@code null} if absent or not a double array
-     */
-    @Nullable Double[] getDoubleArray(ItemStack item, String key);
-
-    /**
-     * Gets a float array from the item's NBT data.
-     *
-     * @param item the item to read from
-     * @param key  the NBT key
-     * @return the array, or {@code null} if absent or not a float array
-     */
-    @Nullable Float[] getFloatArray(ItemStack item, String key);
+    int[] getIntegerArray(ItemStack item, String key);
 
     /**
      * Gets a long array from the item's NBT data.
@@ -129,7 +102,7 @@ public interface INbtAccessor {
      * @param key  the NBT key
      * @return the array, or {@code null} if absent or not a long array
      */
-    @Nullable Long[] getLongArray(ItemStack item, String key);
+    long[] getLongArray(ItemStack item, String key);
 
     /**
      * Gets a byte array from the item's NBT data.
@@ -138,7 +111,7 @@ public interface INbtAccessor {
      * @param key  the NBT key
      * @return the array, or {@code null} if absent or not a byte array
      */
-    @Nullable Byte[] getByteArray(ItemStack item, String key);
+    byte[] getByteArray(ItemStack item, String key);
 
     /**
      * Gets a value from the item's NBT data, returning a fallback if it is missing.
@@ -223,40 +196,13 @@ public interface INbtAccessor {
     void set(ItemStack item, String key, @Nullable  Boolean value);
 
     /**
-     * Sets a string array in the item's NBT data.
-     *
-     * @param item  the item to write to
-     * @param key   the NBT key
-     * @param value the array to store
-     */
-    void set(ItemStack item, String key, @Nullable String[] value);
-
-    /**
      * Sets an integer array in the item's NBT data.
      *
      * @param item  the item to write to
      * @param key   the NBT key
      * @param value the array to store
      */
-    void set(ItemStack item, String key, @Nullable Integer[] value);
-
-    /**
-     * Sets a double array in the item's NBT data.
-     *
-     * @param item  the item to write to
-     * @param key   the NBT key
-     * @param value the array to store
-     */
-    void set(ItemStack item, String key, @Nullable Double[] value);
-
-    /**
-     * Sets a float array in the item's NBT data.
-     *
-     * @param item  the item to write to
-     * @param key   the NBT key
-     * @param value the array to store
-     */
-    void set(ItemStack item, String key, @Nullable Float[] value);
+    void set(ItemStack item, String key, int[] value);
 
     /**
      * Sets a long array in the item's NBT data.
@@ -265,7 +211,7 @@ public interface INbtAccessor {
      * @param key   the NBT key
      * @param value the array to store
      */
-    void set(ItemStack item, String key, @Nullable Long[] value);
+    void set(ItemStack item, String key, long[] value);
 
     /**
      * Sets a byte array in the item's NBT data.
@@ -274,7 +220,7 @@ public interface INbtAccessor {
      * @param key   the NBT key
      * @param value the array to store
      */
-    void set(ItemStack item, String key, @Nullable Byte[] value);
+    void set(ItemStack item, String key, byte[] value);
 
     /**
      * Sets a value of an arbitrary supported type in the item's NBT data.
@@ -285,4 +231,12 @@ public interface INbtAccessor {
      * @param <T>   the value type
      */
     <T> void set(ItemStack item, String key, @Nullable T value);
+
+    /**
+     * Removes a value from the item's NBT data.
+     *
+     * @param item the item to remove from
+     * @param key  the NBT key
+     */
+    void remove(ItemStack item, String key);
 }
