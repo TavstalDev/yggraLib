@@ -2,7 +2,7 @@ plugins {}
 
 allprojects {
     group = "com.github.TavstalDev"
-    version = "0.1.0"
+    version = "0.1.1"
 }
 
 val jetbrainsAnnotationsVersion = project.property("jetbrainsAnnotationsVersion") as String
