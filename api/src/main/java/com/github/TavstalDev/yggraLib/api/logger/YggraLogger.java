@@ -4,6 +4,7 @@ import com.github.TavstalDev.yggraLib.api.IYggraPlugin;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -44,8 +45,12 @@ public class YggraLogger {
      */
     public YggraLogger(IYggraPlugin plugin, String module) {
         _plugin = plugin;
-        _module = module;
-        _logger = Logger.getLogger(plugin.name());
+        String pluginName = plugin.name();
+        if (!Objects.equals(module, pluginName))
+            _module = pluginName + " - " + module;
+        else
+            _module = module;
+        _logger = Logger.getLogger(pluginName);
     }
 
     /**
@@ -65,6 +70,7 @@ public class YggraLogger {
      * @return a new logger instance with the specified module
      */
     public YggraLogger withModule(@NotNull Class<?> module) {
+
         return new YggraLogger(_plugin, module.getSimpleName());
     }
 
