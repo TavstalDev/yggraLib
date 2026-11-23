@@ -2,6 +2,7 @@ package com.github.TavstalDev.yggraLib.impl.v1_12.items;
 
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
 import com.github.TavstalDev.yggraLib.bukkit.items.*;
+import com.github.TavstalDev.yggraLib.bukkit.utils.NbtUtils;
 import com.github.TavstalDev.yggraLib.impl.v1_12.items.meta.EnchantmentMetaHandler_1_12;
 import com.github.TavstalDev.yggraLib.impl.v1_12.items.meta.EnchantmentStorageMetaHandler_1_12;
 import com.github.TavstalDev.yggraLib.impl.v1_12.items.meta.SkullMetaHandler_1_12;
@@ -160,7 +161,7 @@ public class ItemSerializer_1_12 extends ItemSerializerBase {
                     Map<String, Object> nbt = TypeUtils.castAsMap(itemMap.get("nbt"), null);
                     if (nbt != null) {
                         for (Map.Entry<String, Object> entry : nbt.entrySet()) {
-                            nbtAccessor.set(item, entry.getKey(), entry.getValue());
+                            NbtUtils.set(nbtAccessor, item, entry.getKey(), entry.getValue());
                         }
                     }
                 }
