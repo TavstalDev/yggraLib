@@ -1,8 +1,8 @@
 package com.github.TavstalDev.yggraLib.impl.v1_8_8.items.meta;
 
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
+import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -19,7 +19,7 @@ public class EnchantmentMetaHandler_1_8_8 implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void serialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!meta.hasEnchants())
             return;
 
@@ -33,7 +33,7 @@ public class EnchantmentMetaHandler_1_8_8 implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void deserialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!itemData.containsKey("enchantments"))
             return;
 
@@ -45,7 +45,7 @@ public class EnchantmentMetaHandler_1_8_8 implements IMetaHandler {
                 return;
 
             for (Map.Entry<String, Object> entry : enchantments.entrySet()) {
-                Enchantment enchantment = parent.registryAccessor.getEnchantment(entry.getKey());
+                Enchantment enchantment = parent.registryAccessor().getEnchantment(entry.getKey());
                 if (enchantment == null)
                     continue;
 
@@ -58,7 +58,7 @@ public class EnchantmentMetaHandler_1_8_8 implements IMetaHandler {
         if (enchantments == null || enchantments.isEmpty())
             return;
         for (Map.Entry<String, Integer> entry : enchantments.entrySet()) {
-            Enchantment enchantment = parent.registryAccessor.getEnchantment(entry.getKey());
+            Enchantment enchantment = parent.registryAccessor().getEnchantment(entry.getKey());
             if (enchantment == null)
                 continue;
 

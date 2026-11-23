@@ -1,10 +1,10 @@
 package com.github.TavstalDev.yggraLib.impl.v1_12.items.meta;
 
+import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
+import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
-import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -25,7 +25,7 @@ public class SkullMetaHandler_1_12 implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void serialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof SkullMeta))
             return;
 
@@ -62,7 +62,7 @@ public class SkullMetaHandler_1_12 implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void deserialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof SkullMeta))
             return;
 

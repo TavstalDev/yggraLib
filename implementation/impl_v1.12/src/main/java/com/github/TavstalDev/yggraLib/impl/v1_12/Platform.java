@@ -11,6 +11,7 @@ import com.github.TavstalDev.yggraLib.api.localization.ITranslationService;
 import com.github.TavstalDev.yggraLib.api.localization.TranslationService;
 import com.github.TavstalDev.yggraLib.api.scheduler.IScheduler;
 import com.github.TavstalDev.yggraLib.bukkit.gui.IGuiRenderer;
+import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IItemStackAccessor;
 import com.github.TavstalDev.yggraLib.bukkit.items.IRegistryAccessor;
 import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
@@ -66,7 +67,7 @@ public class Platform implements IPlatform {
         IRegistryAccessor registryAccessor = new RegistryAccessor_1_12();
         serviceCollection.put(IRegistryAccessor.class, registryAccessor);
 
-        serviceCollection.put(ItemSerializerBase.class, new ItemSerializer_1_12(Logger.getLogger("ItemSerializer"),
+        serviceCollection.put(IItemSerializer.class, new ItemSerializer_1_12(Logger.getLogger("ItemSerializer"),
                 registryAccessor));
         serviceCollection.put(IItemStackAccessor.class, new ItemStackAccessor_legacy(registryAccessor));
 

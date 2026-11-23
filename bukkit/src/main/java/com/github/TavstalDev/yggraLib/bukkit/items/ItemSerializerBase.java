@@ -24,17 +24,27 @@ import java.util.logging.Logger;
  * metadata handling to registered handlers.
  */
 @SuppressWarnings("unused")
-public abstract class ItemSerializerBase {
+public abstract class ItemSerializerBase implements IItemSerializer {
     /** Logger used for serialization and deserialization messages. */
     protected final Logger logger;
     /** YAML parser used for item serialization. */
     protected final Yaml yamlParser;
     /** Registry accessor used to resolve version-specific values. */
     public final IRegistryAccessor registryAccessor;
+    /** {@inheritDoc} */
+    public IRegistryAccessor registryAccessor() {
+        return registryAccessor;
+    }
+
     /** Handler for custom model data. */
     public final ICustomModelDataIO customModelDataIO;
     /** Handler for potion names. */
     public final IPotionNameHandler potionNameHandler;
+    /** {@inheritDoc} */
+    public IPotionNameHandler potionNameHandler() {
+        return potionNameHandler;
+    }
+
     /** Metadata handlers grouped by handler type. */
     protected final HashMap<EHandlerType, IMetaHandler> metaHandlers;
 

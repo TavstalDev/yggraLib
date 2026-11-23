@@ -1,6 +1,7 @@
 package com.github.TavstalDev.yggraLib.impl.vmodern.items.meta;
 
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
+import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
 import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
 import net.kyori.adventure.text.Component;
@@ -22,7 +23,7 @@ public class BookMetaHandler_modern implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void serialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof BookMeta bookMeta))
             return;
 
@@ -38,7 +39,7 @@ public class BookMetaHandler_modern implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void deserialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof BookMeta bookMeta))
             return;
 

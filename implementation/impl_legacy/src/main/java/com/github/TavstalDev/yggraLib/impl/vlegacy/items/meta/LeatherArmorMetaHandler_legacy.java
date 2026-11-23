@@ -1,7 +1,7 @@
 package com.github.TavstalDev.yggraLib.impl.vlegacy.items.meta;
 
+import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
 import com.github.TavstalDev.yggraLib.impl.vlegacy.utils.ColorUtils_legacy;
 import org.bukkit.Color;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,7 +18,7 @@ public class LeatherArmorMetaHandler_legacy implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void serialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof LeatherArmorMeta))
             return;
 
@@ -30,7 +30,7 @@ public class LeatherArmorMetaHandler_legacy implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void deserialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof LeatherArmorMeta))
             return;
 

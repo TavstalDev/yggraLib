@@ -1,7 +1,7 @@
 package com.github.TavstalDev.yggraLib.impl.vmodern.items.meta;
 
+import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SpawnEggMeta;
 
@@ -16,7 +16,7 @@ public class SpawnEggMetaHandler_modern implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void serialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof SpawnEggMeta spawnEggMeta))
             return;
 
@@ -32,7 +32,7 @@ public class SpawnEggMetaHandler_modern implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void deserialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof SpawnEggMeta spawnEggMeta))
             return;
 
@@ -41,6 +41,6 @@ public class SpawnEggMetaHandler_modern implements IMetaHandler {
         }
 
         String entityType = (String) itemData.get("customEntityType");
-        spawnEggMeta.setCustomSpawnedType(parent.registryAccessor.getEntityType(entityType));
+        spawnEggMeta.setCustomSpawnedType(parent.registryAccessor().getEntityType(entityType));
     }
 }

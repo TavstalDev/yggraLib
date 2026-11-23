@@ -11,10 +11,7 @@ import com.github.TavstalDev.yggraLib.api.localization.ITranslationService;
 import com.github.TavstalDev.yggraLib.api.localization.TranslationService;
 import com.github.TavstalDev.yggraLib.api.scheduler.IScheduler;
 import com.github.TavstalDev.yggraLib.bukkit.gui.IGuiRenderer;
-import com.github.TavstalDev.yggraLib.bukkit.items.ICustomModelDataIO;
-import com.github.TavstalDev.yggraLib.bukkit.items.IItemStackAccessor;
-import com.github.TavstalDev.yggraLib.bukkit.items.IRegistryAccessor;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
+import com.github.TavstalDev.yggraLib.bukkit.items.*;
 import com.github.TavstalDev.yggraLib.bukkit.items.metaAccessors.ISkullMetaAccessor;
 import com.github.TavstalDev.yggraLib.bukkit.services.*;
 import com.github.TavstalDev.yggraLib.bukkit.utils.VersionUtils;
@@ -75,7 +72,7 @@ public class Platform implements IPlatform {
         serviceCollection.put(IRegistryAccessor.class, registryAccessor);
         ICustomModelDataIO customModelDataIO = new CustomModelDataIO_1_20_4();
         serviceCollection.put(ICustomModelDataIO.class, customModelDataIO);
-        serviceCollection.put(ItemSerializerBase.class, new ItemSerializer_modern(Logger.getLogger("ItemSerializer"),
+        serviceCollection.put(IItemSerializer.class, new ItemSerializer_modern(Logger.getLogger("ItemSerializer"),
                 registryAccessor, customModelDataIO));
         serviceCollection.put(IItemStackAccessor.class, new ItemStackAccessor_1_20_4(registryAccessor));
 

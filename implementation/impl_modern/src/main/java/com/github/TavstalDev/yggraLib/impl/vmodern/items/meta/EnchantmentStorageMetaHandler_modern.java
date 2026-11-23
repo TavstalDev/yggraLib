@@ -1,8 +1,8 @@
 package com.github.TavstalDev.yggraLib.impl.vmodern.items.meta;
 
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
+import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
@@ -18,7 +18,7 @@ public class EnchantmentStorageMetaHandler_modern implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void serialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof EnchantmentStorageMeta enchantmentStorageMeta))
             return;
 
@@ -32,7 +32,7 @@ public class EnchantmentStorageMetaHandler_modern implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void deserialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!itemData.containsKey("enchantmentStorage"))
             return;
 
@@ -46,7 +46,7 @@ public class EnchantmentStorageMetaHandler_modern implements IMetaHandler {
                 return;
 
             for (var entry : enchantments.entrySet()) {
-                Enchantment enchantment = parent.registryAccessor.getEnchantment(entry.getKey());
+                Enchantment enchantment = parent.registryAccessor().getEnchantment(entry.getKey());
                 if (enchantment == null)
                     continue;
 
@@ -59,7 +59,7 @@ public class EnchantmentStorageMetaHandler_modern implements IMetaHandler {
         if (enchantments == null || enchantments.isEmpty())
             return;
         for (var entry : enchantments.entrySet()) {
-            Enchantment enchantment = parent.registryAccessor.getEnchantment(entry.getKey());
+            Enchantment enchantment = parent.registryAccessor().getEnchantment(entry.getKey());
             if (enchantment == null)
                 continue;
 

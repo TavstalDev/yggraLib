@@ -2,10 +2,10 @@ package com.github.TavstalDev.yggraLib.impl.v1_14.items.meta;
 
 import com.destroystokyo.paper.profile.PlayerProfile;
 import com.destroystokyo.paper.profile.ProfileProperty;
+import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
+import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -25,7 +25,7 @@ public class SkullMetaHandler_1_14 implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void serialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof SkullMeta))
             return;
 
@@ -58,7 +58,7 @@ public class SkullMetaHandler_1_14 implements IMetaHandler {
     /**
      * {@inheritDoc}
      */
-    public void deserialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof SkullMeta))
             return;
 

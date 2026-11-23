@@ -17,7 +17,7 @@ public interface IMetaHandler {
      * @param itemData the target map for serialized data
      * @throws Exception if serialization fails
      */
-    void serialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception;
+    void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception;
 
     /**
      * Applies supported metadata from a data map to an item.
@@ -27,5 +27,5 @@ public interface IMetaHandler {
      * @param itemData the source map with serialized data
      * @throws Exception if deserialization fails
      */
-    void deserialize(ItemSerializerBase parent, ItemMeta meta, Map<String, Object> itemData) throws Exception;
+    void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception;
 }
