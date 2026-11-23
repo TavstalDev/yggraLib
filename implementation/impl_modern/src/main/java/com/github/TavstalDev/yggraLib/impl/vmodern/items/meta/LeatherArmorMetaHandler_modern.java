@@ -16,9 +16,7 @@ import java.util.Map;
  * and reconstruct it from the stored data.
  */
 public class LeatherArmorMetaHandler_modern implements IMetaHandler {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof LeatherArmorMeta leatherArmorMeta))
             return;
@@ -27,9 +25,7 @@ public class LeatherArmorMetaHandler_modern implements IMetaHandler {
         itemData.put("color", ColorUtils_modern.serializeColor(color));
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof LeatherArmorMeta leatherArmorMeta))
             return;

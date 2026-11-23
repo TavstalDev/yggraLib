@@ -17,9 +17,7 @@ import java.util.Map;
  * of a potion into a storable format and reconstruct them from the stored data.
  */
 public class PotionMetaHandler_modern implements IMetaHandler {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof PotionMeta potionMeta))
             return;
@@ -42,9 +40,7 @@ public class PotionMetaHandler_modern implements IMetaHandler {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof PotionMeta potionMeta))
             return;

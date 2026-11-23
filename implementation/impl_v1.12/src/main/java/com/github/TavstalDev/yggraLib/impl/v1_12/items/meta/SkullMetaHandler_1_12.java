@@ -22,9 +22,7 @@ import java.util.UUID;
 public class SkullMetaHandler_1_12 implements IMetaHandler {
     private static Field field;
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof SkullMeta))
             return;
@@ -59,9 +57,7 @@ public class SkullMetaHandler_1_12 implements IMetaHandler {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof SkullMeta))
             return;

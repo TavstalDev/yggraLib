@@ -18,9 +18,7 @@ import java.util.UUID;
  * of a skull item into a storable format and reconstruct them from the stored data.
  */
 public class SkullMetaHandler_modern implements IMetaHandler {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof SkullMeta skullMeta))
             return;
@@ -36,9 +34,7 @@ public class SkullMetaHandler_modern implements IMetaHandler {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof SkullMeta skullMeta))
             return;

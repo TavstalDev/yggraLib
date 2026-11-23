@@ -9,25 +9,19 @@ import org.bukkit.inventory.meta.PotionMeta;
 
  */
 public class PotionNameHandler_legacy implements IPotionNameHandler {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean hasCustomName(PotionMeta potionMeta) {
         return potionMeta.hasDisplayName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public String getCustomName(PotionMeta potionMeta) {
         return potionMeta.getDisplayName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void setCustomName(PotionMeta potionMeta, String name) {
         potionMeta.setDisplayName(name);

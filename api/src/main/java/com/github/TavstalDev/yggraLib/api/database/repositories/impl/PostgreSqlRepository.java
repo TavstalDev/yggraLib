@@ -62,9 +62,7 @@ public class PostgreSqlRepository<ID, T> extends RepositoryBase<ID, T> {
         createColumnDefinitions.clear();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void checkSchema() {
         try (Connection connection = dataSource.getConnection()) {

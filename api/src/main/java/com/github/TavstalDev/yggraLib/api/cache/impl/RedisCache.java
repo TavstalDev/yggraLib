@@ -41,9 +41,7 @@ public class RedisCache implements ICache {
                 .build();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public <T> @Nullable T get(String key, Class<T> clazz) {
         String json = redisClient.get(key);
@@ -55,9 +53,7 @@ public class RedisCache implements ICache {
         return gson.fromJson(json, clazz);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public <T> void put(String key, T value, long ttlSeconds) {
         String dataToStore;
@@ -71,9 +67,7 @@ public class RedisCache implements ICache {
         managedKeys.add(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void evict(String key) {
 
@@ -81,9 +75,7 @@ public class RedisCache implements ICache {
         managedKeys.remove(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void evictAll() {
         redisClient.del(managedKeys.toArray(new String[0]));

@@ -16,9 +16,7 @@ import java.util.Map;
  * and reconstruct them from the stored data.
  */
 public class EnchantmentMetaHandler_1_14 implements IMetaHandler {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!meta.hasEnchants())
             return;
@@ -30,9 +28,7 @@ public class EnchantmentMetaHandler_1_14 implements IMetaHandler {
         itemData.put("enchantments", enchantments);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!itemData.containsKey("enchantments"))
             return;

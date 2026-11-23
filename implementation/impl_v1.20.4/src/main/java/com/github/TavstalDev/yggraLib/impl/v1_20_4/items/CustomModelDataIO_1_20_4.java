@@ -11,18 +11,14 @@ import java.util.Map;
 
  */
 public class CustomModelDataIO_1_20_4 implements ICustomModelDataIO {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void serialize(ItemMeta meta, Map<String, Object> itemData) {
         if (meta.hasCustomModelData())
             itemData.put("customModelData", meta.getCustomModelData());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void deserialize(ItemMeta meta, Map<String, Object> itemData) {
         if (itemData.containsKey("customModelData"))

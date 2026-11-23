@@ -13,34 +13,26 @@ import org.bukkit.potion.PotionType;
 
  */
 public class RegistryAccessor_1_14 implements IRegistryAccessor {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public Enchantment getEnchantment(String key) {
         NamespacedKey namespacedKey = NamespacedKey.minecraft(key.toLowerCase());
         return Enchantment.getByKey(namespacedKey);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public PotionType getPotionType(String key) {
         return PotionType.valueOf(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public PotionEffectType getPotionEffectType(String key) {
         return PotionEffectType.getByName(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public EntityType getEntityType(String key) {
         return EntityType.valueOf(key);

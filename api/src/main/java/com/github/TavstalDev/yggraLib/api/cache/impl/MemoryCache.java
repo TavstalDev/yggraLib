@@ -46,9 +46,7 @@ public class MemoryCache implements ICache {
                 .build();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public <T> T get(String key, Class<T> clazz) {
         ExpiringEntry result = cache.getIfPresent(key);
@@ -65,26 +63,20 @@ public class MemoryCache implements ICache {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public <T> void put(String key, T value, long ttlSeconds) {
         long durationNanos = TimeUnit.SECONDS.toNanos(ttlSeconds);
         cache.put(key, new ExpiringEntry(value, durationNanos));
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void evict(String key) {
         cache.invalidate(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void evictAll() {
         cache.invalidateAll();

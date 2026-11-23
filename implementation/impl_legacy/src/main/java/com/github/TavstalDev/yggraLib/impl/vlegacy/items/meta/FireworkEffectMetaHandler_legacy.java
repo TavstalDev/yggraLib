@@ -21,9 +21,7 @@ import java.util.Map;
  */
 public class FireworkEffectMetaHandler_legacy implements IMetaHandler {
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof FireworkEffectMeta))
             return;
@@ -57,9 +55,7 @@ public class FireworkEffectMetaHandler_legacy implements IMetaHandler {
         itemData.put("effect", effectData);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof FireworkEffectMeta))
             return;

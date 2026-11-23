@@ -14,9 +14,7 @@ import org.bukkit.potion.PotionType;
 
  */
 public class RegistryAccessor_1_20_4 implements IRegistryAccessor {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public Enchantment getEnchantment(String key) {
         NamespacedKey namespacedKey;
@@ -29,9 +27,7 @@ public class RegistryAccessor_1_20_4 implements IRegistryAccessor {
         return Registry.ENCHANTMENT.get(namespacedKey);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public PotionType getPotionType(String key) {
         NamespacedKey namespacedKey;
@@ -44,9 +40,7 @@ public class RegistryAccessor_1_20_4 implements IRegistryAccessor {
         return Registry.POTION.get(namespacedKey);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public PotionEffectType getPotionEffectType(String key) {
         NamespacedKey namespacedKey;
@@ -59,9 +53,7 @@ public class RegistryAccessor_1_20_4 implements IRegistryAccessor {
         return Registry.POTION_EFFECT_TYPE.get(namespacedKey);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public EntityType getEntityType(String key) {
         NamespacedKey namespacedKey;

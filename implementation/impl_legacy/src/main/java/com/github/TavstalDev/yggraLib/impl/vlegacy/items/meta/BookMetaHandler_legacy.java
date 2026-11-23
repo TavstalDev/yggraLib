@@ -16,9 +16,7 @@ import java.util.Map;
  */
 public class BookMetaHandler_legacy implements IMetaHandler {
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof BookMeta))
             return;
@@ -30,9 +28,7 @@ public class BookMetaHandler_legacy implements IMetaHandler {
         itemData.put("pages", bookMeta.getPages());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof BookMeta))
             return;

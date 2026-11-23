@@ -17,9 +17,7 @@ import java.util.Map;
  */
 @SuppressWarnings("UnstableApiUsage")
 public class CustomModelDataIO_1_21_5 implements ICustomModelDataIO {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void serialize(ItemMeta meta, Map<String, Object> itemData) {
         if (meta.hasCustomModelDataComponent()) {
@@ -33,9 +31,7 @@ public class CustomModelDataIO_1_21_5 implements ICustomModelDataIO {
         }
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void deserialize(ItemMeta meta, Map<String, Object> itemData) {
         if (itemData.containsKey("customModelDataComponent"))

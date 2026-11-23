@@ -13,25 +13,19 @@ import java.util.Objects;
 
  */
 public class PotionNameHandler_modern implements IPotionNameHandler {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public boolean hasCustomName(PotionMeta potionMeta) {
         return potionMeta.hasDisplayName();
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public String getCustomName(PotionMeta potionMeta) {
         return PlainTextComponentSerializer.plainText().serialize(Objects.requireNonNull(potionMeta.displayName()));
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public void setCustomName(PotionMeta potionMeta, String name) {
         potionMeta.displayName(AdventureUtils.parse(name, true));

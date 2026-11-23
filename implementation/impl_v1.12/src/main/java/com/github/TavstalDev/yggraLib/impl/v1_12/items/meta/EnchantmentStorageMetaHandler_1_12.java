@@ -15,9 +15,7 @@ import java.util.Map;
  * Implementation of EnchantmentStorageMetaHandler for Minecraft 1.12.
  */
 public class EnchantmentStorageMetaHandler_1_12 implements IMetaHandler {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof EnchantmentStorageMeta))
             return;
@@ -30,9 +28,7 @@ public class EnchantmentStorageMetaHandler_1_12 implements IMetaHandler {
         itemData.put("enchantmentStorage", enchantments);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!itemData.containsKey("enchantmentStorage"))
             return;

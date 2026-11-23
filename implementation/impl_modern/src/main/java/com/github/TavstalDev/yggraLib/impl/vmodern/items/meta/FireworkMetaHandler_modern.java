@@ -21,9 +21,7 @@ import java.util.Map;
  * into a storable format and reconstruct them from the stored data.
  */
 public class FireworkMetaHandler_modern implements IMetaHandler {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof FireworkMeta fireworkMeta))
             return;
@@ -59,9 +57,7 @@ public class FireworkMetaHandler_modern implements IMetaHandler {
         itemData.put("power", fireworkMeta.getPower());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof FireworkMeta fireworkMeta))
             return;

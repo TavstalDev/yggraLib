@@ -13,9 +13,7 @@ import java.util.Map;
  * into a storable format and reconstruct it from the stored data.
  */
 public class SpawnEggMetaHandler_modern implements IMetaHandler {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof SpawnEggMeta spawnEggMeta))
             return;
@@ -29,9 +27,7 @@ public class SpawnEggMetaHandler_modern implements IMetaHandler {
         itemData.put("customEntityType", spawnEggMeta.getCustomSpawnedType().getKey().getKey());
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof SpawnEggMeta spawnEggMeta))
             return;

@@ -12,33 +12,25 @@ import org.bukkit.potion.PotionType;
 
  */
 public class RegistryAccessor_1_12 implements IRegistryAccessor {
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public Enchantment getEnchantment(String key) {
         return Enchantment.getByName(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public PotionType getPotionType(String key) {
         return PotionType.valueOf(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public PotionEffectType getPotionEffectType(String key) {
         return PotionEffectType.getByName(key);
     }
 
-    /**
-     * {@inheritDoc}
-     */
+    /** {@inheritDoc} */
     @Override
     public EntityType getEntityType(String key) {
         return EntityType.valueOf(key);
