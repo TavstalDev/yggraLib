@@ -11,10 +11,11 @@ import com.github.TavstalDev.yggraLib.bootstrap.models.LibraryInfo;
 import com.github.TavstalDev.yggraLib.bukkit.gui.IGuiService;
 import com.github.TavstalDev.yggraLib.bukkit.services.IScoreboardService;
 import com.github.TavstalDev.yggraLib.bukkit.utils.VersionUtils;
+import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
-import dev.triumphteam.gui.TriumphGui;
+import dev.triumphteam.gui.guis.GuiListener;
+import dev.triumphteam.gui.guis.InteractionModifierListener;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import org.bstats.bukkit.Metrics;
@@ -30,6 +31,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
@@ -68,6 +70,9 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
      * The plugin configuration instance.
      */
     protected TConfig _config;
+
+    // Note: TriumphGui does not reregister its listener when the plugin reloads.
+    private boolean isGuiInitialized = true;
 
     /**
      * Returns the plugin name.
@@ -215,6 +220,12 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 }
             }
         }
+
+        if (!isGuiInitialized) {
+            Bukkit.getPluginManager().registerEvents(new InteractionModifierListener(), this);
+            Bukkit.getPluginManager().registerEvents(new GuiListener(), this);
+            isGuiInitialized = true;
+        }
     }
 
     /**
@@ -285,13 +296,6 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .version("2.9.3")
                 .build());
 
-        // com.google.code.gson - Required for update checking
-        libraryManager.loadLibrary(Library.builder()
-                .groupId("com{}google{}code{}gson")
-                .artifactId("gson")
-                .version("2.15.0")
-                .build());
-
 
         //#region Adventure-API
 
@@ -360,8 +364,6 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .build());
 
         //#endregion
-
-        TriumphGui.init(this);
     }
 
     /**
@@ -442,6 +444,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
             guiService.unregisterAll();
             guiService.invalidateAllCaches();
         }
+        isGuiInitialized = false;
 
         _serviceCollection.clear();
         onPluginDisable();
@@ -512,34 +515,26 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                     return null;
                 }
 
-                String rawResponse;
-                try (BufferedReader reader = new BufferedReader(new InputStreamReader(connection.getInputStream()))) {
-                    StringBuilder response = new StringBuilder();
-                    String line;
-                    while ((line = reader.readLine()) != null) {
-                        response.append(line);
+                try (BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(connection.getInputStream(), StandardCharsets.UTF_8))) {
+
+                    JsonElement jsonElement = new Gson().fromJson(reader, JsonElement.class);
+                    if (jsonElement == null || !jsonElement.isJsonObject()) {
+                        _logger.warn("Unexpected response from " + downloadUrl);
+                        return null;
                     }
-                    rawResponse  = response.toString();
+
+                    JsonObject jsonObject = jsonElement.getAsJsonObject();
+                    if (!jsonObject.has("tag_name") || jsonObject.get("tag_name").isJsonNull()) {
+                        _logger.warn("Response from " + downloadUrl + " has no tag_name.");
+                        return null;
+                    }
+
+                    String latestVersion = jsonObject.get("tag_name").getAsString();
+                    String currentVersion = version();
+                    return currentVersion.equalsIgnoreCase(latestVersion)
+                            || ("v" + currentVersion).equalsIgnoreCase(latestVersion);
                 }
-
-                JsonElement jsonElement = JsonParser.parseString(rawResponse);
-                if (jsonElement == null) {
-                    _logger.warn("Failed to retrieve the latest version information from " + downloadUrl);
-                    return null; // Treat as not up-to-date or an error occurred
-                }
-
-                if (!jsonElement.isJsonObject()) {
-                    _logger.warn("Expected a JSON object from " + downloadUrl + ", but got: " + jsonElement);
-                    return null; // Treat as not up-to-date or an error occurred
-                }
-
-                JsonObject jsonObject = jsonElement.getAsJsonObject();
-                String latestVersion = jsonObject.get("tag_name").getAsString();
-                String currentVersion = version();
-                _logger.debug("Current version: " + currentVersion);
-                _logger.debug("Latest version: " + latestVersion);
-
-                return currentVersion.equalsIgnoreCase(latestVersion) || ("v" + currentVersion).equalsIgnoreCase(latestVersion);
             }
             catch (Exception ex) {
                 _logger.error("Failed to send up to date check.", ex);
