@@ -48,6 +48,8 @@ public abstract class ItemSerializerBase implements IItemSerializer {
     /** Metadata handlers grouped by handler type. */
     protected final HashMap<EHandlerType, IMetaHandler> metaHandlers;
 
+    public final INbtAccessor nbtAccessor;
+
     /**
      * Constructs a new serializer base.
      *
@@ -59,12 +61,14 @@ public abstract class ItemSerializerBase implements IItemSerializer {
      */
     public ItemSerializerBase(Logger logger, IRegistryAccessor registryAccessor,
                               ICustomModelDataIO customModelDataIO, IPotionNameHandler potionNameHandler,
-                              HashMap<EHandlerType, IMetaHandler> metaHandlers) {
+                              HashMap<EHandlerType, IMetaHandler> metaHandlers,
+                              @Nullable INbtAccessor nbtAccessor) {
         this.logger = logger;
         this.registryAccessor = registryAccessor;
         this.customModelDataIO = customModelDataIO;
         this.potionNameHandler = potionNameHandler;
         this.metaHandlers = metaHandlers;
+        this.nbtAccessor = nbtAccessor;
 
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);

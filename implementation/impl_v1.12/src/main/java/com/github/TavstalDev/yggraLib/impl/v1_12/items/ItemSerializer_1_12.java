@@ -1,10 +1,7 @@
 package com.github.TavstalDev.yggraLib.impl.v1_12.items;
 
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
-import com.github.TavstalDev.yggraLib.bukkit.items.EHandlerType;
-import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
-import com.github.TavstalDev.yggraLib.bukkit.items.IRegistryAccessor;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
+import com.github.TavstalDev.yggraLib.bukkit.items.*;
 import com.github.TavstalDev.yggraLib.impl.v1_12.items.meta.EnchantmentMetaHandler_1_12;
 import com.github.TavstalDev.yggraLib.impl.v1_12.items.meta.EnchantmentStorageMetaHandler_1_12;
 import com.github.TavstalDev.yggraLib.impl.v1_12.items.meta.SkullMetaHandler_1_12;
@@ -30,12 +27,14 @@ public class ItemSerializer_1_12 extends ItemSerializerBase {
     /**
      * Creates a new ItemSerializer_1_12 instance.
      */
-    public ItemSerializer_1_12(Logger logger, IRegistryAccessor registryAccessor) {
+    public ItemSerializer_1_12(Logger logger, IRegistryAccessor registryAccessor,
+                               @Nullable INbtAccessor nbtAccessor) {
         super(logger,
                 registryAccessor,
                 null,
                 new PotionNameHandler_legacy(),
-                createHandlerMap()
+                createHandlerMap(),
+                nbtAccessor
         );
     }
 
@@ -78,6 +77,13 @@ public class ItemSerializer_1_12 extends ItemSerializerBase {
                     itemData.put("lore", metaLore);
                 }
 
+                // NBT Data
+                if (nbtAccessor != null) {
+                    Map<String, Object> nbtData = nbtAccessor.getAll(item);
+                    itemData.put("nbt", nbtData);
+                }
+
+                // Item Meta Handlers
                 for (Map.Entry<EHandlerType, IMetaHandler> handler : metaHandlers.entrySet()) {
                     try {
                         handler.getValue().serialize(this, meta, itemData);
@@ -135,6 +141,17 @@ public class ItemSerializer_1_12 extends ItemSerializerBase {
                     item.setDurability(durability);
                 }
 
+                // NBT Data
+                if (nbtAccessor != null && itemMap.containsKey("nbt")) {
+                    Map<String, Object> nbt = TypeUtils.castAsMap(itemMap.get("nbt"), null);
+                    if (nbt != null) {
+                        for (Map.Entry<String, Object> entry : nbt.entrySet()) {
+                            nbtAccessor.set(item, entry.getKey(), entry.getValue());
+                        }
+                    }
+                }
+
+                // Item Meta Handlers
                 for (Map.Entry<EHandlerType, IMetaHandler> handler : metaHandlers.entrySet()) {
                     try {
                         handler.getValue().deserialize(this, meta, itemMap);

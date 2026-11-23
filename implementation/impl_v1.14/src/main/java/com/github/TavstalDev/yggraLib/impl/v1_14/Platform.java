@@ -11,10 +11,7 @@ import com.github.TavstalDev.yggraLib.api.localization.ITranslationService;
 import com.github.TavstalDev.yggraLib.api.localization.TranslationService;
 import com.github.TavstalDev.yggraLib.api.scheduler.IScheduler;
 import com.github.TavstalDev.yggraLib.bukkit.gui.IGuiRenderer;
-import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
-import com.github.TavstalDev.yggraLib.bukkit.items.IItemStackAccessor;
-import com.github.TavstalDev.yggraLib.bukkit.items.IRegistryAccessor;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
+import com.github.TavstalDev.yggraLib.bukkit.items.*;
 import com.github.TavstalDev.yggraLib.bukkit.items.metaAccessors.ISkullMetaAccessor;
 import com.github.TavstalDev.yggraLib.bukkit.services.*;
 import com.github.TavstalDev.yggraLib.impl.v1_14.items.ItemSerializer_1_14;
@@ -31,6 +28,7 @@ import com.github.TavstalDev.yggraTitle.api.ITitle;
 import com.github.TavstalDev.yggraTitle.bootstrap.YggraTitle;
 import lombok.SneakyThrows;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.logging.Logger;
@@ -50,6 +48,8 @@ public class Platform implements IPlatform {
      */
     @SneakyThrows
     public void setup(IYggraPlugin plugin, Map<Class<?>, Object> serviceCollection) {
+        @Nullable INbtAccessor nbtAccessor = plugin.getService(INbtAccessor.class);
+
         serviceCollection.put(ILanguageService.class, new LanguageService_1_14());
         ITranslationService translationService = new TranslationService(plugin);
         serviceCollection.put(ITranslationService.class, translationService);
@@ -68,7 +68,7 @@ public class Platform implements IPlatform {
         serviceCollection.put(IRegistryAccessor.class, registryAccessor);
 
         serviceCollection.put(IItemSerializer.class, new ItemSerializer_1_14(Logger.getLogger("ItemSerializer"),
-                registryAccessor));
+                registryAccessor, nbtAccessor));
         serviceCollection.put(IItemStackAccessor.class, new ItemStackAccessor_legacy(registryAccessor));
 
         serviceCollection.put(ISkullMetaAccessor.class, new SkullMetaAccessor_1_14());

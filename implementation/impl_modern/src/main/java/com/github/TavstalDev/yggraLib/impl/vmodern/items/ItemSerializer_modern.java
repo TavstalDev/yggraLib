@@ -1,10 +1,7 @@
 package com.github.TavstalDev.yggraLib.impl.vmodern.items;
 
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
-import com.github.TavstalDev.yggraLib.bukkit.items.EHandlerType;
-import com.github.TavstalDev.yggraLib.bukkit.items.ICustomModelDataIO;
-import com.github.TavstalDev.yggraLib.bukkit.items.IRegistryAccessor;
-import com.github.TavstalDev.yggraLib.bukkit.items.ItemSerializerBase;
+import com.github.TavstalDev.yggraLib.bukkit.items.*;
 import com.github.TavstalDev.yggraLib.bukkit.utils.AdventureUtils;
 import com.github.TavstalDev.yggraLib.impl.vmodern.items.meta.*;
 import net.kyori.adventure.text.Component;
@@ -33,7 +30,8 @@ public class ItemSerializer_modern extends ItemSerializerBase {
     /**
      * Creates a new ItemSerializer_modern instance.
      */
-    public ItemSerializer_modern(Logger logger, IRegistryAccessor registryAccessor, ICustomModelDataIO customModelDataIO) {
+    public ItemSerializer_modern(Logger logger, IRegistryAccessor registryAccessor, ICustomModelDataIO customModelDataIO,
+                                 @Nullable INbtAccessor nbtAccessor) {
         super(logger,
                 registryAccessor,
                 customModelDataIO,
@@ -49,7 +47,7 @@ public class ItemSerializer_modern extends ItemSerializerBase {
             put(EHandlerType.POTION, new PotionMetaHandler_modern());
             put(EHandlerType.SKULL, new SkullMetaHandler_modern());
             put(EHandlerType.SPAWN_EGG, new SpawnEggMetaHandler_modern());
-        }});
+        }}, nbtAccessor);
     }
     /**
      * Handles the serializeItemStack operation.

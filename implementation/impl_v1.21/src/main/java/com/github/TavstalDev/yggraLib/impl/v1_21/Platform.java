@@ -29,25 +29,29 @@ import com.github.TavstalDev.yggraTitle.api.ITitle;
 import com.github.TavstalDev.yggraTitle.bootstrap.YggraTitle;
 import lombok.SneakyThrows;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Map;
 import java.util.logging.Logger;
 
-@SuppressWarnings("unused")
 /**
  * Platform implementation for Minecraft 1.21.
  * <p>
  * Registers version-specific services and helpers in the service collection.
  */
+@SuppressWarnings("unused")
 public class Platform implements IPlatform {
-    @SneakyThrows
+
     /**
      * Sets up and registers platform services.
      * 
      * @param plugin the plugin instance using this platform
      * @param serviceCollection the map used to store service instances
      */
+    @SneakyThrows
     public void setup(IYggraPlugin plugin, Map<Class<?>, Object> serviceCollection) {
+        @Nullable INbtAccessor nbtAccessor = plugin.getService(INbtAccessor.class);
+
         serviceCollection.put(ILanguageService.class, new LanguageService_modern());
         ITranslationService translationService = new TranslationService(plugin);
         serviceCollection.put(ITranslationService.class, translationService);
@@ -73,7 +77,7 @@ public class Platform implements IPlatform {
         ICustomModelDataIO customModelDataIO = new CustomModelDataIO_1_21();
         serviceCollection.put(ICustomModelDataIO.class, customModelDataIO);
         serviceCollection.put(IItemSerializer.class, new ItemSerializer_modern(Logger.getLogger("ItemSerializer"),
-                registryAccessor, customModelDataIO));
+                registryAccessor, customModelDataIO, nbtAccessor));
         serviceCollection.put(IItemStackAccessor.class, new ItemStackAccessor_1_21(registryAccessor));
 
         serviceCollection.put(ISkullMetaAccessor.class, new SkullMetaAccessor_modern());
