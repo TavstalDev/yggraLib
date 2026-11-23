@@ -3,7 +3,7 @@ import dev.s7a.gradle.minecraft.server.tasks.LaunchMinecraftServerTask
 plugins {
     id("java-library")
     id("dev.s7a.gradle.minecraft.server") version "4.0.2"
-    id("com.gradleup.shadow") version "9.3.1"
+    id("com.gradleup.shadow") version "9.6.1"
 }
 
 repositories {
