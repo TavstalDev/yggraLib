@@ -1,19 +1,19 @@
 package com.github.TavstalDev.yggraLib.bootstrap;
 
 import com.github.TavstalDev.yggraBossBar.api.IBossBar;
-import com.github.TavstalDev.yggraLib.api.cache.ICache;
-import com.github.TavstalDev.yggraLib.api.database.IDatabase;
-import com.github.TavstalDev.yggraLib.bukkit.gui.IGuiService;
-import com.github.TavstalDev.yggraLib.bukkit.services.IScoreboardService;
-import com.google.gson.JsonElement;
-import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import com.github.TavstalDev.yggraLib.api.IPlatform;
 import com.github.TavstalDev.yggraLib.api.IYggraConfig;
 import com.github.TavstalDev.yggraLib.api.IYggraPlugin;
+import com.github.TavstalDev.yggraLib.api.cache.ICache;
+import com.github.TavstalDev.yggraLib.api.database.IDatabase;
 import com.github.TavstalDev.yggraLib.api.logger.YggraLogger;
 import com.github.TavstalDev.yggraLib.bootstrap.models.LibraryInfo;
+import com.github.TavstalDev.yggraLib.bukkit.gui.IGuiService;
+import com.github.TavstalDev.yggraLib.bukkit.services.IScoreboardService;
 import com.github.TavstalDev.yggraLib.bukkit.utils.VersionUtils;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import org.bstats.bukkit.Metrics;
