@@ -1,5 +1,10 @@
 package com.github.TavstalDev.yggraLib.bootstrap;
 
+import com.github.TavstalDev.yggraBossBar.api.IBossBar;
+import com.github.TavstalDev.yggraLib.api.cache.ICache;
+import com.github.TavstalDev.yggraLib.api.database.IDatabase;
+import com.github.TavstalDev.yggraLib.bukkit.gui.IGuiService;
+import com.github.TavstalDev.yggraLib.bukkit.services.IScoreboardService;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
@@ -13,6 +18,7 @@ import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 import org.jspecify.annotations.NonNull;
@@ -360,7 +366,8 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
     @Override
     public final void onEnable() {
         loadDependencies();
-        onPrePluginEnable();
+        if (!onPrePluginEnable())
+            return;
         try {
             String implClassName = getImplClassName();
             IPlatform platform = (IPlatform) Class.forName(implClassName)
@@ -384,8 +391,9 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
      * <p>
      * Subclasses can override this method to add custom startup logic.
      */
-    public void onPrePluginEnable() {
+    public boolean onPrePluginEnable() {
         // To be overridden by subclasses
+        return true;
     }
 
     /**
@@ -402,8 +410,43 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
      */
     @Override
     public final void onDisable() {
+        onPrePluginDisable();
+        ICache cache = getService(ICache.class);
+        if (cache != null)
+            cache.evictAll();
+
+        IDatabase database = getService(IDatabase.class);
+        if (database != null)
+            database.unload();
+
+        IBossBar bossBar = getService(IBossBar.class);
+        if (bossBar != null)
+            bossBar.clearAll();
+
+        IScoreboardService scoreboard = getService(IScoreboardService.class);
+        if (scoreboard != null) {
+            for (Player player : Bukkit.getOnlinePlayers())
+                scoreboard.hideFor(player);
+        }
+
+        IGuiService guiService = getService(IGuiService.class);
+        if (guiService != null) {
+            guiService.closeAll();
+            guiService.unregisterAll();
+            guiService.invalidateAllCaches();
+        }
+
         _serviceCollection.clear();
         onPluginDisable();
+    }
+
+    /**
+     * Runs before registered services are cleaned up during plugin disable.
+     * <p>
+     * Subclasses can override this method to add custom shutdown logic.
+     */
+    public void onPrePluginDisable() {
+        // To be overridden by subclasses
     }
 
     /**
