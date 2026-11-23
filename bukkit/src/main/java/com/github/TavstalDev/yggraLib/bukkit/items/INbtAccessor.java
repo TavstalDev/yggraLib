@@ -223,16 +223,6 @@ public interface INbtAccessor {
     void set(ItemStack item, String key, byte[] value);
 
     /**
-     * Sets a value of an arbitrary supported type in the item's NBT data.
-     *
-     * @param item  the item to write to
-     * @param key   the NBT key
-     * @param value the value to store
-     * @param <T>   the value type
-     */
-    <T> void set(ItemStack item, String key, @Nullable T value);
-
-    /**
      * Removes a value from the item's NBT data.
      *
      * @param item the item to remove from
