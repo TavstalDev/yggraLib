@@ -1,8 +1,11 @@
 package com.github.TavstalDev.yggraLib.api.database.enums;
 
+import lombok.Getter;
+
 /**
  * SQL comparison operators used in query conditions.
  */
+@Getter
 public enum EQueryOperator {
     /** Equality comparison ({@code =}). */
     EQUALS("="),
@@ -21,19 +24,16 @@ public enum EQueryOperator {
     /** SQL {@code IN} membership checking. */
     IN("IN");
 
+    /**
+     * -- GETTER --
+     *  Returns the SQL string representation of this operator.
+     *
+     * @return The SQL operator (e.g. {@code =}, {@code <>}, {@code LIKE}).
+     */
     private final String sqlOperator;
 
     EQueryOperator(String sqlOperator) {
         this.sqlOperator = sqlOperator;
-    }
-
-    /**
-     * Returns the SQL string representation of this operator.
-     *
-     * @return The SQL operator (e.g. {@code =}, {@code <>}, {@code LIKE}).
-     */
-    public String getSqlOperator() {
-        return sqlOperator;
     }
 
 }

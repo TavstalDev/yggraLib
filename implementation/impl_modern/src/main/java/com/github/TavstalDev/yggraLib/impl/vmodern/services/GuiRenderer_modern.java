@@ -30,7 +30,7 @@ public class GuiRenderer_modern implements IGuiRenderer {
                 meta.displayName(AdventureUtils.parse(buttonTitle, true));
             }
         }
-        ArrayList<Component> lore = new ArrayList<Component>();
+        ArrayList<Component> lore = new ArrayList<>();
         List<String> buttonLore = button.getLore();
         if (buttonLore != null) {
             if (button.shouldTranslateLore() && !buttonLore.isEmpty()) {

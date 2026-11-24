@@ -8,7 +8,6 @@ import com.github.TavstalDev.yggraLib.bukkit.utils.AdventureUtils;
 import net.kyori.adventure.text.Component;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -29,7 +28,7 @@ public class GuiRenderer_legacy implements IGuiRenderer {
                 itemStackAccessor.setDisplayName(itemStack, AdventureUtils.parse(buttonTitle));
             }
         }
-        ArrayList<Component> lore = new ArrayList<Component>();
+        ArrayList<Component> lore = new ArrayList<>();
         List<String> buttonLore = button.getLore();
         if (buttonLore != null) {
             if (button.shouldTranslateLore() && !buttonLore.isEmpty()) {

@@ -88,7 +88,7 @@ public final class ItemSerializer implements IItemSerializer {
      * @param item the item stack to serialize
      * @return a map of serialized item data
      */
-    public final Map<String, Object> serializeItemStack(final @NotNull ItemStack item) {
+    public Map<String, Object> serializeItemStack(final @NotNull ItemStack item) {
         Map<String, Object> itemData = new HashMap<>();
         try
         {
@@ -156,7 +156,7 @@ public final class ItemSerializer implements IItemSerializer {
      * @param itemMap the map of serialized item data
      * @return the deserialized item stack, or {@code null} if deserialization fails
      */
-    public final @Nullable ItemStack deserializeItemStack(@NotNull Map<String, Object> itemMap) {
+    public @Nullable ItemStack deserializeItemStack(@NotNull Map<String, Object> itemMap) {
         ItemStack itemStack = null;
         try
         {
@@ -245,7 +245,7 @@ public final class ItemSerializer implements IItemSerializer {
      * @param items A list of {@link ItemStack} objects to serialize.
      * @return A list of maps, where each map represents the serialized data of an {@link ItemStack}.
      */
-    public final List<Map<String, Object>> serializeItemStackList(@NotNull List<ItemStack> items) {
+    public List<Map<String, Object>> serializeItemStackList(@NotNull List<ItemStack> items) {
         List<Map<String, Object>> itemList = new ArrayList<>();
         for (ItemStack item : items) {
             Map<String, Object> itemData = serializeItemStack(item);
@@ -262,7 +262,7 @@ public final class ItemSerializer implements IItemSerializer {
      * @param item The {@link ItemStack} to serialize.
      * @return A YAML string representing the serialized {@link ItemStack}, or null if serialization fails.
      */
-    public final @Nullable String serializeItemStackToYaml(@NotNull ItemStack item) {
+    public @Nullable String serializeItemStackToYaml(@NotNull ItemStack item) {
         Map<String, Object> itemData = serializeItemStack(item);
         if (!itemData.isEmpty())
             return yamlParser.dump(itemData);
@@ -276,7 +276,7 @@ public final class ItemSerializer implements IItemSerializer {
      * @param items A list of {@link ItemStack} objects to serialize.
      * @return A YAML string representing the serialized list of {@link ItemStack} objects, or null if serialization fails.
      */
-    public final @Nullable String serializeItemStackListToYaml(@NotNull List<ItemStack> items) {
+    public @Nullable String serializeItemStackListToYaml(@NotNull List<ItemStack> items) {
         List<Map<String, Object>> itemList = serializeItemStackList(items);
         if (!itemList.isEmpty()) {
             return yamlParser.dump(itemList);
@@ -291,7 +291,7 @@ public final class ItemSerializer implements IItemSerializer {
      * @param item The {@link ItemStack} to serialize.
      * @return A byte array representing the serialized {@link ItemStack}, or an empty array if serialization fails.
      */
-    public final byte[] serializeItemStackToBytes(@NotNull ItemStack item) {
+    public byte[] serializeItemStackToBytes(@NotNull ItemStack item) {
         Map<String, Object> itemData = serializeItemStack(item);
 
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -311,7 +311,7 @@ public final class ItemSerializer implements IItemSerializer {
      * @param items A list of {@link ItemStack} objects to serialize.
      * @return A byte array representing the serialized list of {@link ItemStack} objects, or an empty array if serialization fails.
      */
-    public final byte[] serializeItemStackListToBytes(@NotNull List<ItemStack> items) {
+    public byte[] serializeItemStackListToBytes(@NotNull List<ItemStack> items) {
         List<Map<String, Object>> itemDataList = serializeItemStackList(items);
 
         ByteArrayOutputStream byteStream = new ByteArrayOutputStream();
@@ -333,7 +333,7 @@ public final class ItemSerializer implements IItemSerializer {
      * @param itemList A list of maps containing serialized item data.
      * @return A list of {@link ItemStack} objects deserialized from the input data.
      */
-    public final List<ItemStack> deserializeItemStackList(@NotNull List<Map<String, Object>> itemList) {
+    public List<ItemStack> deserializeItemStackList(@NotNull List<Map<String, Object>> itemList) {
         List<ItemStack> items = new ArrayList<>();
         for (Map<String, Object> itemData : itemList) {
             ItemStack item = deserializeItemStack(itemData);
@@ -350,7 +350,7 @@ public final class ItemSerializer implements IItemSerializer {
      * @param yaml A YAML string containing the serialized item data.
      * @return The deserialized {@link ItemStack}, or null if deserialization fails.
      */
-    public final @Nullable ItemStack deserializeItemStackFromYaml(@NotNull String yaml) {
+    public @Nullable ItemStack deserializeItemStackFromYaml(@NotNull String yaml) {
         Map<String, Object> itemData = yamlParser.load(yaml);
         if (itemData != null) {
             return deserializeItemStack(itemData);
@@ -364,7 +364,7 @@ public final class ItemSerializer implements IItemSerializer {
      * @param yaml A YAML string containing a list of serialized item data.
      * @return A list of {@link ItemStack} objects deserialized from the input YAML.
      */
-    public final List<ItemStack> deserializeItemStackListFromYaml(@NotNull String yaml) {
+    public List<ItemStack> deserializeItemStackListFromYaml(@NotNull String yaml) {
         List<Map<String, Object>> itemList = yamlParser.load(yaml);
         if (itemList != null && !itemList.isEmpty()) {
             return deserializeItemStackList(itemList);
@@ -379,7 +379,7 @@ public final class ItemSerializer implements IItemSerializer {
      * @param data A byte array containing the serialized item data.
      * @return The deserialized {@link ItemStack}, or null if deserialization fails.
      */
-    public final ItemStack deserializeItemStackFromBytes(byte @NotNull [] data) {
+    public ItemStack deserializeItemStackFromBytes(byte @NotNull [] data) {
         try (ByteArrayInputStream byteStream = new ByteArrayInputStream(data);
              ObjectInputStream objectStream = new ObjectInputStream(byteStream)) {
 
@@ -409,7 +409,7 @@ public final class ItemSerializer implements IItemSerializer {
      * @param data A byte array containing the serialized list of item data.
      * @return A list of {@link ItemStack} objects deserialized from the input data.
      */
-    public final List<ItemStack> deserializeItemStackListFromBytes(byte @NotNull [] data) {
+    public List<ItemStack> deserializeItemStackListFromBytes(byte @NotNull [] data) {
         List<ItemStack> items = new ArrayList<>();
         try (ByteArrayInputStream byteStream = new ByteArrayInputStream(data);
              ObjectInputStream objectStream = new ObjectInputStream(byteStream)) {

@@ -14,6 +14,7 @@ import java.util.Set;
  * <p>
  * Implementations handle differences between server versions and APIs.
  */
+@SuppressWarnings("unused")
 public interface IItemStackAccessor {
 
     /**

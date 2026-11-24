@@ -14,6 +14,7 @@ import static java.util.logging.Level.*;
  * Logger wrapper for Yggra plugins.
  * Provides colored, module-scoped logging with debug toggle support.
  */
+@SuppressWarnings("unused")
 public class YggraLogger {
     /** ANSI escape sequence for red text. */
     public static final String ANSI_RED = "\u001B[31m";

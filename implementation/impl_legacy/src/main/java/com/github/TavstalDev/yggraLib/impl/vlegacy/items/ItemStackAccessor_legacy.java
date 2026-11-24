@@ -119,7 +119,7 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
     @Override
     public void setLoreComp(ItemStack itemStack, List<Component> lore) {
         ItemMeta meta = itemStack.getItemMeta();
-        ArrayList<String> result = new ArrayList<String>();
+        ArrayList<String> result = new ArrayList<>();
         for (Component line : lore) {
             result.add(AdventureUtils.toLegacy(line));
         }

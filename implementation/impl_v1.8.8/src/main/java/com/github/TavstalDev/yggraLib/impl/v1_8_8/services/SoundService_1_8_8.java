@@ -41,18 +41,10 @@ public class SoundService_1_8_8 implements ISoundService {
     }
 
     /** {@inheritDoc} */
-    public void stop(Player player, org.bukkit.Sound sound) {
-        if (sound == null)
-            return;
-        //player.stopSound(sound);
-    }
+    public void stop(Player player, org.bukkit.Sound sound) {}
 
     /** {@inheritDoc} */
-    public void stop(List<Player> players, org.bukkit.Sound sound) {
-        if (sound == null)
-            return;
-        //players.forEach(x -> x.stopSound(sound));
-    }
+    public void stop(List<Player> players, org.bukkit.Sound sound) {}
 
     /** {@inheritDoc} */
     public void playAt(Location location, org.bukkit.Sound sound, float volume, float pitch) {

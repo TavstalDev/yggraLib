@@ -140,6 +140,7 @@ public class PersistentDataProvider_modern implements IPersistentDataMapper {
                                 "value", data.get(key, PersistentDataType.BOOLEAN)
                         )
                 );
+                //noinspection UnnecessaryContinue
                 continue;
             }
         }
