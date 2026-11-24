@@ -220,12 +220,6 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 }
             }
         }
-
-        if (!isGuiInitialized) {
-            Bukkit.getPluginManager().registerEvents(new InteractionModifierListener(), this);
-            Bukkit.getPluginManager().registerEvents(new GuiListener(), this);
-            isGuiInitialized = true;
-        }
     }
 
     /**
@@ -375,6 +369,13 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
     @Override
     public final void onEnable() {
         loadDependencies();
+
+        if (!isGuiInitialized) {
+            Bukkit.getPluginManager().registerEvents(new InteractionModifierListener(), this);
+            Bukkit.getPluginManager().registerEvents(new GuiListener(), this);
+            isGuiInitialized = true;
+        }
+
         if (!onPrePluginEnable())
             return;
         try {
