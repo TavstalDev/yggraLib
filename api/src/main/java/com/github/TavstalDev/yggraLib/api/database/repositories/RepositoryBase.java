@@ -152,6 +152,15 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
     protected abstract String getAutoIncrementText();
 
     /**
+     * Returns the SQL fragment appended to a {@code SELECT} statement that selects rows for deletion.
+     * Dialects that support row locking can return a clause such as {@code FOR UPDATE}; otherwise an
+     * empty string should be returned.
+     *
+     * @return the dialect-specific select-for-delete suffix, or an empty string if none is needed
+     */
+    protected abstract String selectForDeleteSuffix();
+
+    /**
      * Reads the result of an "exists by ID" query.
      *
      * @param resultSet the query result set
@@ -596,7 +605,7 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
     protected boolean deleteByCriteriaWithoutReturning(Connection connection, String whereClause, Object[] args) throws SQLException {
 
         String selectSql = "SELECT " + idColumn +
-                " FROM " + tableName + " WHERE " + whereClause + " FOR UPDATE;";
+                " FROM " + tableName + " WHERE " + whereClause + selectForDeleteSuffix()  + ";";
         String deleteSql = "DELETE FROM " + tableName + " WHERE " + whereClause + ";";
 
         connection.setAutoCommit(false);

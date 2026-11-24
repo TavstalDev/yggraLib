@@ -136,6 +136,11 @@ public class SqLiteRepository<ID, T> extends RepositoryBase<ID, T> {
     }
 
     @Override
+    protected String selectForDeleteSuffix() {
+        return "";
+    }
+
+    @Override
     protected boolean getExistsByIdResult(ResultSet resultSet) throws SQLException {
         return resultSet.getInt(1) == 1;
     }

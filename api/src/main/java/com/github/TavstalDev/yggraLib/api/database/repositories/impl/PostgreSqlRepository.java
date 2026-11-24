@@ -147,6 +147,11 @@ public class PostgreSqlRepository<ID, T> extends RepositoryBase<ID, T> {
     }
 
     @Override
+    protected String selectForDeleteSuffix() {
+        return " FOR DELETE";
+    }
+
+    @Override
     protected boolean getExistsByIdResult(ResultSet resultSet) throws SQLException {
         return resultSet.getBoolean("value");
     }
