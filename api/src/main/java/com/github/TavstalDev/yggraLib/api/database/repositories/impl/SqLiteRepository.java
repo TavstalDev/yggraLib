@@ -120,7 +120,9 @@ public class SqLiteRepository<ID, T> extends RepositoryBase<ID, T> {
 
     @Override
     protected boolean performDeleteByCriteria(Connection connection, String whereClause, Object[] args) throws SQLException {
-        return deleteByCriteriaWithReturning(connection, whereClause, args);
+        if (supportsReturning(connection))
+            return deleteByCriteriaWithReturning(connection, whereClause, args);
+        return deleteByCriteriaWithoutReturning(connection, whereClause, args);
     }
 
     @Override
@@ -139,4 +141,23 @@ public class SqLiteRepository<ID, T> extends RepositoryBase<ID, T> {
     }
 
     //#endregion
+
+    private static volatile Boolean returningSupported;
+
+    private static boolean supportsReturning(Connection connection) {
+        Boolean cached = returningSupported;
+        if (cached != null)
+            return cached;
+
+        boolean result = false;
+        try {
+            String version = connection.getMetaData().getDatabaseProductVersion();
+            String[] parts = version.split("[^0-9]+");
+            int major = Integer.parseInt(parts[0]);
+            int minor = Integer.parseInt(parts[1]);
+            result = major > 3 || (major == 3 && minor >= 35); // RETURNING arrived in 3.35.0
+        } catch (Exception ignored) {}
+        returningSupported = result;
+        return result;
+    }
 }
