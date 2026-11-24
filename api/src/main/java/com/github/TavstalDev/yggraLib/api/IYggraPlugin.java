@@ -36,6 +36,20 @@ public interface IYggraPlugin {
     String downloadUrl();
 
     /**
+     * Returns whether the GUI listeners have been initialized.
+     *
+     * @return {@code true} if the GUI system is initialized, {@code false} otherwise
+     */
+    boolean isGuiInitialized();
+
+    /**
+     * Sets whether the GUI listeners have been initialized.
+     *
+     * @param value {@code true} if the GUI system is initialized, {@code false} otherwise
+     */
+    void setIsGuiInitialized(boolean value);
+
+    /**
      * Returns the plugin configuration.
      *
      * @return the configuration object

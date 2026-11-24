@@ -14,8 +14,6 @@ import com.github.TavstalDev.yggraLib.bukkit.utils.VersionUtils;
 import com.google.gson.Gson;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import dev.triumphteam.gui.guis.GuiListener;
-import dev.triumphteam.gui.guis.InteractionModifierListener;
 import net.byteflux.libby.BukkitLibraryManager;
 import net.byteflux.libby.Library;
 import org.bstats.bukkit.Metrics;
@@ -71,9 +69,6 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
      */
     protected TConfig _config;
 
-    // Note: TriumphGui does not reregister its listener when the plugin reloads.
-    private boolean isGuiInitialized = true;
-
     /**
      * Returns the plugin name.
      *
@@ -109,6 +104,14 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
     public YggraLogger logger() {
         return _logger;
     }
+
+
+    // Note: TriumphGui does not reregister its listener when the plugin reloads.
+    private boolean isGuiInitialized = true;
+    @Override
+    public boolean isGuiInitialized() { return isGuiInitialized; }
+    @Override
+    public void setIsGuiInitialized(boolean value) { isGuiInitialized = value; }
 
     /**
      * Returns a registered service by its class type.
@@ -369,12 +372,6 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
     @Override
     public final void onEnable() {
         loadDependencies();
-
-        if (!isGuiInitialized) {
-            Bukkit.getPluginManager().registerEvents(new InteractionModifierListener(), this);
-            Bukkit.getPluginManager().registerEvents(new GuiListener(), this);
-            isGuiInitialized = true;
-        }
 
         if (!onPrePluginEnable())
             return;

@@ -4,8 +4,11 @@ import dev.triumphteam.gui.guis.BaseGui;
 import com.github.TavstalDev.yggraLib.api.IYggraPlugin;
 import com.github.TavstalDev.yggraLib.api.cache.ICache;
 import com.github.TavstalDev.yggraLib.api.logger.YggraLogger;
+import dev.triumphteam.gui.guis.GuiListener;
+import dev.triumphteam.gui.guis.InteractionModifierListener;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
@@ -27,6 +30,13 @@ public class GuiService implements IGuiService {
     public GuiService(IYggraPlugin plugin, ICache cache) {
         this.cache = cache;
         this.logger = plugin.logger().withModule(this.getClass());
+
+        if (!plugin.isGuiInitialized()) {
+            JavaPlugin javaPlugin = (JavaPlugin)plugin;
+            Bukkit.getPluginManager().registerEvents(new InteractionModifierListener(), javaPlugin);
+            Bukkit.getPluginManager().registerEvents(new GuiListener(), javaPlugin);
+            plugin.setIsGuiInitialized(true);
+        }
     }
 
     /** {@inheritDoc} */
