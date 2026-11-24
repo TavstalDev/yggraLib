@@ -1,6 +1,7 @@
 package com.github.TavstalDev.yggraLib.impl.vmodern.items;
 
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
+import com.github.TavstalDev.yggraLib.bukkit.items.IPersistentDataMapper;
 import org.bukkit.NamespacedKey;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -13,20 +14,12 @@ import java.util.Map;
 /**
  * Modern implementation of PersistentDataProvider for newer Minecraft versions.
  */
-public class PersistentDataProvider_modern {
+public class PersistentDataProvider_modern implements IPersistentDataMapper {
     public @Nullable PersistentDataContainer getContainer(ItemStack item) {
         return item.getItemMeta().getPersistentDataContainer();
     }
 
-    /**
-     * Reads all persistent data entries from the item and returns them as a
-     * {@code Map<String, Object>} where each value is itself a map containing
-     * the entry's type and value (e.g., {@code {"type": "STRING", "value": "foo"}}).
-     *
-     * @param item the item stack to read from
-     * @return a map of namespaced-key-string to type-tagged value entries
-     */
-    public Map<String, Object> mapPersistentData(ItemStack item) {
+    public Map<String, Object> map(ItemStack item) {
         Map<String, Object> persistentData = new HashMap<>();
         var data = getContainer(item);
         if (data == null)
@@ -146,18 +139,8 @@ public class PersistentDataProvider_modern {
         return persistentData;
     }
 
-    /**
-     * Writes the given type-tagged entries back into the item's
-     * {@link PersistentDataContainer}.
-     * <p>
-     * The map is expected to have the same format as produced by
-     * {@link #mapPersistentData(ItemStack)}, i.e. each value is a map with
-     * {@code "type"} and {@code "value"} keys.
-     *
-     * @param item the item stack to write to
-     * @param map  the map of namespaced-key-string to type-tagged value entries
-     */
-    public void setPersistentData(ItemStack item, Map<String, Object> map) {
+
+    public void set(ItemStack item, Map<String, Object> map) {
         var dataContainer = getContainer(item);
         if (dataContainer == null)
             return;
