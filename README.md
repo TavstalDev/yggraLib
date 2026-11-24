@@ -273,7 +273,7 @@ Common services include:
 | `IScoreboardService` | Shows and updates player scoreboards. |
 | `IGuiRenderer` | Builds GUI items from configuration. |
 | `IItemStackAccessor` | Reads and changes item stack values. |
-| `ItemSerializerBase` | Converts item stacks to and from maps, YAML, and bytes. |
+| `IItemSerializer` | Converts item stacks to and from maps, YAML, and bytes. |
 
 ## Commands
 

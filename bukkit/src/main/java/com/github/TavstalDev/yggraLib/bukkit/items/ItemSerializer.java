@@ -1,7 +1,11 @@
 package com.github.TavstalDev.yggraLib.bukkit.items;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
+import com.github.TavstalDev.yggraLib.bukkit.utils.NbtUtils;
+import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.yaml.snakeyaml.DumperOptions;
@@ -11,10 +15,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -24,51 +25,49 @@ import java.util.logging.Logger;
  * metadata handling to registered handlers.
  */
 @SuppressWarnings("unused")
-public abstract class ItemSerializerBase implements IItemSerializer {
+public final class ItemSerializer implements IItemSerializer {
     /** Logger used for serialization and deserialization messages. */
-    protected final Logger logger;
+    private final Logger logger;
     /** YAML parser used for item serialization. */
-    protected final Yaml yamlParser;
+    private final Yaml yamlParser;
     /** Registry accessor used to resolve version-specific values. */
     public final IRegistryAccessor registryAccessor;
-    /** {@inheritDoc} */
-    public IRegistryAccessor registryAccessor() {
-        return registryAccessor;
-    }
+
+    public final IItemStackAccessor itemStackAccessor;
+    public final INbtAccessor nbtAccessor;
 
     /** Handler for custom model data. */
     public final ICustomModelDataIO customModelDataIO;
     /** Handler for potion names. */
     public final IPotionNameHandler potionNameHandler;
+    public final IPersistentDataMapper persistentDataMapper;
+
+    /** {@inheritDoc} */
+    public IRegistryAccessor registryAccessor() {
+        return registryAccessor;
+    }
     /** {@inheritDoc} */
     public IPotionNameHandler potionNameHandler() {
         return potionNameHandler;
     }
 
     /** Metadata handlers grouped by handler type. */
-    protected final HashMap<EHandlerType, IMetaHandler> metaHandlers;
+    public final HashMap<EHandlerType, IMetaHandler> metaHandlers;
 
-    public final INbtAccessor nbtAccessor;
 
-    /**
-     * Constructs a new serializer base.
-     *
-     * @param logger                 the logger
-     * @param registryAccessor       version-independent registry accessor
-     * @param customModelDataIO      custom model data component serializer
-     * @param potionNameHandler      potion name handler
-     * @param metaHandlers           map of metadata handlers keyed by handler type
-     */
-    public ItemSerializerBase(Logger logger, IRegistryAccessor registryAccessor,
-                              ICustomModelDataIO customModelDataIO, IPotionNameHandler potionNameHandler,
-                              HashMap<EHandlerType, IMetaHandler> metaHandlers,
-                              @Nullable INbtAccessor nbtAccessor) {
+    public ItemSerializer(Logger logger, IRegistryAccessor registryAccessor,
+                          IItemStackAccessor itemStackAccessor, @Nullable INbtAccessor nbtAccessor,
+                          ICustomModelDataIO customModelDataIO, IPersistentDataMapper persistentDataMapper,
+                          IPotionNameHandler potionNameHandler,
+                          HashMap<EHandlerType, IMetaHandler> metaHandlers) {
         this.logger = logger;
         this.registryAccessor = registryAccessor;
+        this.itemStackAccessor = itemStackAccessor;
+        this.nbtAccessor = nbtAccessor;
         this.customModelDataIO = customModelDataIO;
+        this.persistentDataMapper = persistentDataMapper;
         this.potionNameHandler = potionNameHandler;
         this.metaHandlers = metaHandlers;
-        this.nbtAccessor = nbtAccessor;
 
         DumperOptions options = new DumperOptions();
         options.setDefaultFlowStyle(DumperOptions.FlowStyle.BLOCK);
@@ -86,7 +85,63 @@ public abstract class ItemSerializerBase implements IItemSerializer {
      * @param item the item stack to serialize
      * @return a map of serialized item data
      */
-    public abstract Map<String, Object> serializeItemStack(@NotNull ItemStack item);
+    public final Map<String, Object> serializeItemStack(final @NotNull ItemStack item) {
+        Map<String, Object> itemData = new HashMap<>();
+        try
+        {
+            itemData.put("material", item.getType().toString());
+            itemData.put("amount", itemStackAccessor.getAmount(item));
+            int durability = itemStackAccessor.getDurability(item);
+            if (durability >= 0)
+                itemData.put("durability", durability);
+
+            if (!item.hasItemMeta())
+                return itemData;
+
+            ItemMeta meta = item.getItemMeta();
+
+            // Name
+            String displayName = itemStackAccessor.getDisplayName(item);
+            if (displayName != null)
+                itemData.put("name", displayName);
+
+            // Lore
+            List<String> metaLore = itemStackAccessor.getLore(item);
+            if (metaLore != null)
+                itemData.put("lore", metaLore);
+
+            // Item Meta Handlers
+            for (Map.Entry<EHandlerType, IMetaHandler> handler : metaHandlers.entrySet()) {
+                try {
+                    handler.getValue().serialize(this, meta, itemData);
+                }
+                catch (Exception metaEx) {
+                    logger.severe(String.format("An error occurred while serializing %s meta: %s",
+                            handler.getKey().name(), metaEx.getMessage()));
+                }
+            }
+
+            // Add persistent data
+            if (persistentDataMapper != null) {
+                Map<String, Object> persistentData = persistentDataMapper.map(item);
+                if (!persistentData.isEmpty())
+                    itemData.put("persistent-data", persistentData);
+            }
+
+            // NBT-Data
+            if (nbtAccessor != null) {
+                Map<String, Object> nbtData = nbtAccessor.getAll(item);
+                itemData.put("nbt", nbtData);
+            }
+            else if (customModelDataIO != null)
+                customModelDataIO.serialize(meta, itemData);
+
+        }
+        catch (Exception ex) {
+            logger.severe("An error occurred while serializing an item: " + ex);
+        }
+        return itemData;
+    }
 
     /**
      * Deserializes an {@link ItemStack} from a {@code Map<String, Object>}.
@@ -98,7 +153,86 @@ public abstract class ItemSerializerBase implements IItemSerializer {
      * @param itemMap the map of serialized item data
      * @return the deserialized item stack, or {@code null} if deserialization fails
      */
-    public abstract @Nullable ItemStack deserializeItemStack(@NotNull Map<String, Object> itemMap);
+    public final @Nullable ItemStack deserializeItemStack(@NotNull Map<String, Object> itemMap) {
+        ItemStack itemStack = null;
+        try
+        {
+            String materialString = (String) itemMap.get("material");
+            Optional<XMaterial> xMaterial = XMaterial.matchXMaterial(materialString);
+            if (!xMaterial.isPresent()) {
+                logger.warning("Unknown material: " + materialString);
+                return null;
+            }
+
+            Material material = xMaterial.get().get();
+            if (material == null)
+                return null;
+
+            int amount = itemMap.containsKey("amount") ? (int) itemMap.get("amount") : 1;
+            itemStack = new ItemStack(material, amount);
+
+            // Name
+            if (itemMap.containsKey("name"))
+                itemStackAccessor.setDisplayName(itemStack, (String)itemMap.get("name"));
+
+            // Lore
+            if (itemMap.containsKey("lore")) {
+                Object loreData = itemMap.get("lore");
+                if (loreData instanceof List) {
+                    List<String> rawRoles = TypeUtils.castAsList(loreData, null);
+                    itemStackAccessor.setLore(itemStack, rawRoles);
+                }
+            }
+
+            // Durability
+            if (itemMap.containsKey("durability")) {
+                int durability = 0;
+                Object durabilityObj = itemMap.get("durability");
+                if (durabilityObj instanceof Number)
+                    durability = ((Number)durabilityObj).intValue();
+                itemStackAccessor.setDurability(itemStack, durability);
+            }
+
+            // Meta Handlers
+            ItemMeta meta = itemStack.getItemMeta();
+            for (Map.Entry<EHandlerType, IMetaHandler> handler : metaHandlers.entrySet()) {
+                try {
+                    handler.getValue().deserialize(this, meta, itemMap);
+                }
+                catch (Exception metaEx) {
+                    logger.severe(String.format("An error occurred while deserializing %s meta: %s",
+                            handler.getKey().name(), metaEx.getMessage()));
+                }
+            }
+
+            // CustomModelData
+            if (customModelDataIO != null)
+                customModelDataIO.deserialize(meta, itemMap);
+
+            itemStack.setItemMeta(meta);
+
+            // Persistent Data Provider
+            if (itemMap.containsKey("persistent-data")) {
+                Map<String, Object> dataMap = TypeUtils.castAsMap(itemMap.get("persistent-data"), null);
+                if (dataMap != null)
+                    persistentDataMapper.set(itemStack, dataMap);
+            }
+
+            // NBT-Data
+            if (nbtAccessor != null && itemMap.containsKey("nbt")) {
+                Map<String, Object> nbt = TypeUtils.castAsMap(itemMap.get("nbt"), null);
+                if (nbt != null) {
+                    for (Map.Entry<String, Object> entry : nbt.entrySet()) {
+                        NbtUtils.set(nbtAccessor, itemStack, entry.getKey(), entry.getValue());
+                    }
+                }
+            }
+        }
+        catch (Exception ex) {
+            logger.severe("An error occurred while deserializing an item: " + ex);
+        }
+        return itemStack;
+    }
 
     //#region Serialization Methods
     /**
@@ -112,9 +246,8 @@ public abstract class ItemSerializerBase implements IItemSerializer {
         List<Map<String, Object>> itemList = new ArrayList<>();
         for (ItemStack item : items) {
             Map<String, Object> itemData = serializeItemStack(item);
-            if (itemData != null) {
+            if (!itemData.isEmpty())
                 itemList.add(itemData);
-            }
         }
         return itemList;
     }
@@ -128,9 +261,8 @@ public abstract class ItemSerializerBase implements IItemSerializer {
      */
     public final @Nullable String serializeItemStackToYaml(@NotNull ItemStack item) {
         Map<String, Object> itemData = serializeItemStack(item);
-        if (itemData != null) {
+        if (!itemData.isEmpty())
             return yamlParser.dump(itemData);
-        }
         return null;
     }
 

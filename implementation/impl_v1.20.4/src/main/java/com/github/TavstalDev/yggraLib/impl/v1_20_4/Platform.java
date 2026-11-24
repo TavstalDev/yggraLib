@@ -20,7 +20,9 @@ import com.github.TavstalDev.yggraLib.bukkit.utils.VersionUtils;
 import com.github.TavstalDev.yggraLib.impl.v1_20_4.items.CustomModelDataIO_1_20_4;
 import com.github.TavstalDev.yggraLib.impl.v1_20_4.items.ItemStackAccessor_1_20_4;
 import com.github.TavstalDev.yggraLib.impl.v1_20_4.items.RegistryAccessor_1_20_4;
-import com.github.TavstalDev.yggraLib.impl.vmodern.items.ItemSerializer_modern;
+import com.github.TavstalDev.yggraLib.impl.vmodern.items.PersistentDataProvider_modern;
+import com.github.TavstalDev.yggraLib.impl.vmodern.items.PotionNameHandler_modern;
+import com.github.TavstalDev.yggraLib.impl.vmodern.items.meta.*;
 import com.github.TavstalDev.yggraLib.impl.vmodern.items.metaAccessor.SkullMetaAccessor_modern;
 import com.github.TavstalDev.yggraLib.impl.vmodern.scheduler.FoliaScheduler_modern;
 import com.github.TavstalDev.yggraLib.impl.vmodern.scheduler.PaperScheduler_modern;
@@ -33,8 +35,8 @@ import lombok.SneakyThrows;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.HashMap;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * Platform implementation for Minecraft 1.20.4.
@@ -43,6 +45,19 @@ import java.util.logging.Logger;
  */
 @SuppressWarnings("unused")
 public class Platform implements IPlatform {
+
+    private final HashMap<EHandlerType, IMetaHandler> _metaHandlers = new HashMap<>() {{
+        put(EHandlerType.BOOK, new BookMetaHandler_modern());
+        put(EHandlerType.CROSSBOW, new CrossbowMetaHandler_modern());
+        put(EHandlerType.ENCHANTMENT, new EnchantmentMetaHandler_modern());
+        put(EHandlerType.ENCHANTMENT_STORAGE, new EnchantmentStorageMetaHandler_modern());
+        put(EHandlerType.FIREWORK_EFFECT, new FireworkEffectMetaHandler_modern());
+        put(EHandlerType.FIREWORK, new FireworkMetaHandler_modern());
+        put(EHandlerType.LEATHER_ARMOR, new LeatherArmorMetaHandler_modern());
+        put(EHandlerType.POTION, new PotionMetaHandler_modern());
+        put(EHandlerType.SKULL, new SkullMetaHandler_modern());
+        put(EHandlerType.SPAWN_EGG, new SpawnEggMetaHandler_modern());
+    }};
 
     /**
      * Sets up and registers platform services.
@@ -78,9 +93,11 @@ public class Platform implements IPlatform {
         serviceCollection.put(IRegistryAccessor.class, registryAccessor);
         ICustomModelDataIO customModelDataIO = new CustomModelDataIO_1_20_4();
         serviceCollection.put(ICustomModelDataIO.class, customModelDataIO);
-        serviceCollection.put(IItemSerializer.class, new ItemSerializer_modern(javaPlugin.getLogger(),
-                registryAccessor, customModelDataIO, nbtAccessor));
-        serviceCollection.put(IItemStackAccessor.class, new ItemStackAccessor_1_20_4(registryAccessor));
+        IItemStackAccessor itemStackAccessor = new ItemStackAccessor_1_20_4(registryAccessor);
+        serviceCollection.put(IItemStackAccessor.class, itemStackAccessor);
+        serviceCollection.put(IItemSerializer.class, new ItemSerializer(javaPlugin.getLogger(),
+                registryAccessor, itemStackAccessor, nbtAccessor, customModelDataIO,  new PersistentDataProvider_modern(),
+                new PotionNameHandler_modern(), _metaHandlers));
 
         serviceCollection.put(ISkullMetaAccessor.class, new SkullMetaAccessor_modern());
 
