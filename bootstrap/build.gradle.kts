@@ -87,6 +87,7 @@ tasks.shadowJar {
     relocate("com.github.TavstalDev.yggraActionBar", "${shadeGroup}.yggraActionBar")
     relocate("com.github.TavstalDev.yggraBossBar", "${shadeGroup}.yggraBossBar")
     relocate("com.github.TavstalDev.yggraTitle", "${shadeGroup}.yggraTitle")
+    relocate("com.github.TavstalDev.yggraParticle", "${shadeGroup}.yggraParticle")
 }
 
 // Ensure the Shadow JAR task runs during the build process

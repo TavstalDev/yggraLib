@@ -105,6 +105,8 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
         return _logger;
     }
 
+    private final String _dependencyShadeGroup;
+
 
     // Note: TriumphGui does not reregister its listener when the plugin reloads.
     private boolean isGuiInitialized = true;
@@ -184,8 +186,13 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
      * @param repositories additional Maven repositories to register, or {@code null}
      * @param libraries additional libraries to load, or {@code null}
      */
-    public YggraPlugin(@Nullable Integer pluginId, @Nullable String[] repositories, @Nullable LibraryInfo[] libraries) {
+    public YggraPlugin(@Nullable Integer pluginId, @Nullable String shadeGroup,
+                       @Nullable String[] repositories, @Nullable LibraryInfo[] libraries) {
         _pluginId = pluginId;
+        if (shadeGroup == null || shadeGroup.isEmpty())
+            _dependencyShadeGroup = "com.github.TavstalDev.yggraLib.shadow";
+        else
+            _dependencyShadeGroup = shadeGroup;
         _logger = new YggraLogger(this);
         this.libraryManager = new BukkitLibraryManager(this);
         libraryManager.addMavenCentral();
@@ -226,6 +233,18 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
     }
 
     /**
+     * Creates a new plugin instance with a custom shade group and additional libraries.
+     *
+     * @param pluginId the optional bStats plugin ID
+     * @param shadeGroup the target group used to relocate shaded dependencies, or {@code null} for the default
+     * @param libraries additional libraries to load, or {@code null}
+     */
+    @SuppressWarnings("unused")
+    public YggraPlugin(@Nullable Integer pluginId, @Nullable String shadeGroup, @Nullable LibraryInfo[] libraries) {
+        this(pluginId, shadeGroup, null, libraries);
+    }
+
+    /**
      * Creates a new plugin instance with additional libraries.
      *
      * @param pluginId the optional bStats plugin ID
@@ -233,7 +252,18 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
      */
     @SuppressWarnings("unused")
     public YggraPlugin(@Nullable Integer pluginId, @Nullable LibraryInfo[] libraries) {
-        this(pluginId, null, libraries);
+        this(pluginId, null, null, libraries);
+    }
+
+    /**
+     * Creates a new plugin instance with a custom shade group.
+     *
+     * @param pluginId the optional bStats plugin ID
+     * @param shadeGroup the target group used to relocate shaded dependencies, or {@code null} for the default
+     */
+    @SuppressWarnings("unused")
+    public YggraPlugin(@Nullable Integer pluginId, @Nullable String shadeGroup) {
+        this(pluginId, shadeGroup, null, null);
     }
 
     /**
@@ -243,28 +273,26 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
      */
     @SuppressWarnings("unused")
     public YggraPlugin(@Nullable Integer pluginId) {
-        this(pluginId, null, null);
+        this(pluginId, null, null, null);
     }
 
     /**
      * Creates a new plugin instance with default settings.
      */
     public YggraPlugin() {
-        this(null, null, null);
+        this(null, null, null, null);
     }
 
     /**
      * Loads the core libraries required by YggraLib.
      */
     protected void loadDependencies() {
-        String packageGroup = "com.github.TavstalDev.yggraLib.shadow";
-
         // org.yaml:snakeyaml - Required for 1.8.8 support
         libraryManager.loadLibrary(Library.builder()
                 .groupId("org{}yaml")
                 .artifactId("snakeyaml")
                 .version("2.7")
-                .relocate("org{}yaml", packageGroup + ".yaml")
+                .relocate("org{}yaml", _dependencyShadeGroup + ".yaml")
                 .build());
 
         // dev.triumphteam:triumph-gui - Required for GUI support
@@ -301,7 +329,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .groupId("net{}kyori")
                 .artifactId("examination-api")
                 .version("1.3.0")
-                .relocate("net{}kyori", packageGroup + ".kyori")
+                .relocate("net{}kyori", _dependencyShadeGroup + ".kyori")
                 .build());
 
         // net.kyori:examination-string
@@ -309,7 +337,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .groupId("net{}kyori")
                 .artifactId("examination-string")
                 .version("1.3.0")
-                .relocate("net{}kyori", packageGroup + ".kyori")
+                .relocate("net{}kyori", _dependencyShadeGroup + ".kyori")
                 .build());
 
         // net.kyori:adventure-key
@@ -317,7 +345,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .groupId("net{}kyori")
                 .artifactId("adventure-key")
                 .version("4.26.1")
-                .relocate("net{}kyori", packageGroup + ".kyori")
+                .relocate("net{}kyori", _dependencyShadeGroup + ".kyori")
                 .build());
 
         // net.kyori:adventure-api - Required for 1.8.8 support
@@ -325,7 +353,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .groupId("net{}kyori")
                 .artifactId("adventure-api")
                 .version("4.26.1")
-                .relocate("net{}kyori", packageGroup + ".kyori")
+                .relocate("net{}kyori", _dependencyShadeGroup + ".kyori")
                 .build());
 
         // net.kyori:adventure-text-serializer-legacy - Required for 1.8.8 support
@@ -333,7 +361,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .groupId("net{}kyori")
                 .artifactId("adventure-text-serializer-legacy")
                 .version("4.26.1")
-                .relocate("net{}kyori", packageGroup + ".kyori")
+                .relocate("net{}kyori", _dependencyShadeGroup + ".kyori")
                 .build());
 
         // net.kyori:adventure-text-minimessage - Required for 1.8.8 support
@@ -341,7 +369,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .groupId("net{}kyori")
                 .artifactId("adventure-text-minimessage")
                 .version("4.26.1")
-                .relocate("net{}kyori", packageGroup + ".kyori")
+                .relocate("net{}kyori", _dependencyShadeGroup + ".kyori")
                 .build());
 
         // net.kyori:adventure-text-serializer-plain - Required for 1.8.8 support
@@ -349,7 +377,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .groupId("net{}kyori")
                 .artifactId("adventure-text-serializer-plain")
                 .version("4.26.1")
-                .relocate("net{}kyori", packageGroup + ".kyori")
+                .relocate("net{}kyori", _dependencyShadeGroup + ".kyori")
                 .build());
 
         // net.kyori:adventure-text-serializer-gson - Required for 1.8.8 support
@@ -357,7 +385,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .groupId("net{}kyori")
                 .artifactId("adventure-text-serializer-gson")
                 .version("4.26.1")
-                .relocate("net{}kyori", packageGroup + ".kyori")
+                .relocate("net{}kyori", _dependencyShadeGroup + ".kyori")
                 .build());
 
         //#endregion
