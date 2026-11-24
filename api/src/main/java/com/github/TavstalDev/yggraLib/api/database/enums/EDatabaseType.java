@@ -5,7 +5,10 @@ package com.github.TavstalDev.yggraLib.api.database.enums;
  */
 @SuppressWarnings("unused")
 public enum EDatabaseType {
+    /** The SQLite database backend. */
     SQLITE,
+    /** The MySQL database backend. */
     MYSQL,
+    /** The PostgreSQL database backend. */
     POSTGRESQL
 }

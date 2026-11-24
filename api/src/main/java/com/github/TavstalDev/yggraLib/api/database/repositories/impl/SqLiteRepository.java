@@ -113,11 +113,13 @@ public class SqLiteRepository<ID, T> extends RepositoryBase<ID, T> {
 
     //#region Abstract implementations
 
+    /** {@inheritDoc} */
     @Override
     protected void setStatementParameter(PreparedStatement statement, int ordinal, Object value) throws SQLException {
         statement.setObject(ordinal, value);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean performDeleteByCriteria(Connection connection, String whereClause, Object[] args) throws SQLException {
         if (supportsReturning(connection))
@@ -125,21 +127,25 @@ public class SqLiteRepository<ID, T> extends RepositoryBase<ID, T> {
         return deleteByCriteriaWithoutReturning(connection, whereClause, args);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String resolveSqlType(Field field, int columnLength, EColumnKind columnKind) {
         return DatabaseHelper.getSqlTypeForField(field, columnLength);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String getAutoIncrementText() {
         return " AUTOINCREMENT";
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String selectForDeleteSuffix() {
         return "";
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean getExistsByIdResult(ResultSet resultSet) throws SQLException {
         return resultSet.getInt(1) == 1;

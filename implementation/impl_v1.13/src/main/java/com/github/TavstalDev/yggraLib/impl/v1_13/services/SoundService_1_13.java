@@ -14,6 +14,7 @@ import java.util.Optional;
  */
 public class SoundService_1_13 implements ISoundService {
 
+    /** {@inheritDoc} */
     public Optional<org.bukkit.Sound> get(@NotNull String name) {
         String key = name.toLowerCase(Locale.ROOT);
         try {

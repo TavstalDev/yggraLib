@@ -7,6 +7,9 @@ import org.jetbrains.annotations.Nullable;
 import java.util.List;
 import java.util.Map;
 
+/**
+ * Provides access to item helpers and methods for serializing and deserializing item stacks.
+ */
 @SuppressWarnings("unused")
 public interface IItemSerializer {
 
@@ -34,7 +37,7 @@ public interface IItemSerializer {
      * @param item the item stack to serialize
      * @return a map of serialized item data
      */
-     Map<String, Object> serializeItemStack(@NotNull ItemStack item);
+    Map<String, Object> serializeItemStack(@NotNull ItemStack item);
 
     /**
      * Deserializes an {@link ItemStack} from a {@code Map<String, Object>}.

@@ -118,6 +118,7 @@ public class MySqlRepository<ID, T> extends RepositoryBase<ID, T> {
 
     //#region Abstract implementations
 
+    /** {@inheritDoc} */
     @Override
     protected void setStatementParameter(PreparedStatement statement, int ordinal, Object value) throws SQLException {
         if (value == null) {
@@ -131,6 +132,7 @@ public class MySqlRepository<ID, T> extends RepositoryBase<ID, T> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean performDeleteByCriteria(Connection connection, String whereClause, Object[] args) throws SQLException {
         if (isMariaDb)
@@ -139,21 +141,25 @@ public class MySqlRepository<ID, T> extends RepositoryBase<ID, T> {
             return deleteByCriteriaWithoutReturning(connection, whereClause, args);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String resolveSqlType(Field field, int columnLength, EColumnKind columnKind) {
         return DatabaseHelper.getSqlTypeForField(field, columnLength);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String getAutoIncrementText() {
         return " AUTO_INCREMENT";
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String selectForDeleteSuffix() {
         return " FOR DELETE";
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean getExistsByIdResult(ResultSet resultSet) throws SQLException {
         return resultSet.getInt(1) == 1;

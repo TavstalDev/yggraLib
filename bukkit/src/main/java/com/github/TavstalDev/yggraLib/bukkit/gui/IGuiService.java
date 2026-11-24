@@ -4,6 +4,9 @@ import dev.triumphteam.gui.guis.BaseGui;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Nullable;
 
+/**
+ * Provides methods to register, unregister, and manage player menus.
+ */
 @SuppressWarnings("unused")
 public interface IGuiService {
     /**

@@ -108,6 +108,7 @@ public class PostgreSqlRepository<ID, T> extends RepositoryBase<ID, T> {
 
     //#region Abstract implementations
 
+    /** {@inheritDoc} */
     @Override
     protected void setStatementParameter(PreparedStatement statement, int ordinal, Object value) throws SQLException {
         if (value == null) {
@@ -127,11 +128,13 @@ public class PostgreSqlRepository<ID, T> extends RepositoryBase<ID, T> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean performDeleteByCriteria(Connection connection, String whereClause, Object[] args) throws SQLException {
         return deleteByCriteriaWithReturning(connection, whereClause, args);
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String resolveSqlType(Field field, int columnLength, EColumnKind columnKind) {
         String sqlType = DatabaseHelper.getPostgresSqlTypeForField(field, columnLength);
@@ -141,16 +144,19 @@ public class PostgreSqlRepository<ID, T> extends RepositoryBase<ID, T> {
         return sqlType;
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String getAutoIncrementText() {
         return "";
     }
 
+    /** {@inheritDoc} */
     @Override
     protected String selectForDeleteSuffix() {
         return " FOR DELETE";
     }
 
+    /** {@inheritDoc} */
     @Override
     protected boolean getExistsByIdResult(ResultSet resultSet) throws SQLException {
         return resultSet.getBoolean("value");

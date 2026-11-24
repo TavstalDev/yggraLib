@@ -26,7 +26,12 @@ public class GuiService implements IGuiService {
     private final HashMap<String, GuiBase> _registeredMenus = new HashMap<>();
     private final HashMap<UUID, String> _playersWithOpenMenus = new HashMap<>();
 
-    /** {@inheritDoc} */
+    /**
+     * Creates a new GUI service and registers GUI listeners when needed.
+     *
+     * @param plugin the plugin instance that owns this service
+     * @param cache  the cache used for menu data
+     */
     public GuiService(IYggraPlugin plugin, ICache cache) {
         this.cache = cache;
         this.logger = plugin.logger().withModule(this.getClass());

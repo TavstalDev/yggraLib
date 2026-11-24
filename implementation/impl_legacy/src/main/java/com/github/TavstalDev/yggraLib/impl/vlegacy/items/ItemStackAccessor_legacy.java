@@ -27,6 +27,7 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
         this.registryAccessor = registryAccessor;
     }
 
+    /** {@inheritDoc} */
     @Override
     public @Nullable String getDisplayName(ItemStack itemStack) {
         if (!itemStack.hasItemMeta())
@@ -39,6 +40,7 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
         return meta.getDisplayName();
     }
 
+    /** {@inheritDoc} */
     @Override
     public @Nullable Component getDisplayNameComp(ItemStack itemStack) {
         if (!itemStack.hasItemMeta())
@@ -51,6 +53,7 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
         return AdventureUtils.parse(meta.getDisplayName(), true);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setDisplayName(ItemStack itemStack, String displayName) {
         if (displayName == null)
@@ -63,6 +66,7 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
         setDisplayName(itemStack, AdventureUtils.parse(displayName));
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setDisplayName(ItemStack itemStack, Component displayName) {
         ItemMeta meta = itemStack.getItemMeta();
@@ -76,6 +80,7 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
         itemStack.setItemMeta(meta);
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<String> getLore(ItemStack itemStack) {
         if (!itemStack.hasItemMeta())
@@ -86,6 +91,7 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
         return meta.getLore();
     }
 
+    /** {@inheritDoc} */
     @Override
     public List<Component> getLoreComp(ItemStack itemStack) {
         if (!itemStack.hasItemMeta())
@@ -99,6 +105,7 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
         return result;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setLore(ItemStack itemStack, List<String> lore) {
        List<Component> comps = new ArrayList<>();
@@ -108,6 +115,7 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
        setLoreComp(itemStack, comps);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setLoreComp(ItemStack itemStack, List<Component> lore) {
         ItemMeta meta = itemStack.getItemMeta();
@@ -119,11 +127,13 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
         itemStack.setItemMeta(meta);
     }
 
+    /** {@inheritDoc} */
     @Override
     public int getDurability(ItemStack itemStack) {
         return itemStack.getDurability();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setDurability(ItemStack itemStack, int durability) {
         short dur = 0;
@@ -134,6 +144,7 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
         itemStack.setDurability(dur);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Map<String, Integer> getEnchants(ItemStack itemStack) {
         Map<String, Integer> enchantments = new HashMap<>();
@@ -143,6 +154,7 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
     }
 
 
+    /** {@inheritDoc} */
     @Override
     public void addEnchant(ItemStack itemStack, String name, int level) {
         Enchantment enchantment = registryAccessor.getEnchantment(name);
@@ -151,12 +163,14 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
         itemStack.addEnchantment(enchantment, level);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void clearEnchants(ItemStack itemStack) {
         for (Map.Entry<Enchantment, Integer> entry : itemStack.getEnchantments().entrySet())
             itemStack.removeEnchantment(entry.getKey());
     }
 
+    /** {@inheritDoc} */
     @Override
     public Set<ItemFlag> getHiddenFlags(ItemStack itemStack) {
         if (!itemStack.hasItemMeta())
@@ -165,6 +179,7 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
         return meta.getItemFlags();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void hideAllFlags(ItemStack itemStack) {
         ItemMeta meta = itemStack.getItemMeta();
@@ -180,6 +195,7 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
     }
 
 
+    /** {@inheritDoc} */
     @Override
     public void hide(ItemStack itemStack, ItemFlag... flags) {
         ItemMeta meta = itemStack.getItemMeta();
@@ -187,22 +203,26 @@ public class ItemStackAccessor_legacy implements IItemStackAccessor {
         itemStack.setItemMeta(meta);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Integer getAmount(ItemStack itemStack) {
         return itemStack.getAmount();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setAmount(ItemStack itemStack, int amount) {
         itemStack.setAmount(amount);
     }
 
+    /** {@inheritDoc} */
     @Override
     public Integer getCustomModelData(ItemStack itemStack) {
         // In 1.8.8 it is not supported
         return 0;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void setCustomModelData(ItemStack itemStack, int customModelData) {
         // In 1.8.8 it is not supported

@@ -92,8 +92,10 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
 
     // Note: TriumphGui does not reregister its listener when the plugin reloads.
     private boolean isGuiInitialized = true;
+    /** {@inheritDoc} */
     @Override
     public boolean isGuiInitialized() { return isGuiInitialized; }
+    /** {@inheritDoc} */
     @Override
     public void setIsGuiInitialized(boolean value) { isGuiInitialized = value; }
 

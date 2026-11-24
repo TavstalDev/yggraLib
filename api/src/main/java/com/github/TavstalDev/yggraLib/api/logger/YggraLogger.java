@@ -15,11 +15,17 @@ import static java.util.logging.Level.*;
  * Provides colored, module-scoped logging with debug toggle support.
  */
 public class YggraLogger {
+    /** ANSI escape sequence for red text. */
     public static final String ANSI_RED = "\u001B[31m";
+    /** ANSI escape sequence for green text. */
     public static final String ANSI_GREEN = "\u001B[32m";
+    /** ANSI escape sequence for yellow text. */
     public static final String ANSI_YELLOW = "\u001B[33m";
+    /** ANSI escape sequence for purple text. */
     public static final String ANSI_PURPLE = "\u001B[35m";
+    /** ANSI escape sequence for cyan text. */
     public static final String ANSI_CYAN = "\u001B[36m";
+    /** ANSI escape sequence for white text. */
     public static final String ANSI_WHITE = "\u001B[37m";
     private final IYggraPlugin _plugin;
     private final Logger _logger;

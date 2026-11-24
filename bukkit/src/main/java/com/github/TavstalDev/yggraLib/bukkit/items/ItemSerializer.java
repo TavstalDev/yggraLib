@@ -33,13 +33,16 @@ public final class ItemSerializer implements IItemSerializer {
     /** Registry accessor used to resolve version-specific values. */
     public final IRegistryAccessor registryAccessor;
 
+    /** Accessor used for item stack operations. */
     public final IItemStackAccessor itemStackAccessor;
+    /** Accessor used for item NBT operations, or {@code null} if unavailable. */
     public final INbtAccessor nbtAccessor;
 
     /** Handler for custom model data. */
     public final ICustomModelDataIO customModelDataIO;
     /** Handler for potion names. */
     public final IPotionNameHandler potionNameHandler;
+    /** Mapper used to serialize and deserialize persistent item data. */
     public final IPersistentDataMapper persistentDataMapper;
 
     /** {@inheritDoc} */

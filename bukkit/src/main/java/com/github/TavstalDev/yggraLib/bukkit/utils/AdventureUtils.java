@@ -22,9 +22,13 @@ import java.util.regex.Pattern;
 @SuppressWarnings("unused")
 public final class AdventureUtils {
 
+    /** Parser used to convert MiniMessage strings into components. */
     public static final MiniMessage MINI_MESSAGE = MiniMessage.miniMessage();
+    /** Serializer used for legacy section character color codes. */
     public static final LegacyComponentSerializer SECTION_SERIALIZER = LegacyComponentSerializer.legacySection();
+    /** Serializer used to extract plain text from components. */
     public static final PlainTextComponentSerializer PLAIN_TEXT = PlainTextComponentSerializer.plainText();
+    /** Serializer used to convert components to and from JSON. */
     public static final GsonComponentSerializer GSON = GsonComponentSerializer.gson();
     private static final Pattern LEGACY_TO_MINI_PATTERN = Pattern.compile("[&§]([0-9a-fk-or])", Pattern.CASE_INSENSITIVE);
     private static final Map<Character, String> LEGACY_TO_MINI = new HashMap<>();

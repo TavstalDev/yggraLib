@@ -13,6 +13,8 @@ import java.lang.annotation.Target;
 public @interface Table {
     /**
      * The name of the database table.
+     *
+     * @return the database table name
      */
     String value();
 }

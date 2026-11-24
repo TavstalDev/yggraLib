@@ -28,16 +28,19 @@ public class MemoryCache implements ICache {
         this.cache = Caffeine.newBuilder()
                 .maximumSize(10_000)
                 .expireAfter(new Expiry<String, ExpiringEntry>() {
+                    /** {@inheritDoc} */
                     @Override
                     public long expireAfterCreate(@NotNull String key, @NotNull ExpiringEntry value, long currentTime) {
                         return value.durationNanos;
                     }
 
+                    /** {@inheritDoc} */
                     @Override
                     public long expireAfterUpdate(@NotNull String key, @NotNull ExpiringEntry value, long currentTime, long currentDuration) {
                         return value.durationNanos;
                     }
 
+                    /** {@inheritDoc} */
                     @Override
                     public long expireAfterRead(@NotNull String key, @NotNull ExpiringEntry value, long currentTime, long currentDuration) {
                         return currentDuration;

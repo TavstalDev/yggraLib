@@ -11,6 +11,7 @@ import java.util.UUID;
  * Implementation of LanguageService for Minecraft 1.13.
  */
 public class LanguageService_1_13 implements ILanguageService {
+    /** {@inheritDoc} */
     @Override
     public @Nullable String getLocale(UUID playerId) {
         Player player = Bukkit.getPlayer(playerId);

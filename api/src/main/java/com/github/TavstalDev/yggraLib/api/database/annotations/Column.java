@@ -15,21 +15,29 @@ import java.lang.annotation.Target;
 public @interface Column {
     /**
      * The name of the database column.
+     *
+     * @return the database column name
      */
     String value();
 
     /**
      * The constraint kind for the column.
+     *
+     * @return the column's constraint kind
      */
     EColumnKind kind() default EColumnKind.DEFAULT;
 
     /**
      * The column length, used for VARCHAR types.
+     *
+     * @return the configured column length
      */
     int length() default 255;
 
     /**
      * Whether the column allows null values.
+     *
+     * @return {@code true} if the column allows null values
      */
     boolean nullable() default true;
 }

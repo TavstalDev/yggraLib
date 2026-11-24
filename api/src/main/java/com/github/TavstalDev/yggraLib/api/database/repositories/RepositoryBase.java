@@ -191,11 +191,13 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
     protected abstract boolean performDeleteByCriteria(Connection connection, String whereClause, Object[] args) throws SQLException;
 
     //#region IRepository implementations
+    /** {@inheritDoc} */
     @Override
     public String getTableName() {
         return tableName;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean add(T entity) {
         try (Connection connection = dataSource.getConnection()) {
@@ -234,6 +236,7 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public @Nullable T findById(ID id) {
         String cacheKey = "db:" + tableName + ":" + id.toString();
@@ -276,6 +279,7 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     @SuppressWarnings("unchecked")
     public @Nullable List<T> findByCriteria(@Nullable String cacheKey, QueryCondition... conditions) {
@@ -315,6 +319,7 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
         return result;
     }
 
+    /** {@inheritDoc} */
     @Override
     @SuppressWarnings("unchecked")
     public @Nullable List<T> findAll() {
@@ -358,6 +363,7 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean update(ID id, T entity) {
         try (Connection connection = dataSource.getConnection()) {
@@ -394,6 +400,7 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean delete(T entity) {
         try {
@@ -407,6 +414,7 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean deleteById(ID id) {
         try (Connection connection = dataSource.getConnection()) {
@@ -432,6 +440,7 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean deleteByCriteria(QueryCondition... conditions) {
         if (conditions == null || conditions.length == 0)
@@ -463,6 +472,7 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean existsById(ID id) {
         String cacheKey = "db:" + tableName + ":" + id;
@@ -494,6 +504,7 @@ public abstract class RepositoryBase<ID, T> implements IRepository<ID, T> {
         }
     }
 
+    /** {@inheritDoc} */
     @Override
     public long count() {
         try (Connection connection = dataSource.getConnection()) {

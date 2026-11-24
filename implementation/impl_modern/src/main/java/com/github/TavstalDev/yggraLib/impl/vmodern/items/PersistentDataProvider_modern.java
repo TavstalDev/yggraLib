@@ -15,10 +15,17 @@ import java.util.Map;
  * Modern implementation of PersistentDataProvider for newer Minecraft versions.
  */
 public class PersistentDataProvider_modern implements IPersistentDataMapper {
+    /**
+     * Returns the persistent data container stored in the item's metadata.
+     *
+     * @param item the item stack to read from
+     * @return the item's persistent data container
+     */
     public @Nullable PersistentDataContainer getContainer(ItemStack item) {
         return item.getItemMeta().getPersistentDataContainer();
     }
 
+    /** {@inheritDoc} */
     public Map<String, Object> map(ItemStack item) {
         Map<String, Object> persistentData = new HashMap<>();
         var data = getContainer(item);
@@ -140,6 +147,7 @@ public class PersistentDataProvider_modern implements IPersistentDataMapper {
     }
 
 
+    /** {@inheritDoc} */
     public void set(ItemStack item, Map<String, Object> map) {
         var dataContainer = getContainer(item);
         if (dataContainer == null)

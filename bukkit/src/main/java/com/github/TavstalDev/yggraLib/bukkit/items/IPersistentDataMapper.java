@@ -4,6 +4,9 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.Map;
 
+/**
+ * Maps item persistent data to and from serializable maps.
+ */
 public interface IPersistentDataMapper {
 
     /**
@@ -14,7 +17,7 @@ public interface IPersistentDataMapper {
      * @param item the item stack to read from
      * @return a map of namespaced-key-string to type-tagged value entries
      */
-     Map<String, Object> map(ItemStack item);
+    Map<String, Object> map(ItemStack item);
 
     /**
      * Writes the given type-tagged entries back into the item's

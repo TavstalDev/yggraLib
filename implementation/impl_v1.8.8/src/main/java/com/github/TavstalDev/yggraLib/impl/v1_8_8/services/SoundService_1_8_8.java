@@ -13,6 +13,7 @@ import java.util.Optional;
  * Implementation of SoundService for Minecraft 1.8.8.
  */
 public class SoundService_1_8_8 implements ISoundService {
+    /** {@inheritDoc} */
     public Optional<org.bukkit.Sound> get(@NotNull String name) {
         String key = name.toLowerCase(Locale.ROOT);
         try {

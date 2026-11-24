@@ -11,6 +11,7 @@ import java.util.UUID;
  * Modern implementation of LanguageService for newer Minecraft versions.
  */
 public class LanguageService_modern implements ILanguageService {
+    /** {@inheritDoc} */
     @Override
     public @Nullable String getLocale(UUID playerId) {
         Player player = Bukkit.getPlayer(playerId);
