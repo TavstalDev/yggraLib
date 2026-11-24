@@ -69,7 +69,7 @@ public class Platform implements IPlatform {
         IRegistryAccessor registryAccessor = new RegistryAccessor_1_13();
         serviceCollection.put(IRegistryAccessor.class, registryAccessor);
 
-        serviceCollection.put(IItemSerializer.class, new ItemSerializer_1_13(Logger.getLogger("ItemSerializer"),
+        serviceCollection.put(IItemSerializer.class, new ItemSerializer_1_13(javaPlugin.getLogger(),
                 registryAccessor, nbtAccessor));
         serviceCollection.put(IItemStackAccessor.class, new ItemStackAccessor_legacy(registryAccessor));
 

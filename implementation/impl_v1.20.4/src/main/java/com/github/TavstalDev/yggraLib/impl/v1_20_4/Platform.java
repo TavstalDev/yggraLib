@@ -78,7 +78,7 @@ public class Platform implements IPlatform {
         serviceCollection.put(IRegistryAccessor.class, registryAccessor);
         ICustomModelDataIO customModelDataIO = new CustomModelDataIO_1_20_4();
         serviceCollection.put(ICustomModelDataIO.class, customModelDataIO);
-        serviceCollection.put(IItemSerializer.class, new ItemSerializer_modern(Logger.getLogger("ItemSerializer"),
+        serviceCollection.put(IItemSerializer.class, new ItemSerializer_modern(javaPlugin.getLogger(),
                 registryAccessor, customModelDataIO, nbtAccessor));
         serviceCollection.put(IItemStackAccessor.class, new ItemStackAccessor_1_20_4(registryAccessor));
 
