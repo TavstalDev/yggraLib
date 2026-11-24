@@ -5,13 +5,11 @@ import com.github.TavstalDev.yggraLib.api.localization.ITranslationService;
 import com.github.TavstalDev.yggraLib.api.logger.YggraLogger;
 import com.github.TavstalDev.yggraLib.bukkit.services.IChatService;
 import com.github.TavstalDev.yggraLib.bukkit.utils.AdventureUtils;
-import net.kyori.adventure.platform.bukkit.BukkitAudiences;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.TextReplacementConfig;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.plugin.java.JavaPlugin;
 import org.intellij.lang.annotations.RegExp;
 import org.jetbrains.annotations.NotNull;
 import org.jspecify.annotations.NonNull;
@@ -38,13 +36,7 @@ public class ChatService_legacy implements IChatService {
         translator = translationService;
     }
 
-    /**
-     * Builds a message component and replaces button placeholders.
-     * 
-     * @param message the source message
-     * @param parameters the placeholder replacements
-     * @return the built component
-     */
+    /** {@inheritDoc} */
     public Component buildWithButtons(String message, Map<String, Component> parameters) {
         Component result = AdventureUtils.parse(message, true);
         // Get the keys
@@ -66,33 +58,18 @@ public class ChatService_legacy implements IChatService {
         }
         return result.decoration(TextDecoration.ITALIC, false);
     }
-    /**
-     * Sends a message or reply.
-     * @param player the player value
-     * @param component the component value
-     */
-
+    /** {@inheritDoc} */
     @Override
     public void send(@NotNull Player player, Component component) {
         sendRichMsg(player, AdventureUtils.toLegacy(component));
     }
 
-    /**
-     * Sends a message or reply.
-     * @param player the player value
-     * @param message the message value
-     */
+    /** {@inheritDoc} */
     public void sendRichMsg(@NonNull Player player, @NonNull String message) {
         player.sendMessage(AdventureUtils.toLegacy(AdventureUtils.parse(this.plugin.replacePlaceholders(message))));
     }
 
-    /**
-     * Sends a message or reply.
-     * @param player the player value
-     * @param message the message value
-     * @param Map<String the Map<String value
-     * @param parameters the parameters value
-     */
+    /** {@inheritDoc} */
     public void sendRichMsg(@NonNull Player player, @NonNull String message, @NonNull Map<String, Object> parameters) {
         String rawMessage = message;
 
@@ -110,33 +87,19 @@ public class ChatService_legacy implements IChatService {
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
-    /**
-     * Sends a message or reply.
-     * @param player the player value
-     * @param key the key value
-     */
+    /** {@inheritDoc} */
     public void sendLocalizedMsg(@NonNull Player player, @NonNull String key) {
         String rawMessage = translator.localize(player.getUniqueId(), key);
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
-    /**
-     * Sends a message or reply.
-     * @param player the player value
-     * @param key the key value
-     * @param Map<String the Map<String value
-     * @param parameters the parameters value
-     */
+    /** {@inheritDoc} */
     public void sendLocalizedMsg(@NonNull Player player, @NonNull String key, @NonNull Map<String, Object> parameters) {
         String rawMessage = translator.localize(player.getUniqueId(), key, parameters);
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
-    /**
-     * Sends a message or reply.
-     * @param sender the sender value
-     * @param key the key value
-     */
+    /** {@inheritDoc} */
     public void sendCommandReply(CommandSender sender, @NonNull String key) {
         if (sender instanceof Player) {
             Player player = (Player)sender;
@@ -148,13 +111,7 @@ public class ChatService_legacy implements IChatService {
         logger.info(translator.localize(key).replace('&', ' '));
     }
 
-    /**
-     * Sends a message or reply.
-     * @param sender the sender value
-     * @param key the key value
-     * @param Map<String the Map<String value
-     * @param parameters the parameters value
-     */
+    /** {@inheritDoc} */
     public void sendCommandReply(CommandSender sender, @NonNull String key, Map<String, Object> parameters) {
         if (sender instanceof Player) {
             Player player = (Player)sender;
@@ -165,12 +122,7 @@ public class ChatService_legacy implements IChatService {
         // Log the localized message with parameters to the console or other non-player sender
         logger.info(translator.localize(key, parameters).replace('&', ' '));
     }
-    /**
-     * Sends a message or reply.
-     * @param sender the sender value
-     * @param component the component value
-     */
-
+    /** {@inheritDoc} */
     @Override
     public void sendCommandReply(@NotNull CommandSender sender, Component component) {
         if (sender instanceof Player)

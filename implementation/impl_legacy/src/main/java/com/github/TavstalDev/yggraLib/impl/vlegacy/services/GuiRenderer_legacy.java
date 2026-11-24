@@ -17,14 +17,7 @@ import java.util.List;
  * Legacy implementation of GuiRenderer for older Minecraft versions.
  */
 public class GuiRenderer_legacy implements IGuiRenderer {
-    /**
-     * Handles the render operation.
-     * @param button the button value
-     * @param player the player value
-     * @param translator the translator value
-     * @param itemStackAccessor the itemStackAccessor value
-     * @return the result
-     */
+    /** {@inheritDoc} */
     @Override
     public ItemStack render(GuiButton button, Player player, ITranslationService translator, IItemStackAccessor itemStackAccessor) {
         ItemStack itemStack = button.getDisplayItem();

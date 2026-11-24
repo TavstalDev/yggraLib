@@ -40,9 +40,7 @@ public class ExampleConfig extends YggraConfig {
         super(plugin, "config.yml", null);
     }
 
-    /**
-     * Loads and resolves the default values for this configuration.
-     */
+    /** {@inheritDoc} */
     @Override
     protected void loadDefaults() {
         locale = this.resolveGet("general.locale", "eng");

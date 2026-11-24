@@ -35,13 +35,7 @@ public class ChatService_modern implements IChatService {
         translator = translationService;
     }
 
-    /**
-     * Builds a message component and replaces button placeholders.
-     * 
-     * @param message the source message
-     * @param parameters the placeholder replacements
-     * @return the built component
-     */
+    /** {@inheritDoc} */
     public Component buildWithButtons(String message, Map<String, Component> parameters) {
         Component result = AdventureUtils.parse(message, true);
         // Get the keys
@@ -63,33 +57,18 @@ public class ChatService_modern implements IChatService {
         }
         return result.decoration(TextDecoration.ITALIC, false);
     }
-    /**
-     * Sends a message or reply.
-     * @param player the player value
-     * @param component the component value
-     */
-
+    /** {@inheritDoc} */
     @Override
     public void send(@NotNull Player player, Component component) {
         player.sendMessage(component);
     }
 
-    /**
-     * Sends a message or reply.
-     * @param player the player value
-     * @param message the message value
-     */
+    /** {@inheritDoc} */
     public void sendRichMsg(@NotNull Player player, @NotNull String message) {
         player.sendMessage(AdventureUtils.parse(plugin.replacePlaceholders(message), true));
     }
 
-    /**
-     * Sends a message or reply.
-     * @param player the player value
-     * @param message the message value
-     * @param Map<String the Map<String value
-     * @param parameters the parameters value
-     */
+    /** {@inheritDoc} */
     public void sendRichMsg(@NotNull Player player, @NotNull String message, @NotNull Map<String, Object> parameters) {
         String rawMessage = message;
 
@@ -107,33 +86,19 @@ public class ChatService_modern implements IChatService {
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
-    /**
-     * Sends a message or reply.
-     * @param player the player value
-     * @param key the key value
-     */
+    /** {@inheritDoc} */
     public void sendLocalizedMsg(@NotNull Player player, @NotNull String key) {
         String rawMessage = translator.localize(player.getUniqueId(), key);
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
-    /**
-     * Sends a message or reply.
-     * @param player the player value
-     * @param key the key value
-     * @param Map<String the Map<String value
-     * @param parameters the parameters value
-     */
+    /** {@inheritDoc} */
     public void sendLocalizedMsg(@NotNull Player player, @NotNull String key, @NotNull Map<String, Object> parameters) {
         String rawMessage = translator.localize(player.getUniqueId(), key, parameters);
         sendRichMsg(player, plugin.replacePlaceholders(rawMessage));
     }
 
-    /**
-     * Sends a message or reply.
-     * @param sender the sender value
-     * @param key the key value
-     */
+    /** {@inheritDoc} */
     public void sendCommandReply(CommandSender sender, @NotNull String key) {
         if (sender instanceof Player player) {
             // Send a localized message to the player
@@ -144,13 +109,7 @@ public class ChatService_modern implements IChatService {
         logger.info(translator.localize(key).replace('&', '§'));
     }
 
-    /**
-     * Sends a message or reply.
-     * @param sender the sender value
-     * @param key the key value
-     * @param Map<String the Map<String value
-     * @param parameters the parameters value
-     */
+    /** {@inheritDoc} */
     public void sendCommandReply(CommandSender sender, @NotNull String key, Map<String, Object> parameters) {
         if (sender instanceof Player player) {
             // Send a localized message with parameters to the player
@@ -160,12 +119,7 @@ public class ChatService_modern implements IChatService {
         // Log the localized message with parameters to the console or other non-player sender
         logger.info(translator.localize(key, parameters).replace('&', '§'));
     }
-    /**
-     * Sends a message or reply.
-     * @param sender the sender value
-     * @param component the component value
-     */
-
+    /** {@inheritDoc} */
     @Override
     public void sendCommandReply(@NotNull CommandSender sender, Component component) {
         sender.sendMessage(component);

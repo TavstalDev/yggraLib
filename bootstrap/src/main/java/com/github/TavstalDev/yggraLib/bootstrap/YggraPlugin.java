@@ -69,37 +69,21 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
      */
     protected TConfig _config;
 
-    /**
-     * Returns the plugin name.
-     *
-     * @return the plugin name
-     */
+    /** {@inheritDoc} */
     @Override
     public String name() {
         return this.getName();
     }
 
-    /**
-     * Returns the plugin version from the plugin description.
-     *
-     * @return the plugin version
-     */
+    /** {@inheritDoc} */
     @Override
     public String version() { return this.getDescription().getVersion(); }
 
-    /**
-     * Returns the plugin configuration.
-     *
-     * @return the configuration instance
-     */
+    /** {@inheritDoc} */
     @Override
     public TConfig config() { return _config; }
 
-    /**
-     * Returns the plugin logger.
-     *
-     * @return the logger instance
-     */
+    /** {@inheritDoc} */
     @Override
     public YggraLogger logger() {
         return _logger;
@@ -113,13 +97,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
     @Override
     public void setIsGuiInitialized(boolean value) { isGuiInitialized = value; }
 
-    /**
-     * Returns a registered service by its class type.
-     *
-     * @param clazz the service class to look up
-     * @param <T> the service type
-     * @return the service instance, or {@code null} if no service is registered
-     */
+    /** {@inheritDoc} */
     @Override
     public @org.jspecify.annotations.Nullable <T> T getService(Class<T> clazz) {
         Object obj = _serviceCollection.get(clazz);
@@ -128,14 +106,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
         return clazz.cast(obj);
     }
 
-    /**
-     * Returns a required service by its class type.
-     *
-     * @param clazz the service class to look up
-     * @param <T> the service type
-     * @return the registered service instance
-     * @throws Exception if the service is not registered
-     */
+    /** {@inheritDoc} */
     @Override
     public <T> T getRequiredService(Class<T> clazz) throws Exception {
         Object obj = _serviceCollection.get(clazz);
@@ -145,33 +116,19 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
         return clazz.cast(obj);
     }
 
-    /**
-     * Returns the plugin data folder.
-     *
-     * @return the data folder
-     */
+    /** {@inheritDoc} */
     @Override
     public File dataFolder() {
         return this.getDataFolder();
     }
 
-    /**
-     * Returns a resource from the plugin jar.
-     *
-     * @param path the resource path
-     * @return an input stream for the resource, or {@code null} if it does not exist
-     */
+    /** {@inheritDoc} */
     @Override
     public InputStream resource(String path) {
         return this.getResource(path);
     }
 
-    /**
-     * Returns a command registered by the plugin.
-     *
-     * @param name the command name
-     * @return the command object, or {@code null} if it is not found
-     */
+    /** {@inheritDoc} */
     @Override
     public Object command(String name) {
         return this.getCommand(name);
@@ -475,12 +432,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
         // To be overridden by subclasses
     }
 
-    /**
-     * Replaces supported placeholders in the given message.
-     *
-     * @param message the message to process
-     * @return the message with placeholders replaced
-     */
+    /** {@inheritDoc} */
     @Override
     public @NonNull String replacePlaceholders(@NonNull String message) {
         return message.replace("%prefix%", Objects.requireNonNull(config().get("general.prefix", "")));

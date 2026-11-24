@@ -15,10 +15,7 @@ public class ScoreboardService_modern implements IScoreboardService {
 
     private final Map<UUID, FastBoard> boards = new HashMap<>();
 
-    /**
-     * Handles the hideFor operation.
-     * @param player the player value
-     */
+    /** {@inheritDoc} */
     public void hideFor(Player player)
     {
         var uuid = player.getUniqueId();
@@ -29,26 +26,14 @@ public class ScoreboardService_modern implements IScoreboardService {
         board.delete();
         boards.remove(uuid);
     }
-    /**
-     * Handles the update operation.
-     * @param player the player value
-     * @param title the title value
-     * @param rows the rows value
-     */
-
+    /** {@inheritDoc} */
     @Override
     public void update(Player player, String title, String[] rows) {
         var board = ensureExists(player);
         board.updateTitle(title);
         board.updateLines(rows);
     }
-    /**
-     * Handles the updateLine operation.
-     * @param player the player value
-     * @param line the line value
-     * @param lineNumber the lineNumber value
-     */
-
+    /** {@inheritDoc} */
     @Override
     public void updateLine(Player player, String line, int lineNumber) {
         var board = ensureExists(player);

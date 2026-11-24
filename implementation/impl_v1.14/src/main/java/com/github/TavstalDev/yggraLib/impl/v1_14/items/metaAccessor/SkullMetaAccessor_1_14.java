@@ -13,11 +13,7 @@ import java.util.UUID;
  * Implementation of SkullMetaAccessor for Minecraft 1.14.
  */
 public class SkullMetaAccessor_1_14 implements ISkullMetaAccessor {
-    /**
-     * Sets the value for setTexture.
-     * @param item the item value
-     * @param texture the texture value
-     */
+    /** {@inheritDoc} */
     @Override
     public void setTexture(ItemStack item, String texture) {
         SkullMeta skullMeta = (SkullMeta)item.getItemMeta();

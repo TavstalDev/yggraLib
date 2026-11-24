@@ -116,14 +116,7 @@ public abstract class YggraConfig implements IYggraConfig {
         }
     }
 
-    /**
-     * Returns the value at the given path, or the provided default if it is missing.
-     *
-     * @param path the configuration path
-     * @param value the default value to return when no value is found
-     * @param <T> the expected value type
-     * @return the stored value, or {@code value} if the path is missing or invalid
-     */
+    /** {@inheritDoc} */
     @Override
     public <T> T get(String path, T value) {
         try {
@@ -137,12 +130,7 @@ public abstract class YggraConfig implements IYggraConfig {
         }
     }
 
-    /**
-     * Sets a value only if the given path does not already exist.
-     *
-     * @param path the configuration path
-     * @param value the value to store when the path is missing
-     */
+    /** {@inheritDoc} */
     @Override
     public void resolve(String path, Object value) {
         if (!_yaml.contains(path)) {
@@ -150,14 +138,7 @@ public abstract class YggraConfig implements IYggraConfig {
         }
     }
 
-    /**
-     * Returns the value at the given path, or stores and returns the default if it is missing.
-     *
-     * @param path the configuration path
-     * @param value the default value to store and return when no value is found
-     * @param <T> the expected value type
-     * @return the stored value, or {@code value} if the path was missing or invalid
-     */
+    /** {@inheritDoc} */
     @Override
     public <T> T resolveGet(String path, T value) {
         try {
@@ -172,12 +153,7 @@ public abstract class YggraConfig implements IYggraConfig {
         }
     }
 
-    /**
-     * Adds a comment to the given path if it does not already have one.
-     *
-     * @param path the configuration path
-     * @param comment the comment to add
-     */
+    /** {@inheritDoc} */
     @Override
     public void resolveComment(String path, String comment) {
         if (_yaml.getComments(path).isEmpty()) {
@@ -187,12 +163,7 @@ public abstract class YggraConfig implements IYggraConfig {
         }
     }
 
-    /**
-     * Adds comments to the given path if it does not already have comments.
-     *
-     * @param path the configuration path
-     * @param comments the comments to add
-     */
+    /** {@inheritDoc} */
     @Override
     public void resolveComments(String path, List<String> comments) {
         if (_yaml.getComments(path).isEmpty())

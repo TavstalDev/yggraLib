@@ -59,12 +59,7 @@ public class Platform implements IPlatform {
         put(EHandlerType.SPAWN_EGG, new SpawnEggMetaHandler_modern());
     }};
 
-    /**
-     * Sets up and registers platform services.
-     * 
-     * @param plugin the plugin instance using this platform
-     * @param serviceCollection the map used to store service instances
-     */
+    /** {@inheritDoc} */
     @SneakyThrows
     public void setup(IYggraPlugin plugin, Map<Class<?>, Object> serviceCollection) {
         @Nullable INbtAccessor nbtAccessor = plugin.getService(INbtAccessor.class);

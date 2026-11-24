@@ -26,12 +26,7 @@ public class PaperScheduler_modern implements IScheduler {
     public PaperScheduler_modern(JavaPlugin plugin) {
         this.plugin = plugin;
     }
-    /**
-     * Schedules work using the run operation.
-     * @param runnable the runnable value
-     * @return the scheduled task or future
-     */
-
+    /** {@inheritDoc} */
     @Override
     public ITask run(Runnable runnable) {
         boolean isYggraTask = runnable instanceof YggraTask;
@@ -44,13 +39,7 @@ public class PaperScheduler_modern implements IScheduler {
         }
         return wrap(task);
     }
-    /**
-     * Schedules work using the runLater operation.
-     * @param runnable the runnable value
-     * @param delay the delay value
-     * @return the scheduled task or future
-     */
-
+    /** {@inheritDoc} */
     @Override
     public ITask runLater(Runnable runnable, long delay) {
         boolean isYggraTask = runnable instanceof YggraTask;
@@ -63,14 +52,7 @@ public class PaperScheduler_modern implements IScheduler {
         }
         return wrap(task);
     }
-    /**
-     * Schedules work using the runRepeating operation.
-     * @param runnable the runnable value
-     * @param delay the delay value
-     * @param period the period value
-     * @return the scheduled task or future
-     */
-
+    /** {@inheritDoc} */
     @Override
     public ITask runRepeating(Runnable runnable, long delay, long period) {
         boolean isYggraTask = runnable instanceof YggraTask;
@@ -83,12 +65,7 @@ public class PaperScheduler_modern implements IScheduler {
         }
         return wrap(task);
     }
-    /**
-     * Schedules work using the runAsync operation.
-     * @param runnable the runnable value
-     * @return the scheduled task or future
-     */
-
+    /** {@inheritDoc} */
     @Override
     public ITask runAsync(Runnable runnable) {
         boolean isYggraTask = runnable instanceof YggraTask;
@@ -101,13 +78,7 @@ public class PaperScheduler_modern implements IScheduler {
         }
         return wrap(task);
     }
-    /**
-     * Schedules work using the runLaterAsync operation.
-     * @param runnable the runnable value
-     * @param delay the delay value
-     * @return the scheduled task or future
-     */
-
+    /** {@inheritDoc} */
     @Override
     public ITask runLaterAsync(Runnable runnable, long delay) {
         boolean isYggraTask = runnable instanceof YggraTask;
@@ -120,14 +91,7 @@ public class PaperScheduler_modern implements IScheduler {
         }
         return wrap(task);
     }
-    /**
-     * Schedules work using the runRepeatingAsync operation.
-     * @param runnable the runnable value
-     * @param delay the delay value
-     * @param period the period value
-     * @return the scheduled task or future
-     */
-
+    /** {@inheritDoc} */
     @Override
     public ITask runRepeatingAsync(Runnable runnable, long delay, long period) {
         boolean isYggraTask = runnable instanceof YggraTask;
@@ -140,12 +104,7 @@ public class PaperScheduler_modern implements IScheduler {
         }
         return wrap(task);
     }
-    /**
-     * Schedules work using the async operation.
-     * @param task the task value
-     * @return the scheduled task or future
-     */
-
+    /** {@inheritDoc} */
     @Override
     public <T> CompletableFuture<T> async(Supplier<T> task) {
         CompletableFuture<T> future = new CompletableFuture<>();
@@ -160,74 +119,32 @@ public class PaperScheduler_modern implements IScheduler {
 
         return future;
     }
-    /**
-     * Schedules work using the run operation.
-     * @param runnable the runnable value
-     * @param context the context value
-     * @return the scheduled task or future
-     */
-
+    /** {@inheritDoc} */
     @Override
     public ITask run(Runnable runnable, YggraLocation context) {
         return run(runnable);
     }
-    /**
-     * Schedules work using the runLater operation.
-     * @param runnable the runnable value
-     * @param delay the delay value
-     * @param context the context value
-     * @return the scheduled task or future
-     */
-
+    /** {@inheritDoc} */
     @Override
     public ITask runLater(Runnable runnable, long delay, YggraLocation context) {
         return runLater(runnable, delay);
     }
-    /**
-     * Schedules work using the runRepeating operation.
-     * @param runnable the runnable value
-     * @param delay the delay value
-     * @param period the period value
-     * @param context the context value
-     * @return the scheduled task or future
-     */
-
+    /** {@inheritDoc} */
     @Override
     public ITask runRepeating(Runnable runnable, long delay, long period, YggraLocation context) {
         return runRepeating(runnable, delay, period);
     }
-    /**
-     * Schedules work using the run operation.
-     * @param runnable the runnable value
-     * @param context the context value
-     * @return the scheduled task or future
-     */
-
+    /** {@inheritDoc} */
     @Override
     public ITask run(Runnable runnable, YggraEntity context) {
         return run(runnable);
     }
-    /**
-     * Schedules work using the runLater operation.
-     * @param runnable the runnable value
-     * @param delay the delay value
-     * @param context the context value
-     * @return the scheduled task or future
-     */
-
+    /** {@inheritDoc} */
     @Override
     public ITask runLater(Runnable runnable, long delay, YggraEntity context) {
         return runLater(runnable, delay);
     }
-    /**
-     * Schedules work using the runRepeating operation.
-     * @param runnable the runnable value
-     * @param delay the delay value
-     * @param period the period value
-     * @param context the context value
-     * @return the scheduled task or future
-     */
-
+    /** {@inheritDoc} */
     @Override
     public ITask runRepeating(Runnable runnable, long delay, long period, YggraEntity context) {
         return runRepeating(runnable, delay, period);
@@ -235,18 +152,12 @@ public class PaperScheduler_modern implements IScheduler {
 
     private ITask wrap(BukkitTask task) {
         return new ITask() {
-            /**
-             * Handles the cancel operation.
-             */
+            /** {@inheritDoc} */
             @Override
             public void cancel() {
                 task.cancel();
             }
-            /**
-             * Returns the value for isCancelled.
-             * @return the result
-             */
-
+            /** {@inheritDoc} */
             @Override
             public boolean isCancelled() {
                 return task.isCancelled();

@@ -25,27 +25,19 @@ public class ExamplePlugin extends YggraPlugin<ExampleConfig> {
         return true;
     }
 
-    /**
-     * Runs after the main plugin setup is complete.
-     */
+    /** {@inheritDoc} */
     @Override
     public void onPluginEnable() {
         logger().ok(String.format("%s has been successfully loaded.", getName()));
     }
 
-    /**
-     * Runs when the plugin is being disabled.
-     */
+    /** {@inheritDoc} */
     @Override
     public void onPluginDisable() {
         logger().info(String.format("%s has been successfully unloaded.", getName()));
     }
 
-    /**
-     * Returns the URL used to check for plugin updates.
-     *
-     * @return the download or update URL, or an empty string if none is available
-     */
+    /** {@inheritDoc} */
     @Override
     public String downloadUrl() {
         return "";
