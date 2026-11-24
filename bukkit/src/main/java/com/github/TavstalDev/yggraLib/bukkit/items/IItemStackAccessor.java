@@ -81,6 +81,23 @@ public interface IItemStackAccessor {
     void setLoreComp(ItemStack itemStack, List<Component> lore);
 
     /**
+     * Gets the damage (durability) value of an item.
+     *
+     * @param itemStack the item to read from
+     * @return the damage value, or {@code -1} if the item cannot be damaged
+     */
+    int getDurability(ItemStack itemStack);
+
+    /**
+     * Sets the damage (durability) value of an item.
+     * Items that cannot be damaged are left unchanged.
+     *
+     * @param itemStack  the item to update
+     * @param durability the new damage value
+     */
+    void setDurability(ItemStack itemStack, int durability);
+
+    /**
      * Gets the enchantments applied to an item.
      *
      * @param itemStack the item to read from
