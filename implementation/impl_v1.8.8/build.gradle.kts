@@ -6,10 +6,12 @@ val actionBarVersion = project.property("actionBarVersion") as String
 val bossBarVersion = project.property("bossBarVersion") as String
 val titleVersion = project.property("titleVersion") as String
 val particleVersion = project.property("particleVersion") as String
+val xseriesVersion = project.property("xseriesVersion") as String
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
     compileOnly("com.mojang:authlib:1.5.21")
+    compileOnly("com.github.cryptomorin:XSeries:${xseriesVersion}")
     compileOnly(project(":api"))
     compileOnly(project(":bukkit"))
     compileOnly(project(":impl_legacy"))

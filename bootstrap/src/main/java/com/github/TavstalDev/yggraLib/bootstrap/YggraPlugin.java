@@ -295,6 +295,13 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
                 .version("2.9.3")
                 .build());
 
+        // com.github.cryptomorin:XSeries - Required for better multi version support
+        libraryManager.loadLibrary(Library.builder()
+                .groupId("com{}github{}cryptomorin")
+                .artifactId("XSeries")
+                .version("14.0.0")
+                .relocate("com{}github{}cryptomorin", dependencyShadeGroup + ".XSeries")
+                .build());
 
         //#region Adventure-API
 

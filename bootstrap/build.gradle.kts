@@ -84,6 +84,7 @@ tasks.shadowJar {
     relocate("net.byteflux", "${shadeGroup}.libby")
     relocate("org.yaml", "${shadeGroup}.yaml") // Required by yamlconfiguration
     relocate("org.bspfsystems", "${shadeGroup}.bspfsystems")
+    relocate("com.github.cryptomorin", "${shadeGroup}.XSeries")
     relocate("com.github.TavstalDev.yggraActionBar", "${shadeGroup}.yggraActionBar")
     relocate("com.github.TavstalDev.yggraBossBar", "${shadeGroup}.yggraBossBar")
     relocate("com.github.TavstalDev.yggraTitle", "${shadeGroup}.yggraTitle")

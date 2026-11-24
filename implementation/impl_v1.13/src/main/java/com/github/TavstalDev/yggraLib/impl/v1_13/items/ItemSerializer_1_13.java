@@ -1,5 +1,6 @@
 package com.github.TavstalDev.yggraLib.impl.v1_13.items;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
 import com.github.TavstalDev.yggraLib.bukkit.items.*;
 import com.github.TavstalDev.yggraLib.bukkit.utils.NbtUtils;
@@ -18,6 +19,7 @@ import org.jetbrains.annotations.Nullable;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.logging.Logger;
 
 /**
@@ -112,7 +114,12 @@ public class ItemSerializer_1_13 extends ItemSerializerBase {
         ItemStack itemResult = null;
         try {
             String materialString = (String) itemMap.get("material");
-            Material material = Material.getMaterial(materialString);  // Convert material string to Material enum
+            Optional<XMaterial> xmaterial = XMaterial.matchXMaterial(materialString);
+            if (!xmaterial.isPresent()) {
+                logger.warning("Unknown material: " + materialString);
+                return null;
+            }
+
             int amount;
             if (itemMap.containsKey("amount")) {
                 amount = (int) itemMap.get("amount");  // Get the amount of the item
@@ -120,6 +127,7 @@ public class ItemSerializer_1_13 extends ItemSerializerBase {
                 amount = 1;  // Default amount if not specified
             }
 
+            Material material = xmaterial.get().get();
             if (material != null) {
                 ItemStack item = new ItemStack(material, amount);
                 ItemMeta meta = item.getItemMeta();

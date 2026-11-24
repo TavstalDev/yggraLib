@@ -6,9 +6,11 @@ val actionBarVersion = project.property("actionBarVersion") as String
 val bossBarVersion = project.property("bossBarVersion") as String
 val titleVersion = project.property("titleVersion") as String
 val particleVersion = project.property("particleVersion") as String
+val xseriesVersion = project.property("xseriesVersion") as String
 
 dependencies {
     compileOnly("com.destroystokyo.paper:paper-api:1.13-R0.1-SNAPSHOT")
+    compileOnly("com.github.cryptomorin:XSeries:${xseriesVersion}")
     compileOnly(project(":api"))
     compileOnly(project(":bukkit"))
     compileOnly(project(":impl_legacy"))

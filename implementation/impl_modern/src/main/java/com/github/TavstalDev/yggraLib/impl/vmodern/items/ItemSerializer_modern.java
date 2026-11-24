@@ -1,5 +1,6 @@
 package com.github.TavstalDev.yggraLib.impl.vmodern.items;
 
+import com.cryptomorin.xseries.XMaterial;
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
 import com.github.TavstalDev.yggraLib.bukkit.items.*;
 import com.github.TavstalDev.yggraLib.bukkit.utils.AdventureUtils;
@@ -13,10 +14,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.logging.Logger;
 
 /**
@@ -115,7 +113,13 @@ public class ItemSerializer_modern extends ItemSerializerBase {
         ItemStack itemResult = null;
         try {
             String materialString = (String) itemMap.get("material");
-            Material material = Material.getMaterial(materialString);  // Convert material string to Material enum
+            Optional<XMaterial> xmaterial = XMaterial.matchXMaterial(materialString);
+            if (xmaterial.isEmpty()) {
+                logger.warning("Unknown material: " + materialString);
+                return null;
+            }
+
+            Material material = xmaterial.get().get();
             int amount;
             if (itemMap.containsKey("amount")) {
                 amount = (int) itemMap.get("amount");  // Get the amount of the item
