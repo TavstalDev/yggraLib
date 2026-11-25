@@ -3,7 +3,7 @@ package com.github.TavstalDev.yggraLib.impl.v1_12.items.meta;
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
 import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
-import org.bukkit.configuration.ConfigurationSection;
+import org.bspfsystems.yamlconfiguration.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.meta.EnchantmentStorageMeta;
 import org.bukkit.inventory.meta.ItemMeta;

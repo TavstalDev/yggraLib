@@ -1,5 +1,6 @@
-val fastboardVersion = project.property("fastboardVersion") as String
 val snakeYamlVersion = project.property("snakeYamlVersion") as String
+val yamlConfigVersion = project.property("yamlConfigVersion") as String
+val fastboardVersion = project.property("fastboardVersion") as String
 val adventureApiVersion = project.property("adventureApiVersion") as String
 val triumphGuiVersion = project.property("triumphGuiVersion") as String
 val actionBarVersion = project.property("actionBarVersion") as String
@@ -9,6 +10,8 @@ val particleVersion = project.property("particleVersion") as String
 val xseriesVersion = project.property("xseriesVersion") as String
 
 dependencies {
+    compileOnly("org.yaml:snakeyaml:${snakeYamlVersion}")
+    compileOnly("org.bspfsystems:yamlconfiguration:${yamlConfigVersion}")
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
     compileOnly("com.mojang:authlib:1.5.21")
     compileOnly("com.github.cryptomorin:XSeries:${xseriesVersion}")
@@ -26,7 +29,6 @@ dependencies {
     compileOnly("net.kyori:adventure-text-serializer-plain:${adventureApiVersion}")
     compileOnly("net.kyori:adventure-text-serializer-gson:${adventureApiVersion}")
     compileOnly("net.kyori:adventure-platform-bukkit:4.4.1")
-    compileOnly("org.yaml:snakeyaml:${snakeYamlVersion}")
     compileOnly("com.github.lidanthedev.triumph-gui:triumph-gui:${triumphGuiVersion}")
 }
 
