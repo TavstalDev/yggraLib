@@ -1,4 +1,4 @@
-package com.github.TavstalDev.yggraLib.impl.vlegacy.items.meta;
+package com.github.TavstalDev.yggraLib.impl.v1_14.items.meta;
 
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
 import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
@@ -6,7 +6,7 @@ import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
-import org.bukkit.potion.Potion;
+import org.bukkit.potion.PotionData;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
@@ -19,7 +19,7 @@ import java.util.Map;
  * This class provides static methods to convert the color, base potion type, and custom effects
  * of a potion into a storable format and reconstruct them from the stored data.
  */
-public class PotionMetaHandler_legacy implements IMetaHandler {
+public class PotionMetaHandler_1_14 implements IMetaHandler {
     /** {@inheritDoc} */
     public void serialize(IItemSerializer parent, final ItemStack original, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof PotionMeta))
@@ -29,9 +29,15 @@ public class PotionMetaHandler_legacy implements IMetaHandler {
 
         // Base Type
         try {
-            Potion potion = Potion.fromItemStack(original);
-            if (potion != null)
-                itemData.put("basePotionType", potion.getType().name());
+            PotionData potionData = potionMeta.getBasePotionData();
+            if (potionData != null) {
+               String name = potionData.getType().name();
+               if (potionData.isUpgraded())
+                   name = "STRONG_" + name;
+               else if (potionData.isExtended())
+                   name = "LONG_" + name;
+
+            }
         } catch (Exception ignored) {}
 
         // Custom Potion Name
@@ -53,7 +59,7 @@ public class PotionMetaHandler_legacy implements IMetaHandler {
     }
 
     /** {@inheritDoc} */
-    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void deserialize(IItemSerializer parent, ItemStack itemStack, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof PotionMeta))
             return;
 
@@ -63,9 +69,21 @@ public class PotionMetaHandler_legacy implements IMetaHandler {
         if (itemData.containsKey("basePotionType"))
         {
             String baseType = (String)itemData.get("basePotionType");
+            boolean extended = false;
+            boolean upgraded = false;
+            if (baseType.startsWith("STRONG_")) {
+                baseType = baseType.substring(7);
+                upgraded = true;
+            }
+            if (baseType.startsWith("LONG_")) {
+                baseType = baseType.substring(5);
+                extended = true;
+            }
+
             PotionType potionType = parent.registryAccessor().getPotionType(baseType);
-            if (potionType != null)
-                potionMeta.setMainEffect(potionType.getEffectType());
+            if (potionType != null) {
+                potionMeta.setBasePotionData(new PotionData(potionType, extended, upgraded));
+            }
         }
 
         // Custom Potion Name

@@ -19,6 +19,7 @@ import com.github.TavstalDev.yggraLib.bukkit.services.ISoundService;
 import com.github.TavstalDev.yggraLib.impl.v1_8_8.items.RegistryAccessor_1_8_8;
 import com.github.TavstalDev.yggraLib.impl.v1_8_8.items.meta.EnchantmentMetaHandler_1_8_8;
 import com.github.TavstalDev.yggraLib.impl.v1_8_8.items.meta.EnchantmentStorageMetaHandler_1_8_8;
+import com.github.TavstalDev.yggraLib.impl.v1_8_8.items.meta.PotionMetaHandler_1_8_8;
 import com.github.TavstalDev.yggraLib.impl.v1_8_8.items.meta.SkullMetaHandler_1_8_8;
 import com.github.TavstalDev.yggraLib.impl.v1_8_8.items.metaAccessor.SkullMetaAccessor_1_8_8;
 import com.github.TavstalDev.yggraLib.impl.v1_8_8.services.LanguageService_1_8_8;
@@ -57,7 +58,7 @@ public class Platform implements IPlatform {
         put(EHandlerType.FIREWORK_EFFECT, new FireworkEffectMetaHandler_legacy());
         put(EHandlerType.FIREWORK, new FireworkMetaHandler_legacy());
         put(EHandlerType.LEATHER_ARMOR, new LeatherArmorMetaHandler_legacy());
-        put(EHandlerType.POTION, new PotionMetaHandler_legacy());
+        put(EHandlerType.POTION, new PotionMetaHandler_1_8_8());
         put(EHandlerType.SKULL, new SkullMetaHandler_1_8_8());
     }};
 

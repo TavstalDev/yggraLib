@@ -15,10 +15,7 @@ import com.github.TavstalDev.yggraLib.bukkit.items.*;
 import com.github.TavstalDev.yggraLib.bukkit.items.metaAccessors.ISkullMetaAccessor;
 import com.github.TavstalDev.yggraLib.bukkit.services.*;
 import com.github.TavstalDev.yggraLib.impl.v1_14.items.RegistryAccessor_1_14;
-import com.github.TavstalDev.yggraLib.impl.v1_14.items.meta.CrossbowMetaHandler_1_14;
-import com.github.TavstalDev.yggraLib.impl.v1_14.items.meta.EnchantmentMetaHandler_1_14;
-import com.github.TavstalDev.yggraLib.impl.v1_14.items.meta.EnchantmentStorageMetaHandler_1_14;
-import com.github.TavstalDev.yggraLib.impl.v1_14.items.meta.SkullMetaHandler_1_14;
+import com.github.TavstalDev.yggraLib.impl.v1_14.items.meta.*;
 import com.github.TavstalDev.yggraLib.impl.v1_14.items.metaAccessor.SkullMetaAccessor_1_14;
 import com.github.TavstalDev.yggraLib.impl.v1_14.services.LanguageService_1_14;
 import com.github.TavstalDev.yggraLib.impl.v1_14.services.SoundService_1_14;
@@ -54,7 +51,7 @@ public class Platform implements IPlatform {
         put(EHandlerType.FIREWORK_EFFECT, new FireworkEffectMetaHandler_legacy());
         put(EHandlerType.FIREWORK, new FireworkMetaHandler_legacy());
         put(EHandlerType.LEATHER_ARMOR, new LeatherArmorMetaHandler_legacy());
-        put(EHandlerType.POTION, new PotionMetaHandler_legacy());
+        put(EHandlerType.POTION, new PotionMetaHandler_1_14());
         put(EHandlerType.SKULL, new SkullMetaHandler_1_14());
     }};
 
