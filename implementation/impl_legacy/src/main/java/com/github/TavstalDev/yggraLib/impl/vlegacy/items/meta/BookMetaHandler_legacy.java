@@ -3,6 +3,7 @@ package com.github.TavstalDev.yggraLib.impl.vlegacy.items.meta;
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
 import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.BookMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -17,7 +18,7 @@ import java.util.Map;
 public class BookMetaHandler_legacy implements IMetaHandler {
 
     /** {@inheritDoc} */
-    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void serialize(IItemSerializer parent, final ItemStack original, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof BookMeta))
             return;
 

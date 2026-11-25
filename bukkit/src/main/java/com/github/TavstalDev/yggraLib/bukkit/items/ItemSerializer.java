@@ -116,7 +116,7 @@ public final class ItemSerializer implements IItemSerializer {
             // Item Meta Handlers
             for (Map.Entry<EHandlerType, IMetaHandler> handler : metaHandlers.entrySet()) {
                 try {
-                    handler.getValue().serialize(this, meta, itemData);
+                    handler.getValue().serialize(this, item, meta, itemData);
                 }
                 catch (Exception metaEx) {
                     logger.severe(String.format("An error occurred while serializing %s meta: %s",

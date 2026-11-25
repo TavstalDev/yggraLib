@@ -5,6 +5,7 @@ import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import com.mojang.authlib.properties.PropertyMap;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.SkullMeta;
 
@@ -23,7 +24,7 @@ public class SkullMetaHandler_1_12 implements IMetaHandler {
     private static Field field;
 
     /** {@inheritDoc} */
-    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) {
+    public void serialize(IItemSerializer parent, final ItemStack original, ItemMeta meta, Map<String, Object> itemData) {
         if (!(meta instanceof SkullMeta))
             return;
 

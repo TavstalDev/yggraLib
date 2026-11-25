@@ -6,6 +6,7 @@ import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
 import com.github.TavstalDev.yggraLib.impl.vlegacy.utils.ColorUtils_legacy;
 import org.bukkit.Color;
 import org.bukkit.FireworkEffect;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.FireworkEffectMeta;
 import org.bukkit.inventory.meta.ItemMeta;
 
@@ -22,7 +23,7 @@ import java.util.Map;
 public class FireworkEffectMetaHandler_legacy implements IMetaHandler {
 
     /** {@inheritDoc} */
-    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void serialize(IItemSerializer parent, final ItemStack original, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof FireworkEffectMeta))
             return;
 

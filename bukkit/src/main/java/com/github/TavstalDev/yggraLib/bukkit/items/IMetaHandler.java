@@ -1,5 +1,6 @@
 package com.github.TavstalDev.yggraLib.bukkit.items;
 
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
 import java.util.Map;
@@ -13,11 +14,12 @@ public interface IMetaHandler {
      * Writes supported metadata from an item into a data map.
      *
      * @param parent   the parent serializer
+     * @param original the item to read from
      * @param meta     the item metadata to read from
      * @param itemData the target map for serialized data
      * @throws Exception if serialization fails
      */
-    void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception;
+    void serialize(IItemSerializer parent, final ItemStack original, ItemMeta meta, Map<String, Object> itemData) throws Exception;
 
     /**
      * Applies supported metadata from a data map to an item.

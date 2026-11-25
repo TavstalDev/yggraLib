@@ -2,12 +2,14 @@ val fastboardVersion = project.property("fastboardVersion") as String
 val snakeYamlVersion = project.property("snakeYamlVersion") as String
 val adventureApiVersion = project.property("adventureApiVersion") as String
 val triumphGuiVersion = project.property("triumphGuiVersion") as String
+val xseriesVersion = project.property("xseriesVersion") as String
 
 dependencies {
     compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
     compileOnly(project(":api"))
     compileOnly(project(":bukkit"))
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
+    compileOnly("com.github.cryptomorin:XSeries:${xseriesVersion}")
     compileOnly("net.kyori:adventure-api:${adventureApiVersion}")
     compileOnly("net.kyori:adventure-text-serializer-legacy:${adventureApiVersion}")
     compileOnly("net.kyori:adventure-text-minimessage:${adventureApiVersion}")
