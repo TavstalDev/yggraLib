@@ -200,7 +200,7 @@ public final class ItemSerializer implements IItemSerializer {
             ItemMeta meta = itemStack.getItemMeta();
             for (Map.Entry<EHandlerType, IMetaHandler> handler : metaHandlers.entrySet()) {
                 try {
-                    handler.getValue().deserialize(this, meta, itemMap);
+                    handler.getValue().deserialize(this, itemStack, meta, itemMap);
                 }
                 catch (Exception metaEx) {
                     logger.severe(String.format("An error occurred while deserializing %s meta: %s",

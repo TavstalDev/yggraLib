@@ -29,5 +29,5 @@ public interface IMetaHandler {
      * @param itemData the source map with serialized data
      * @throws Exception if deserialization fails
      */
-    void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception;
+    void deserialize(IItemSerializer parent, ItemStack itemStack, ItemMeta meta, Map<String, Object> itemData) throws Exception;
 }

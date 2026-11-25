@@ -30,7 +30,7 @@ public class EnchantmentStorageMetaHandler_1_14 implements IMetaHandler {
     }
 
     /** {@inheritDoc} */
-    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) {
+    public void deserialize(IItemSerializer parent, ItemStack itemStack, ItemMeta meta, Map<String, Object> itemData) {
         if (!itemData.containsKey("enchantmentStorage"))
             return;
 

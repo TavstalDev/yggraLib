@@ -30,7 +30,7 @@ public class EnchantmentMetaHandler_modern implements IMetaHandler {
     }
 
     /** {@inheritDoc} */
-    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void deserialize(IItemSerializer parent, ItemStack itemStack, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!itemData.containsKey("enchantments"))
             return;
 

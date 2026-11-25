@@ -59,7 +59,7 @@ public class SkullMetaHandler_1_12 implements IMetaHandler {
     }
 
     /** {@inheritDoc} */
-    public void deserialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) {
+    public void deserialize(IItemSerializer parent, ItemStack itemStack, ItemMeta meta, Map<String, Object> itemData) {
         if (!(meta instanceof SkullMeta))
             return;
 
