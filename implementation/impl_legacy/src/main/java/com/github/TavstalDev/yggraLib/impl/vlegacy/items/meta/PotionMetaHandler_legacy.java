@@ -3,8 +3,10 @@ package com.github.TavstalDev.yggraLib.impl.vlegacy.items.meta;
 import com.github.TavstalDev.yggraLib.api.utils.TypeUtils;
 import com.github.TavstalDev.yggraLib.bukkit.items.IItemSerializer;
 import com.github.TavstalDev.yggraLib.bukkit.items.IMetaHandler;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
+import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
@@ -18,11 +20,18 @@ import java.util.Map;
  */
 public class PotionMetaHandler_legacy implements IMetaHandler {
     /** {@inheritDoc} */
-    public void serialize(IItemSerializer parent, ItemMeta meta, Map<String, Object> itemData) throws Exception {
+    public void serialize(IItemSerializer parent, final ItemStack original, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof PotionMeta))
             return;
 
         PotionMeta potionMeta = (PotionMeta)meta;
+
+        // Base Type
+        try {
+            Potion potion = Potion.fromItemStack(original);
+            if (potion != null)
+                itemData.put("basePotionType", potion.getType().name());
+        } catch (Exception ignored) {}
 
         // Custom Potion Name
         if (parent.potionNameHandler().hasCustomName(potionMeta)) {
@@ -48,6 +57,15 @@ public class PotionMetaHandler_legacy implements IMetaHandler {
             return;
 
         PotionMeta potionMeta = (PotionMeta)meta;
+
+        // Main Effect
+        if (itemData.containsKey("basePotionType"))
+        {
+            String baseType = (String)itemData.get("basePotionType");
+            PotionEffectType effectType = parent.registryAccessor().getPotionEffectType(baseType);
+            if (effectType != null)
+                potionMeta.setMainEffect(effectType);
+        }
 
         // Custom Potion Name
         if (itemData.containsKey("customPotionName")) {
