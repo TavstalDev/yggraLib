@@ -8,6 +8,7 @@ import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -22,6 +23,9 @@ public class PotionMetaHandler_modern implements IMetaHandler {
     public void serialize(IItemSerializer parent, final ItemStack original, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof PotionMeta potionMeta))
             return;
+
+        // Base Potion Type
+        itemData.put("basePotionType", potionMeta.getBasePotionType().getKey().asString());
 
         // Custom Potion Name
         if (parent.potionNameHandler().hasCustomName(potionMeta)) {
@@ -45,6 +49,14 @@ public class PotionMetaHandler_modern implements IMetaHandler {
     public void deserialize(IItemSerializer parent, ItemStack itemStack, ItemMeta meta, Map<String, Object> itemData) throws Exception {
         if (!(meta instanceof PotionMeta potionMeta))
             return;
+
+        // Base Potion Type
+        if (itemData.containsKey("basePotionType")) {
+            String basePotionType = (String)itemData.get("basePotionType");
+            PotionType potionType = parent.registryAccessor().getPotionType(basePotionType);
+            if (potionType != null)
+                potionMeta.setBasePotionType(potionType);
+        }
 
         // Custom Potion Name
         if (itemData.containsKey("customPotionName")) {
