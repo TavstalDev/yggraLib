@@ -9,6 +9,7 @@ include(
     "bukkit",
     "impl_legacy",
     "impl_v1.8.8",
+    "impl_v1.9.4",
     "impl_v1.12",
     "impl_v1.13",
     "impl_v1.14",
@@ -22,6 +23,7 @@ include(
 
 project(":impl_legacy").projectDir = file("implementation/impl_legacy")
 project(":impl_v1.8.8").projectDir = file("implementation/impl_v1.8.8")
+project(":impl_v1.9.4").projectDir = file("implementation/impl_v1.9.4")
 project(":impl_v1.12").projectDir = file("implementation/impl_v1.12")
 project(":impl_v1.13").projectDir = file("implementation/impl_v1.13")
 project(":impl_v1.14").projectDir = file("implementation/impl_v1.14")

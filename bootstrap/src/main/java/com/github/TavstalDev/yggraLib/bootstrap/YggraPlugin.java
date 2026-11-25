@@ -528,6 +528,8 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
             implClassName = "com.github.TavstalDev.yggraLib.impl.v1_13.Platform";
         else if (VersionUtils.isAtLeast(1, 12))
             implClassName = "com.github.TavstalDev.yggraLib.impl.v1_12.Platform";
+        else if (VersionUtils.isAtLeast(1, 9))
+            implClassName = "com.github.TavstalDev.yggraLib.impl.v1_9_4.Platform";
         else if (VersionUtils.isAtLeast(1, 8))
             implClassName = "com.github.TavstalDev.yggraLib.impl.v1_8_8.Platform";
         else
