@@ -36,6 +36,57 @@ public class VersionUtils {
     }
 
     /**
+     * Parses a version string into its major, minor, and patch components.
+     * The input is trimmed; an optional leading "v" and any suffix starting with "-"
+     * are removed, and underscores are treated as separators. A missing patch
+     * component defaults to 0.
+     *
+     * @param version The version string to parse, e.g., "v1.16.5" or "1.8.8-R0.1-SNAPSHOT".
+     * @return An array of three integers containing the major, minor, and patch versions.
+     * @throws NumberFormatException If a version component is not a valid integer.
+     */
+    public static int[] parse(String version) {
+        String ver = version.trim();
+        if (ver.startsWith("v") || ver.startsWith("V"))
+            ver = ver.substring(1);
+        int suffix = ver.indexOf('-');
+        if (suffix >= 0)
+            ver = ver.substring(0, suffix);
+        ver = ver.replace('_', '.');
+        String[] parts = ver.split("\\.", 3);
+        int[] result = new int[3];
+        result[0] = Integer.parseInt(parts[0]);
+        result[1] = Integer.parseInt(parts[1]);
+        if (parts.length == 3)
+            result[2] = Integer.parseInt(parts[2]);
+        else
+            result[2] = 0;
+        return result;
+    }
+
+    /**
+     * Checks whether the first version is newer than the second version.
+     * Versions are compared component by component (major, then minor, then patch).
+     *
+     * @param versionA The first version string to compare.
+     * @param versionB The second version string to compare.
+     * @return {@code true} if versionA is newer than versionB, otherwise {@code false}.
+     */
+    public static boolean isANewer(String versionA, String versionB) {
+        int[] a = parse(versionA);
+        int majA = a[0];
+        int minA = a[1];
+        int patA = a[2];
+        int[] b = parse(versionB);
+        int majB = b[0];
+        int minB = b[1];
+        int patB = b[2];
+        return (majA > majB ||
+                (majA == majB && minA > minB) ||
+                (majA == majB && minA == minB && patA > patB));
+    }
+
+    /**
      * Checks if the server version is at least the specified major and minor version.
      *
      * @param major The major version to compare against.

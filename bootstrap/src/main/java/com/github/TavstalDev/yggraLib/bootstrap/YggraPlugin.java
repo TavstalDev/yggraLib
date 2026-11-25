@@ -441,7 +441,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
     }
 
     /**
-     * Checks whether the current plugin version matches the latest available version.
+     * Checks whether the current plugin version is at least the latest available version.
      * <p>
      * The check is performed asynchronously using the configured download URL.
      *
@@ -493,8 +493,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
 
                     String latestVersion = jsonObject.get("tag_name").getAsString();
                     String currentVersion = version();
-                    return currentVersion.equalsIgnoreCase(latestVersion)
-                            || ("v" + currentVersion).equalsIgnoreCase(latestVersion);
+                    return !VersionUtils.isANewer(latestVersion, currentVersion);
                 }
             }
             catch (Exception ex) {
