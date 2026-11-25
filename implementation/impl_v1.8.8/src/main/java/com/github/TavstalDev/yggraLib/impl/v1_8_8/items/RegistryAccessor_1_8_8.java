@@ -1,10 +1,14 @@
 package com.github.TavstalDev.yggraLib.impl.v1_8_8.items;
 
+import com.cryptomorin.xseries.XEnchantment;
+import com.cryptomorin.xseries.XPotion;
 import com.github.TavstalDev.yggraLib.bukkit.items.IRegistryAccessor;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.potion.PotionType;
+
+import java.util.Optional;
 
 /**
 
@@ -15,19 +19,31 @@ public class RegistryAccessor_1_8_8 implements IRegistryAccessor {
     /** {@inheritDoc} */
     @Override
     public Enchantment getEnchantment(String key) {
-        return Enchantment.getByName(key);
+        Optional<XEnchantment> enchantment = XEnchantment.of(key);
+        //noinspection OptionalIsPresent
+        if (!enchantment.isPresent())
+            return null;
+        return enchantment.get().get();
     }
 
     /** {@inheritDoc} */
     @Override
     public PotionType getPotionType(String key) {
-        return PotionType.getByEffect(PotionEffectType.getByName(key));
+        Optional<XPotion> potion = XPotion.of(key);
+        //noinspection OptionalIsPresent
+        if (!potion.isPresent())
+            return null;
+        return potion.get().getPotionType();
     }
 
     /** {@inheritDoc} */
     @Override
     public PotionEffectType getPotionEffectType(String key) {
-        return PotionEffectType.getByName(key);
+        Optional<XPotion> potion = XPotion.of(key);
+        //noinspection OptionalIsPresent
+        if (!potion.isPresent())
+            return null;
+        return potion.get().getPotionEffectType();
     }
 
     /** {@inheritDoc} */
