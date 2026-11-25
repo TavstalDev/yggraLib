@@ -9,6 +9,7 @@ import org.bukkit.inventory.meta.PotionMeta;
 import org.bukkit.potion.Potion;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.potion.PotionType;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -62,9 +63,9 @@ public class PotionMetaHandler_legacy implements IMetaHandler {
         if (itemData.containsKey("basePotionType"))
         {
             String baseType = (String)itemData.get("basePotionType");
-            PotionEffectType effectType = parent.registryAccessor().getPotionEffectType(baseType);
-            if (effectType != null)
-                potionMeta.setMainEffect(effectType);
+            PotionType potionType = parent.registryAccessor().getPotionType(baseType);
+            if (potionType != null)
+                potionMeta.setMainEffect(potionType.getEffectType());
         }
 
         // Custom Potion Name
