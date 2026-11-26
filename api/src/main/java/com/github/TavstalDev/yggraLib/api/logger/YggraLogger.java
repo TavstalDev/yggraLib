@@ -119,16 +119,16 @@ public class YggraLogger {
                 color = ANSI_CYAN;
                 break;
             }
-            case 700:
+            case 500:
             {
-                color = ANSI_PURPLE;
+                color = ANSI_GREEN;
                 break;
             }
-            case 500:
+            case 700:
             case 400:
             case 300:
             {
-                color = ANSI_GREEN;
+                color = ANSI_PURPLE;
                 break;
             }
             default: {
@@ -171,7 +171,7 @@ public class YggraLogger {
      * @param ex   An optional exception to append after the message.
      */
     public void ok(@NotNull String text, @Nullable Exception ex) {
-        logRich(INFO, text, ex);
+        logRich(FINE, text, ex);
     }
 
     /**
@@ -183,7 +183,7 @@ public class YggraLogger {
      *             The object will be converted to a string representation.
      */
     public void ok(@NotNull String text) {
-        logRich(INFO, text, null);
+        logRich(FINE, text, null);
     }
 
     /**
@@ -232,7 +232,7 @@ public class YggraLogger {
      */
     public void debug(@NotNull String text, @Nullable Exception ex) {
         if (_debugEnabled)
-            logRich(FINE, text, ex);
+            logRich(FINER, text, ex);
     }
 
     /**
@@ -242,6 +242,6 @@ public class YggraLogger {
      */
     public void debug(@NotNull String text) {
         if (_debugEnabled)
-            logRich(FINE, text, null);
+            logRich(FINER, text, null);
     }
 }
