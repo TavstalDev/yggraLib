@@ -7,6 +7,7 @@ plugins {
 include(
     "api",
     "bukkit",
+    "impl_old",
     "impl_legacy",
     "impl_v1.8.8",
     "impl_v1.9.4",
@@ -21,6 +22,7 @@ include(
     "test-plugin"
 )
 
+project(":impl_old").projectDir = file("implementation/impl_old")
 project(":impl_legacy").projectDir = file("implementation/impl_legacy")
 project(":impl_v1.8.8").projectDir = file("implementation/impl_v1.8.8")
 project(":impl_v1.9.4").projectDir = file("implementation/impl_v1.9.4")

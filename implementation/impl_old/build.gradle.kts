@@ -1,0 +1,30 @@
+val snakeYamlVersion = project.property("snakeYamlVersion") as String
+val yamlConfigVersion = project.property("yamlConfigVersion") as String
+val fastboardVersion = project.property("fastboardVersion") as String
+val adventureApiVersion = project.property("adventureApiVersion") as String
+val triumphGuiVersion = project.property("triumphGuiVersion") as String
+val xseriesVersion = project.property("xseriesVersion") as String
+
+dependencies {
+    compileOnly("org.yaml:snakeyaml:${snakeYamlVersion}")
+    compileOnly("org.bspfsystems:yamlconfiguration:${yamlConfigVersion}")
+    compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
+    compileOnly("com.mojang:authlib:1.5.21")
+    compileOnly(project(":api"))
+    compileOnly(project(":bukkit"))
+    compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
+    compileOnly("com.github.cryptomorin:XSeries:${xseriesVersion}")
+    compileOnly("net.kyori:adventure-api:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-text-serializer-legacy:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-text-minimessage:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-text-serializer-plain:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-text-serializer-gson:${adventureApiVersion}")
+    compileOnly("net.kyori:adventure-platform-bukkit:4.4.1")
+    compileOnly("com.github.lidanthedev.triumph-gui:triumph-gui:${triumphGuiVersion}")
+}
+
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(8)
+    }
+}

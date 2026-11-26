@@ -16,6 +16,7 @@ dependencies {
     compileOnly("com.github.cryptomorin:XSeries:${xseriesVersion}")
     compileOnly(project(":api"))
     compileOnly(project(":bukkit"))
+    compileOnly(project(":impl_old"))
     compileOnly(project(":impl_legacy"))
     compileOnly("com.github.TavstalDev:yggraActionBar:v$actionBarVersion")
     compileOnly("com.github.TavstalDev:yggraBossBar:v$bossBarVersion")

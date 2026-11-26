@@ -5,9 +5,10 @@ val triumphGuiVersion = project.property("triumphGuiVersion") as String
 val xseriesVersion = project.property("xseriesVersion") as String
 
 dependencies {
-    compileOnly("org.spigotmc:spigot-api:1.8.8-R0.1-SNAPSHOT")
+    compileOnly("com.destroystokyo.paper:paper-api:1.12-R0.1-SNAPSHOT")
     compileOnly(project(":api"))
     compileOnly(project(":bukkit"))
+    compileOnly(project(":impl_old"))
     compileOnly("fr.mrmicky:fastboard:${fastboardVersion}")
     compileOnly("com.github.cryptomorin:XSeries:${xseriesVersion}")
     compileOnly("net.kyori:adventure-api:${adventureApiVersion}")

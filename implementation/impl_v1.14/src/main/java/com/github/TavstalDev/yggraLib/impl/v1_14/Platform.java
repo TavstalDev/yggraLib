@@ -13,17 +13,28 @@ import com.github.TavstalDev.yggraLib.api.scheduler.IScheduler;
 import com.github.TavstalDev.yggraLib.bukkit.gui.IGuiRenderer;
 import com.github.TavstalDev.yggraLib.bukkit.items.*;
 import com.github.TavstalDev.yggraLib.bukkit.items.metaAccessors.ISkullMetaAccessor;
-import com.github.TavstalDev.yggraLib.bukkit.services.*;
-import com.github.TavstalDev.yggraLib.impl.v1_14.items.RegistryAccessor_1_14;
-import com.github.TavstalDev.yggraLib.impl.v1_14.items.meta.*;
+import com.github.TavstalDev.yggraLib.bukkit.services.IChatService;
+import com.github.TavstalDev.yggraLib.bukkit.services.IScoreboardService;
+import com.github.TavstalDev.yggraLib.bukkit.services.ISoundService;
+import com.github.TavstalDev.yggraLib.impl.v1_14.items.meta.CrossbowMetaHandler_1_14;
+import com.github.TavstalDev.yggraLib.impl.v1_14.items.meta.EnchantmentMetaHandler_1_14;
+import com.github.TavstalDev.yggraLib.impl.v1_14.items.meta.EnchantmentStorageMetaHandler_1_14;
+import com.github.TavstalDev.yggraLib.impl.v1_14.items.meta.SkullMetaHandler_1_14;
 import com.github.TavstalDev.yggraLib.impl.v1_14.items.metaAccessor.SkullMetaAccessor_1_14;
-import com.github.TavstalDev.yggraLib.impl.v1_14.services.LanguageService_1_14;
-import com.github.TavstalDev.yggraLib.impl.v1_14.services.SoundService_1_14;
-import com.github.TavstalDev.yggraLib.impl.vlegacy.items.ItemStackAccessor_legacy;
-import com.github.TavstalDev.yggraLib.impl.vlegacy.items.PotionNameHandler_legacy;
-import com.github.TavstalDev.yggraLib.impl.vlegacy.items.meta.*;
-import com.github.TavstalDev.yggraLib.impl.vlegacy.scheduler.PaperScheduler_legacy;
-import com.github.TavstalDev.yggraLib.impl.vlegacy.services.*;
+import com.github.TavstalDev.yggraLib.impl.vlegacy.items.meta.PotionMetaHandler_legacy;
+import com.github.TavstalDev.yggraLib.impl.vlegacy.services.LanguageService_legacy;
+import com.github.TavstalDev.yggraLib.impl.vlegacy.services.SoundService_legacy;
+import com.github.TavstalDev.yggraLib.impl.vold.items.ItemStackAccessor_old;
+import com.github.TavstalDev.yggraLib.impl.vold.items.PotionNameHandler_old;
+import com.github.TavstalDev.yggraLib.impl.vold.items.RegistryAccessor_old;
+import com.github.TavstalDev.yggraLib.impl.vold.items.meta.BookMetaHandler_old;
+import com.github.TavstalDev.yggraLib.impl.vold.items.meta.FireworkEffectMetaHandler_old;
+import com.github.TavstalDev.yggraLib.impl.vold.items.meta.FireworkMetaHandler_old;
+import com.github.TavstalDev.yggraLib.impl.vold.items.meta.LeatherArmorMetaHandler_old;
+import com.github.TavstalDev.yggraLib.impl.vold.scheduler.PaperScheduler_old;
+import com.github.TavstalDev.yggraLib.impl.vold.services.ChatService_old;
+import com.github.TavstalDev.yggraLib.impl.vold.services.GuiRenderer_old;
+import com.github.TavstalDev.yggraLib.impl.vold.services.ScoreboardService_old;
 import com.github.TavstalDev.yggraParticle.api.IParticle;
 import com.github.TavstalDev.yggraParticle.bootstrap.YggraParticle;
 import com.github.TavstalDev.yggraTitle.api.ITitle;
@@ -44,14 +55,14 @@ import java.util.Map;
 public class Platform implements IPlatform {
 
     private final HashMap<EHandlerType, IMetaHandler> _metaHandlers = new HashMap<EHandlerType, IMetaHandler>() {{
-        put(EHandlerType.BOOK, new BookMetaHandler_legacy());
+        put(EHandlerType.BOOK, new BookMetaHandler_old());
         put(EHandlerType.CROSSBOW, new CrossbowMetaHandler_1_14());
         put(EHandlerType.ENCHANTMENT, new EnchantmentMetaHandler_1_14());
         put(EHandlerType.ENCHANTMENT_STORAGE, new EnchantmentStorageMetaHandler_1_14());
-        put(EHandlerType.FIREWORK_EFFECT, new FireworkEffectMetaHandler_legacy());
-        put(EHandlerType.FIREWORK, new FireworkMetaHandler_legacy());
-        put(EHandlerType.LEATHER_ARMOR, new LeatherArmorMetaHandler_legacy());
-        put(EHandlerType.POTION, new PotionMetaHandler_1_14());
+        put(EHandlerType.FIREWORK_EFFECT, new FireworkEffectMetaHandler_old());
+        put(EHandlerType.FIREWORK, new FireworkMetaHandler_old());
+        put(EHandlerType.LEATHER_ARMOR, new LeatherArmorMetaHandler_old());
+        put(EHandlerType.POTION, new PotionMetaHandler_legacy());
         put(EHandlerType.SKULL, new SkullMetaHandler_1_14());
     }};
 
@@ -60,31 +71,31 @@ public class Platform implements IPlatform {
     public void setup(IYggraPlugin plugin, Map<Class<?>, Object> serviceCollection) {
         @Nullable INbtAccessor nbtAccessor = plugin.getService(INbtAccessor.class);
 
-        serviceCollection.put(ILanguageService.class, new LanguageService_1_14());
+        serviceCollection.put(ILanguageService.class, new LanguageService_legacy());
         ITranslationService translationService = new TranslationService(plugin);
         serviceCollection.put(ITranslationService.class, translationService);
 
         JavaPlugin javaPlugin = (JavaPlugin)plugin;
         serviceCollection.put(IActionBar.class, new YggraActionBar(javaPlugin));
-        serviceCollection.put(IChatService.class, new ChatService_legacy(plugin, translationService));
+        serviceCollection.put(IChatService.class, new ChatService_old(plugin, translationService));
         serviceCollection.put(IBossBar.class, new YggraBossBar(javaPlugin));
         serviceCollection.put(ITitle.class, new YggraTitle(javaPlugin));
-        serviceCollection.put(IScoreboardService.class, new ScoreboardService_legacy());
-        serviceCollection.put(ISoundService.class, new SoundService_1_14());
+        serviceCollection.put(IScoreboardService.class, new ScoreboardService_old());
+        serviceCollection.put(ISoundService.class, new SoundService_legacy());
         serviceCollection.put(IParticle.class, new YggraParticle(javaPlugin));
-        serviceCollection.put(IScheduler.class, new PaperScheduler_legacy(javaPlugin));
+        serviceCollection.put(IScheduler.class, new PaperScheduler_old(javaPlugin));
 
-        IRegistryAccessor registryAccessor = new RegistryAccessor_1_14();
+        IRegistryAccessor registryAccessor = new RegistryAccessor_old();
         serviceCollection.put(IRegistryAccessor.class, registryAccessor);
 
-        IItemStackAccessor itemStackAccessor = new ItemStackAccessor_legacy(registryAccessor);
+        IItemStackAccessor itemStackAccessor = new ItemStackAccessor_old(registryAccessor);
         serviceCollection.put(IItemStackAccessor.class, itemStackAccessor);
         serviceCollection.put(IItemSerializer.class, new ItemSerializer(javaPlugin.getLogger(),
                 registryAccessor, itemStackAccessor, nbtAccessor, null, null,
-                new PotionNameHandler_legacy(), _metaHandlers));
+                new PotionNameHandler_old(), _metaHandlers));
 
         serviceCollection.put(ISkullMetaAccessor.class, new SkullMetaAccessor_1_14());
 
-        serviceCollection.put(IGuiRenderer.class, new GuiRenderer_legacy());
+        serviceCollection.put(IGuiRenderer.class, new GuiRenderer_old());
     }
 }
