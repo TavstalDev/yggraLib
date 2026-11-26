@@ -7,6 +7,7 @@ import java.lang.reflect.Method;
 /**
  * Utility class for handling server version-related operations.
  */
+@SuppressWarnings("unused")
 public class VersionUtils {
     private static String _version = null;
 
@@ -94,10 +95,7 @@ public class VersionUtils {
      * @return True if the server version is at least the specified version, false otherwise.
      */
     public static boolean isAtLeast(int major, int minor) {
-        String[] parts = getServerVersion().split("\\.");
-        int maj = Integer.parseInt(parts[0]);
-        int min = Integer.parseInt(parts[1]);
-        return (maj > major) || (maj == major && min >= minor);
+        return isAtLeast(major, minor, 0);
     }
 
     /**
