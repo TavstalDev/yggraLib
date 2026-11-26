@@ -139,7 +139,7 @@ public class YggraLogger {
 
         _logger.log(level, String.format("%s%s%s\u001B[0m", color, moduleText, text));
         if (ex != null)
-            _logger.log(level, String.format("%s└── Exception: %s: %s\u001B[0m", color, ex.getClass().getTypeName(), ex.getMessage()));
+            _logger.log(level, String.format("%s└── Exception: %s: %s\u001B[0m", color, ex.getClass().getTypeName(), ex.getMessage()), ex);
     }
 
     /**

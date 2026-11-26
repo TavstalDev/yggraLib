@@ -343,10 +343,12 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
 
         if (!onPrePluginEnable())
             return;
+        String phase = "creating platform implementation";
         try {
             String implClassName = getImplClassName();
             IPlatform platform = (IPlatform) Class.forName(implClassName)
                     .getDeclaredConstructor().newInstance();
+            phase = "setting up platform services";
             platform.setup(this, _serviceCollection);
 
             if (_pluginId != null) {
@@ -354,7 +356,7 @@ public abstract class YggraPlugin<TConfig extends IYggraConfig> extends JavaPlug
             }
         }
         catch (Exception ex) {
-            _logger.error("Failed to initialize the plugin.", ex);
+            _logger.error("Failed to initialize the plugin while " + phase + ".", ex);
             Bukkit.getPluginManager().disablePlugin(this);
             return;
         }
